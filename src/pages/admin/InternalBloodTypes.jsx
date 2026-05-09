@@ -26,7 +26,6 @@ const InternalBloodTypes = () => {
   const [editData, setEditData] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [newData, setNewData] = useState({ group: '', base_price: 0, is_active: true });
-  const [updatingConfig, setUpdatingConfig] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -48,17 +47,6 @@ const InternalBloodTypes = () => {
     }
   };
 
-  const updateGlobalCommission = async (val) => {
-    setUpdatingConfig(true);
-    try {
-      const { data } = await adminApi.updateGlobalConfig({ commission_percentage: val });
-      setGlobalConfig(data);
-    } catch (err) {
-      console.error('Markup update failed:', err);
-    } finally {
-      setUpdatingConfig(false);
-    }
-  };
 
   const handleEdit = (bt) => {
     setEditingId(bt.id);
@@ -95,7 +83,7 @@ const InternalBloodTypes = () => {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="space-y-1">
           <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">
-            Blood Type <span className="text-gradient">Registry</span>
+            Blood Type <span className="text-gradient">Database</span>
           </h1>
           <p className="text-text-secondary flex items-center gap-2 font-black uppercase tracking-[0.3em] text-[10px]">
             <Globe className="w-3.5 h-3.5 text-accent" />
@@ -118,7 +106,6 @@ const InternalBloodTypes = () => {
         {[
           { label: 'Active Types', value: activeAssets, icon: Database, color: 'text-primary' },
           { label: 'Avg Base Price', value: `₦${Math.round(avgPrice).toLocaleString()}`, icon: Coins, color: 'text-emerald-500' },
-          { label: 'Market Markup', value: `${globalConfig.commission_percentage}%`, icon: TrendingUp, color: 'text-accent' },
           { label: 'Network Integrity', value: 'SECURE', icon: ShieldCheck, color: 'text-blue-500' }
         ].map((stat, i) => (
           <div key={i} className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border p-8 rounded-[40px] hover:border-accent/30 transition-all group shadow-sm">
@@ -136,7 +123,7 @@ const InternalBloodTypes = () => {
           <div className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-[56px] overflow-hidden shadow-2xl relative">
             <div className="p-10 border-b border-glass-border bg-glass/20 flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-black text-text-primary uppercase tracking-tight">Blood Type Registry</h3>
+                <h3 className="text-xl font-black text-text-primary uppercase tracking-tight">Blood Type Overview</h3>
                 <p className="text-[10px] text-text-muted font-black uppercase tracking-widest mt-1 opacity-60">Baseline reference pricing for cross-facility coordination</p>
               </div>
               <button onClick={fetchData} className="p-4 bg-glass border border-glass-border rounded-2xl text-text-muted hover:text-accent transition-all group">
@@ -150,14 +137,12 @@ const InternalBloodTypes = () => {
                   <tr className="bg-glass/30 border-b border-glass-border">
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Asset Group</th>
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Reference Base</th>
-                    <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Market Projection</th>
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-center">Protocol</th>
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-glass-border/30">
                   {bloodTypes.map((bt) => {
-                    const marketPrice = parseFloat(bt.base_price) * (1 + globalConfig.commission_percentage / 100);
                     return (
                       <tr key={bt.id} className="hover:bg-accent/5 transition-all group/row">
                         <td className="px-10 py-8">
@@ -185,15 +170,6 @@ const InternalBloodTypes = () => {
                           ) : (
                             <p className="text-2xl font-black text-text-primary tracking-tight">₦{parseFloat(bt.base_price).toLocaleString()}</p>
                           )}
-                        </td>
-                        <td className="px-10 py-8 text-right">
-                           <div className="space-y-1">
-                              <p className="text-2xl font-black text-emerald-500 tracking-tight">₦{marketPrice.toLocaleString()}</p>
-                              <p className="text-[9px] font-black uppercase text-emerald-500/50 tracking-widest flex items-center justify-end gap-2">
-                                 <TrendingUp className="w-3 h-3" />
-                                 +{globalConfig.commission_percentage}% Markup
-                              </p>
-                           </div>
                         </td>
                         <td className="px-10 py-8 text-center">
                           <button 
@@ -232,45 +208,6 @@ const InternalBloodTypes = () => {
         </div>
 
         <div className="lg:col-span-4 space-y-10">
-          <div className="bg-accent/10 border border-accent/20 rounded-[56px] p-12 relative overflow-hidden group shadow-2xl">
-            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-1000">
-              <TrendingUp className="w-32 h-32 text-accent" />
-            </div>
-            <div className="relative z-10 space-y-10">
-               <div className="space-y-4">
-                  <div className="inline-block px-4 py-1.5 bg-accent/20 border border-accent/30 rounded-full">
-                     <span className="text-[10px] font-black text-accent uppercase tracking-[0.3em]">Revenue Protocol</span>
-                  </div>
-                  <h3 className="text-4xl font-black text-text-primary uppercase tracking-tighter leading-none">Market <span className="text-gradient">Markup</span></h3>
-               </div>
-               
-               <div className="space-y-6">
-                 <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-4">Global Platform Commission (%)</label>
-                    <div className="relative">
-                       <input 
-                         type="number"
-                         className="w-full bg-glass border-2 border-accent/30 rounded-[32px] py-8 px-10 text-4xl font-black text-accent outline-none focus:border-accent transition-all shadow-inner"
-                         value={globalConfig.commission_percentage}
-                         onChange={(e) => updateGlobalCommission(e.target.value)}
-                         disabled={updatingConfig}
-                       />
-                       <div className="absolute right-10 top-1/2 -translate-y-1/2 text-4xl font-black text-accent/30">%</div>
-                       {updatingConfig && (
-                         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                           <Activity className="animate-spin w-12 h-12 text-accent" />
-                         </div>
-                       )}
-                    </div>
-                 </div>
-                 <div className="p-8 bg-glass border border-accent/10 rounded-[32px]">
-                    <p className="text-[11px] text-text-secondary leading-relaxed font-black uppercase tracking-tight opacity-80">
-                      This markup is applied globally to all biological transactions. Modifying this parameter will immediately affect marketplace pricing across the entire clinical network.
-                    </p>
-                 </div>
-               </div>
-            </div>
-          </div>
 
           <div className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-[56px] p-12 space-y-10">
             <h3 className="text-xl font-black text-text-primary uppercase tracking-tighter flex items-center gap-4">
@@ -281,10 +218,9 @@ const InternalBloodTypes = () => {
             </h3>
             <div className="space-y-6">
               {[
-                { title: 'Baseline Reference', text: 'Establishes the minimum biological asset valuation.' },
+                { title: 'Baseline Reference', text: 'Establishes the minimum blood asset valuation.' },
                 { title: 'Facility Autonomy', text: 'Local nodes retain pricing variance within defined bands.' },
-                { title: 'Inventory Control', text: 'De-activated assets are restricted from future procurement.' },
-                { title: 'Financial Regulation', text: 'Global markup regulates system-wide fiscal health.' }
+                { title: 'Inventory Control', text: 'De-activated assets are restricted from future procurement.' }
               ].map((item, i) => (
                 <div key={i} className="flex gap-6 group">
                   <div className="w-2 h-2 rounded-full bg-accent mt-2 flex-shrink-0 group-hover:scale-150 transition-transform" />
@@ -361,7 +297,7 @@ const InternalBloodTypes = () => {
                     onClick={() => setShowAddModal(false)}
                     className="md:w-48 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted hover:text-accent transition-all border border-glass-border rounded-[32px] bg-glass"
                   >
-                    Abort Registry
+                    Abort Update
                   </button>
                 </div>
               </form>

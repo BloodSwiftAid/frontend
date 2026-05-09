@@ -21,10 +21,19 @@ const SetupPasswordPage = () => {
     setLoading(true);
     setError('');
     try {
-      await authApi.changePassword({ 
+      const res = await authApi.changePassword({ 
         old_password: oldPassword, 
         new_password: newPassword 
       });
+      
+      // Sync the updated verification status to localStorage immediately
+      // so the UI unlocks without requiring re-login
+      if (res.data?.facility_verified !== undefined) {
+        localStorage.setItem('facility_verified', String(res.data.facility_verified));
+        // Notify other tabs/components listening to storage events
+        window.dispatchEvent(new Event('storage'));
+      }
+      
       // After success, redirect based on role
       const role = localStorage.getItem('role');
       if (role === 'INTERNAL_ADMIN') navigate('/admin');

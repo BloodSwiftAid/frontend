@@ -11,7 +11,7 @@ const FacilityRevenueInsights = ({ stats }) => {
               <Building2 className="w-7 h-7" />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-text-primary uppercase tracking-tighter">Blood Bank Earnings</h3>
+              <h3 className="text-2xl font-black text-text-primary uppercase tracking-tighter">Blood Bank Performance</h3>
               <p className="text-[10px] text-text-secondary font-black uppercase tracking-[0.2em] mt-1 opacity-60">Network financial performance overview</p>
             </div>
           </div>
@@ -28,9 +28,9 @@ const FacilityRevenueInsights = ({ stats }) => {
             <thead className="bg-glass/30 border-b border-glass-border">
               <tr>
                 <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Facility Name</th>
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Throughput</th>
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Gross Intake (₦)</th>
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right text-emerald-500/80">System Profit (₦)</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Transactions</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Gross Revenue (₦)</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right text-emerald-500/80">Net Profit (₦)</th>
                 <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-center">Efficiency %</th>
               </tr>
             </thead>
@@ -79,7 +79,7 @@ const FacilityRevenueInsights = ({ stats }) => {
                         <Activity className="w-8 h-8 text-text-muted" />
                       </div>
                       <div className="text-center">
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted">No active facility nodes detected in financial overview</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted">No active facility nodes detected</p>
                       </div>
                     </div>
                   </td>
@@ -91,25 +91,25 @@ const FacilityRevenueInsights = ({ stats }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-         <div className="bg-glass border border-glass-border p-8 rounded-[40px] space-y-4">
+         <div className="bg-glass border border-glass-border p-8 rounded-[40px] space-y-4 shadow-sm">
             <TrendingUp className="w-8 h-8 text-accent" />
-            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Peak Node Performance</p>
+            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Peak Performance</p>
             <h4 className="text-2xl font-black text-text-primary tracking-tighter uppercase">
                {stats?.revenue_by_facility?.[0]?.blood_bank__name || 'N/A'}
             </h4>
          </div>
-         <div className="bg-glass border border-glass-border p-8 rounded-[40px] space-y-4">
+         <div className="bg-glass border border-glass-border p-8 rounded-[40px] space-y-4 shadow-sm">
             <DollarSign className="w-8 h-8 text-emerald-500" />
-            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Top Revenue Driver</p>
+            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Top Revenue Stream</p>
             <h4 className="text-2xl font-black text-text-primary tracking-tighter uppercase">
                ₦{stats?.revenue_by_facility?.reduce((max, f) => Math.max(max, f.total_revenue), 0).toLocaleString()}
             </h4>
          </div>
-         <div className="bg-glass border border-glass-border p-8 rounded-[40px] space-y-4">
+         <div className="bg-glass border border-glass-border p-8 rounded-[40px] space-y-4 shadow-sm">
             <Activity className="w-8 h-8 text-blue-500" />
-            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Network Efficiency</p>
+            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Network Health</p>
             <h4 className="text-2xl font-black text-text-primary tracking-tighter uppercase">
-               {stats?.total_revenue > 0 ? ((stats?.total_profit / stats?.total_revenue) * 100).toFixed(1) : 0}% Avg
+               {stats?.total_revenue > 0 ? ((stats?.total_profit / stats?.total_revenue) * 100).toFixed(1) : 0}% Yield
             </h4>
          </div>
       </div>

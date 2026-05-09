@@ -13,11 +13,15 @@ import {
   Trash2,
   Edit,
   ArrowDownCircle,
-  Database
+  Database,
+  ShieldAlert
 } from 'lucide-react';
 import { inventoryApi, adminApi } from '../../api';
+import { useIsVerified } from '../../hooks/useIsVerified';
+import { toast } from 'react-hot-toast';
 
 const BloodBankInventory = () => {
+  const isVerified = useIsVerified();
   const [inventory, setInventory] = useState([]);
   const [bloodTypeRegistry, setBloodTypeRegistry] = useState([]);
   const [globalConfig, setGlobalConfig] = useState({ commission_percentage: 10 });
@@ -67,6 +71,10 @@ const BloodBankInventory = () => {
 
   const handleAddDonation = async (e) => {
     e.preventDefault();
+    if (!isVerified) {
+      toast.error('Facility not verified. Action restricted.');
+      return;
+    }
     try {
       await inventoryApi.createDonation(newDonation);
       setShowDonationModal(false);
@@ -105,8 +113,9 @@ const BloodBankInventory = () => {
         </div>
         <div className="flex gap-4">
           <button 
-            onClick={() => setShowDonationModal(true)}
-            className="btn btn-primary px-8 py-4 rounded-2xl shadow-xl shadow-accent/20 gap-3 group"
+            onClick={() => isVerified ? setShowDonationModal(true) : toast.error('Verification required')}
+            disabled={!isVerified}
+            className={`btn btn-primary px-8 py-4 rounded-2xl shadow-xl gap-3 group transition-all ${!isVerified ? 'opacity-40 grayscale cursor-not-allowed' : 'shadow-accent/20'}`}
           >
             <ArrowDownCircle className="w-5 h-5 transition-transform group-hover:translate-y-1" />
             <span className="font-bold tracking-tight">Record Donation</span>
@@ -211,7 +220,10 @@ const BloodBankInventory = () => {
                   </td>
                   <td className="px-8 py-6 font-mono text-emerald-500 font-black">₦{item.price?.toLocaleString()}</td>
                   <td className="px-8 py-6 text-right">
-                    <button className="p-3 hover:bg-glass rounded-xl text-text-muted hover:text-accent transition-all">
+                    <button 
+                      disabled={!isVerified}
+                      className={`p-3 rounded-xl text-text-muted transition-all ${!isVerified ? 'opacity-20 cursor-not-allowed' : 'hover:bg-glass hover:text-accent'}`}
+                    >
                       <Edit className="w-4 h-4" />
                     </button>
                   </td>
@@ -300,10 +312,11 @@ const BloodBankInventory = () => {
                             </span>
                           </td>
                           <td className="px-8 py-5 text-right">
-                            <div className="inline-flex items-center bg-glass/40 border border-glass-border rounded-xl px-3 py-2 group-hover:border-accent/30 transition-all">
+                            <div className={`inline-flex items-center bg-glass/40 border border-glass-border rounded-xl px-3 py-2 transition-all ${!isVerified ? 'opacity-40 grayscale pointer-events-none' : 'group-hover:border-accent/30'}`}>
                               <span className="font-black text-text-secondary mr-2 text-xs">₦</span>
                               <input 
                                 type="number"
+                                disabled={!isVerified}
                                 className="bg-transparent border-none outline-none text-text-primary font-black w-24 text-right text-base"
                                 value={currentPrice}
                                 onChange={(e) => {
@@ -335,6 +348,7 @@ const BloodBankInventory = () => {
                           </td>
                           <td className="px-8 py-5 text-right">
                             <button 
+                              disabled={!isVerified}
                               onClick={async () => {
                                 try {
                                   const isVirtual = invItem && invItem.id.toString().startsWith('temp-');
@@ -348,11 +362,13 @@ const BloodBankInventory = () => {
                                     });
                                   }
                                   fetchData();
+                                  toast.success('Database Updated');
                                 } catch (err) {
                                   console.error('Failed to update pricing:', err);
+                                  toast.error('Protocol failure: Pricing update aborted');
                                 }
                               }}
-                              className="px-5 py-2.5 bg-accent text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg shadow-accent/10 hover:bg-accent-hover active:scale-95 transition-all whitespace-nowrap"
+                              className={`px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg transition-all whitespace-nowrap ${!isVerified ? 'bg-glass-border/40 text-text-muted cursor-not-allowed' : 'bg-accent text-white shadow-accent/10 hover:bg-accent-hover active:scale-95'}`}
                             >
                               {invItem && !invItem.id.toString().startsWith('temp-') ? 'Save Price' : 'Initialize'}
                             </button>

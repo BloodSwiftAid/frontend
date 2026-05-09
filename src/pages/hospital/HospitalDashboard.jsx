@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { transactionApi, usersApi } from '../../api';
+import { useIsVerified } from '../../hooks/useIsVerified';
+import { toast } from 'react-hot-toast';
 
 const RequestHistory = ({ data }) => (
   <div className="overflow-hidden border border-glass-border rounded-[32px] bg-card-bg/40 backdrop-blur-xl">
@@ -32,7 +34,14 @@ const RequestHistory = ({ data }) => (
         {data?.length > 0 ? data.slice(0, 5).map((item, i) => (
           <tr key={i} className="hover:bg-accent/5 transition-all group">
             <td className="px-8 py-6 font-mono text-text-muted font-bold text-xs">#{item.id}</td>
-            <td className="px-8 py-6 font-black text-text-primary text-lg">{item.product_details?.blood_group || 'N/A'}</td>
+            <td className="px-8 py-6">
+              <div className="flex flex-col">
+                <span className="font-black text-text-primary text-lg">{item.product_details?.blood_group || 'N/A'}</span>
+                {item.batch_id && (
+                  <span className="text-[7px] font-mono text-blue-500/40 font-black uppercase tracking-tighter">Batch: {item.batch_id.slice(0, 8)}</span>
+                )}
+              </div>
+            </td>
             <td className="px-8 py-6 font-black text-text-primary">{item.quantity} Units</td>
             <td className="px-8 py-6">
               <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
@@ -65,6 +74,7 @@ const RequestHistory = ({ data }) => (
 );
 
 const HospitalDashboard = () => {
+  const isVerified = useIsVerified();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
@@ -109,9 +119,13 @@ const HospitalDashboard = () => {
           </p>
         </div>
         <div className="flex gap-4">
-          <Link to="/hospital/marketplace" className="btn btn-primary px-8 py-4 rounded-2xl shadow-xl shadow-accent/20 gap-3 group">
+          <Link 
+            to={isVerified ? "/hospital/marketplace" : "#"} 
+            onClick={(e) => !isVerified && (e.preventDefault(), toast.error('Verification required'))}
+            className={`btn btn-primary px-8 py-4 rounded-2xl shadow-xl gap-3 group transition-all ${!isVerified ? 'opacity-40 grayscale cursor-not-allowed shadow-none' : 'shadow-accent/20'}`}
+          >
             <ShoppingCart className="w-5 h-5" />
-            <span className="font-bold tracking-tight uppercase tracking-widest text-[11px]">Order Blood</span>
+            <span className="font-bold tracking-tight uppercase tracking-widest text-[11px]">{isVerified ? 'Order Blood' : 'Order Restricted'}</span>
           </Link>
         </div>
       </header>
@@ -134,7 +148,9 @@ const HospitalDashboard = () => {
           <div className="relative z-10 space-y-6">
             <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Total Procured</p>
             <h4 className="text-5xl font-black text-text-primary tracking-tighter leading-none">
-              {requests.reduce((acc, curr) => acc + (curr.quantity || 0), 0)}
+              {requests
+                .filter(r => ['APPROVED', 'DISPATCHED', 'DELIVERED'].includes(r.status))
+                .reduce((acc, curr) => acc + (curr.quantity || 0), 0)}
             </h4>
           </div>
         </div>

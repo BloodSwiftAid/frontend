@@ -14,12 +14,16 @@ export const adminApi = {
   createHospital: (data) => api.post('/user/hospitals/', data),
   updateHospital: (id, data) => api.patch(`/user/hospitals/${id}/`, data),
   deleteHospital: (id) => api.delete(`/user/hospitals/${id}/`),
+  toggleHospitalActive: (id) => api.post(`/user/hospitals/${id}/toggle-active/`),
+  toggleHospitalVerified: (id) => api.post(`/user/hospitals/${id}/toggle-verified/`),
 
   // Blood Banks
   listBloodBanks: (params) => api.get('/user/blood-banks/', { params }),
   createBloodBank: (data) => api.post('/user/blood-banks/', data),
   updateBloodBank: (id, data) => api.patch(`/user/blood-banks/${id}/`, data),
   deleteBloodBank: (id) => api.delete(`/user/blood-banks/${id}/`),
+  toggleBloodBankActive: (id) => api.post(`/user/blood-banks/${id}/toggle-active/`),
+  toggleBloodBankVerified: (id) => api.post(`/user/blood-banks/${id}/toggle-verified/`),
 
   // Users
   listUsers: (params) => api.get('/user/users/', { params }),
@@ -71,6 +75,8 @@ export const transactionApi = {
   approveRequest: (id) => api.post(`/transaction/requests/${id}/approve/`),
   rejectRequest: (id) => api.post(`/transaction/requests/${id}/reject/`),
   directPosSale: (data) => api.post('/transaction/requests/pos-sale/', data),
+  bulkPosSale: (data) => api.post('/transaction/requests/bulk-pos-sale/', data),
+  bulkCreate: (data) => api.post('/transaction/requests/bulk-create/', data),
   getRevenueStats: () => api.get('/transaction/revenue-stats/'),
   getLiveActivity: () => api.get('/transaction/live-activity/'),
 };
@@ -79,4 +85,9 @@ export const paymentApi = {
   initialize: (data) => api.post('/payment/payments/initialize/', data),
   verify: (data) => api.post('/payment/payments/verify/', data),
   listPayments: () => api.get('/payment/payments/'),
+  listPayouts: () => api.get('/payment/payouts/'),
+  createPayout: (data) => api.post('/payment/payouts/', data),
+  listBankDetails: () => api.get('/payment/bank-details/'),
+  createBankDetail: (data) => api.post('/payment/bank-details/', data),
+  deleteBankDetail: (id) => api.delete(`/payment/bank-details/${id}/`),
 };

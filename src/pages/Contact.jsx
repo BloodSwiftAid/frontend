@@ -26,7 +26,7 @@ const Contact = () => {
       <section className="section">
         <div className="container">
           <div className="max-w-4xl mx-auto text-center mb-24 space-y-6">
-            <h1 className="hero-title font-black text-text-primary uppercase italic">
+            <h1 className="hero-title font-black text-text-primary uppercase">
               Get in <span className="text-gradient">Touch</span>
             </h1>
             <p className="text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
@@ -44,7 +44,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Protocol Link</h4>
-                    <p className="text-xl font-black text-text-primary uppercase tracking-tight italic">contact@swiftaid.ng</p>
+                    <p className="text-xl font-black text-text-primary uppercase tracking-tight">contact@swiftaid.ng</p>
                   </div>
                 </div>
                 
@@ -54,7 +54,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Voice Support</h4>
-                    <p className="text-xl font-black text-text-primary uppercase tracking-tight italic">+234 810 SWIFTAID</p>
+                    <p className="text-xl font-black text-text-primary uppercase tracking-tight">+234 810 SWIFTAID</p>
                   </div>
                 </div>
 
@@ -64,7 +64,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Node Headquarters</h4>
-                    <p className="text-xl font-black text-text-primary uppercase tracking-tight italic">Lagos Cluster, NG</p>
+                    <p className="text-xl font-black text-text-primary uppercase tracking-tight">Lagos Cluster, NG</p>
                   </div>
                 </div>
               </div>
@@ -84,7 +84,7 @@ const Contact = () => {
                       <Send className="w-10 h-10" />
                     </div>
                     <div>
-                      <h3 className="text-3xl font-black text-text-primary uppercase italic tracking-tighter mb-4">Transmission Successful</h3>
+                      <h3 className="text-3xl font-black text-text-primary uppercase tracking-tighter mb-4">Transmission Successful</h3>
                       <p className="text-text-secondary">Your inquiry has been routed to our emergency coordination team. Response time: &lt; 2 hours.</p>
                     </div>
                     <button 

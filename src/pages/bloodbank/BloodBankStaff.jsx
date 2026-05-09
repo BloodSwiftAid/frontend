@@ -15,8 +15,11 @@ import {
   Settings
 } from 'lucide-react';
 import { usersApi } from '../../api';
+import { useIsVerified } from '../../hooks/useIsVerified';
+import { toast } from 'react-hot-toast';
 
 const BloodBankStaff = () => {
+  const isVerified = useIsVerified();
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -62,6 +65,10 @@ const BloodBankStaff = () => {
 
   const handleCreateStaff = async (e) => {
     e.preventDefault();
+    if (!isVerified) {
+      toast.error('Verification required for personnel management');
+      return;
+    }
     try {
       await usersApi.createStaff(newStaff);
       setShowModal(false);
@@ -74,31 +81,38 @@ const BloodBankStaff = () => {
         password: 'password123'
       });
       fetchStaff();
+      toast.success('Personnel onboarded successfully');
     } catch (err) {
       console.error('Failed to create staff:', err);
+      toast.error('Failed to onboard staff. Protocol violation.');
     }
   };
 
   const handleUpdateStaff = async (e) => {
     e.preventDefault();
+    if (!isVerified) return;
     try {
       await usersApi.updateStaff(selectedUser.id, editStaff);
       setShowEditModal(false);
       fetchStaff();
+      toast.success('Registry updated');
     } catch (err) {
       console.error('Failed to update staff:', err);
+      toast.error('Failed to update registry.');
     }
   };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
+    if (!isVerified) return;
     try {
       await usersApi.resetStaffPassword(selectedUser.id, resetData.password);
       setShowResetModal(false);
       setResetData({ password: '' });
-      alert(`Password reset successful for ${selectedUser.username}`);
+      toast.success(`Credential reset successful for ${selectedUser.username}`);
     } catch (err) {
       console.error('Failed to reset password:', err);
+      toast.error('Failed to reset credentials.');
     }
   };
 
@@ -113,8 +127,9 @@ const BloodBankStaff = () => {
           </p>
         </div>
         <button 
-          onClick={() => setShowModal(true)}
-          className="btn btn-primary px-8 py-4 rounded-2xl shadow-xl shadow-accent/20 gap-3 group"
+          onClick={() => isVerified ? setShowModal(true) : toast.error('Verification Required')}
+          disabled={!isVerified}
+          className={`btn btn-primary px-8 py-4 rounded-2xl shadow-xl gap-3 group transition-all ${!isVerified ? 'opacity-40 grayscale cursor-not-allowed shadow-none' : 'shadow-accent/20'}`}
         >
           <UserPlus className="w-5 h-5 transition-transform group-hover:scale-110" />
           <span className="font-bold tracking-tight">Onboard Staff</span>
@@ -132,6 +147,7 @@ const BloodBankStaff = () => {
             <div className="absolute top-0 right-0 p-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <button 
                 onClick={() => { 
+                  if (!isVerified) return;
                   setSelectedUser(user); 
                   setEditStaff({
                     first_name: user.first_name,
@@ -141,13 +157,15 @@ const BloodBankStaff = () => {
                   });
                   setShowEditModal(true); 
                 }}
-                className="p-3 bg-glass border border-glass-border rounded-xl text-text-muted hover:text-accent transition-all"
+                disabled={!isVerified}
+                className={`p-3 bg-glass border border-glass-border rounded-xl text-text-muted transition-all ${!isVerified ? 'opacity-20 cursor-not-allowed' : 'hover:text-accent'}`}
               >
                 <Settings className="w-4 h-4" />
               </button>
               <button 
-                onClick={() => { setSelectedUser(user); setShowResetModal(true); }}
-                className="p-3 bg-glass border border-glass-border rounded-xl text-text-muted hover:text-accent transition-all"
+                onClick={() => { if (!isVerified) return; setSelectedUser(user); setShowResetModal(true); }}
+                disabled={!isVerified}
+                className={`p-3 bg-glass border border-glass-border rounded-xl text-text-muted transition-all ${!isVerified ? 'opacity-20 cursor-not-allowed' : 'hover:text-accent'}`}
               >
                 <Key className="w-4 h-4" />
               </button>

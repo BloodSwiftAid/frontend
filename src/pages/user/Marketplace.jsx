@@ -177,7 +177,7 @@ const MarketplacePage = () => {
         </div>
       </div>
 
-      {/* Results Matrix */}
+      {/* Marketplace Overview */}
       <div className="max-w-7xl mx-auto -mt-32 px-8 relative z-20 space-y-10">
         <div className="flex flex-col md:flex-row justify-between items-center bg-glass border border-glass-border px-10 py-6 rounded-[32px] backdrop-blur-3xl shadow-2xl gap-6">
            <div className="flex items-center gap-6">
@@ -206,7 +206,7 @@ const MarketplacePage = () => {
                 <div className="absolute inset-0 rounded-full border-t-2 border-accent animate-spin" />
                 <Droplet className="absolute inset-0 m-auto w-8 h-8 text-accent animate-pulse" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted animate-pulse">Synchronizing Biological Matrix...</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted animate-pulse">Synchronizing Biological Registry...</p>
             </div>
           ) : filteredInventory.length > 0 ? (
             filteredInventory.map(item => {

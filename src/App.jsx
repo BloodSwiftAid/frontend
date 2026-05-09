@@ -27,7 +27,7 @@ import BloodBankManagement from './pages/admin/BloodBankManagement';
 import HospitalManagement from './pages/admin/HospitalManagement';
 import UserManagement from './pages/admin/UserManagement';
 import InternalBloodTypes from './pages/admin/InternalBloodTypes';
-import RevenueMatrix from './pages/shared/RevenueMatrix';
+import RevenueInsights from './pages/shared/RevenueInsights';
 import DashboardLayout from './layouts/AdminLayout';
 import BloodBankDashboard from './pages/bloodbank/BloodBankDashboard';
 import HospitalDashboard from './pages/hospital/HospitalDashboard';
@@ -41,6 +41,11 @@ import BloodBankStaff from './pages/bloodbank/BloodBankStaff';
 import BloodBankPOS from './pages/bloodbank/BloodBankPOS';
 import BloodBankOrders from './pages/bloodbank/BloodBankOrders';
 import BloodBankPricing from './pages/bloodbank/BloodBankPricing';
+import BloodBankPayouts from './pages/bloodbank/BloodBankPayouts';
+import BloodBankBankDetails from './pages/bloodbank/BloodBankBankDetails';
+import AdminPayouts from './pages/admin/AdminPayouts';
+import AdminBankDetails from './pages/admin/AdminBankDetails';
+import GlobalConfig from './pages/admin/GlobalConfig';
 import ProfileSettings from './pages/shared/ProfileSettings';
 
 const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
@@ -225,7 +230,10 @@ function App() {
               <Route path="hospitals" element={<HospitalManagement />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="blood-types" element={<InternalBloodTypes />} />
-              <Route path="revenue" element={<RevenueMatrix isAdmin={true} />} />
+              <Route path="config" element={<GlobalConfig />} />
+              <Route path="payouts" element={<AdminPayouts />} />
+              <Route path="payouts/banks" element={<AdminBankDetails />} />
+              <Route path="revenue" element={<RevenueInsights isAdmin={true} />} />
               <Route path="settings" element={<ProfileSettings />} />
             </Routes>
           </DashboardLayout>
@@ -239,7 +247,9 @@ function App() {
               <Route path="pos" element={<BloodBankPOS />} />
               <Route path="orders" element={<BloodBankOrders />} />
               <Route path="pricing" element={<BloodBankPricing />} />
-              <Route path="revenue" element={<RevenueMatrix isAdmin={false} />} />
+              <Route path="payouts" element={<BloodBankPayouts />} />
+              <Route path="payouts/banks" element={<BloodBankBankDetails />} />
+              <Route path="revenue" element={<RevenueInsights isAdmin={false} />} />
               <Route path="settings" element={<ProfileSettings />} />
             </Routes>
           </DashboardLayout>

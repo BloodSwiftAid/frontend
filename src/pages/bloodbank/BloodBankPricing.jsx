@@ -9,8 +9,11 @@ import {
   Droplet
 } from 'lucide-react';
 import { inventoryApi } from '../../api';
+import { useIsVerified } from '../../hooks/useIsVerified';
+import { toast } from 'react-hot-toast';
 
-const PricingMatrix = () => {
+const PricingInsights = () => {
+  const isVerified = useIsVerified();
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -42,6 +45,7 @@ const PricingMatrix = () => {
   };
 
   const handlePriceChange = (id, value) => {
+    if (!isVerified) return;
     setEditPrices(prev => ({
       ...prev,
       [id]: value
@@ -49,6 +53,10 @@ const PricingMatrix = () => {
   };
 
   const handleSavePrices = async () => {
+    if (!isVerified) {
+      toast.error('Facility verification required for pricing updates');
+      return;
+    }
     setSaving(true);
     try {
       await Promise.all(
@@ -61,6 +69,7 @@ const PricingMatrix = () => {
       fetchPricing();
     } catch (err) {
       console.error('Failed to update price matrix:', err);
+      toast.error('Failed to update pricing');
     } finally {
       setSaving(false);
     }
@@ -70,7 +79,7 @@ const PricingMatrix = () => {
     <div className="p-8 md:p-12 space-y-12 animate-fade-in relative z-10">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase">Revenue <span className="text-gradient">Matrix</span></h1>
+          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase">Revenue <span className="text-gradient">Insights</span></h1>
           <p className="text-text-secondary mt-2 flex items-center gap-2 font-bold uppercase tracking-widest text-[10px]">
             <DollarSign className="w-3 h-3 text-emerald-500" />
             Biological Asset Valuation & Unit Pricing
@@ -78,15 +87,15 @@ const PricingMatrix = () => {
         </div>
         <button 
           onClick={handleSavePrices}
-          disabled={saving}
-          className="btn btn-primary px-8 py-4 rounded-2xl shadow-xl shadow-accent/20 gap-3 group disabled:opacity-50"
+          disabled={saving || !isVerified}
+          className={`btn btn-primary px-8 py-4 rounded-2xl shadow-xl gap-3 group transition-all ${!isVerified ? 'opacity-40 grayscale cursor-not-allowed shadow-none' : 'shadow-accent/20'}`}
         >
           {saving ? (
             <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
           ) : (
             <>
               <Save className="w-5 h-5 transition-transform group-hover:scale-110" />
-              <span className="font-bold tracking-tight">Deploy Pricing</span>
+              <span className="font-bold tracking-tight uppercase tracking-widest text-[11px]">{isVerified ? 'Deploy Pricing' : 'Pricing Restricted'}</span>
             </>
           )}
         </button>
@@ -103,7 +112,7 @@ const PricingMatrix = () => {
               {success && (
                 <div className="flex items-center gap-2 text-emerald-500 animate-bounce">
                   <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Registry Updated</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Database Updated</span>
                 </div>
               )}
             </div>
@@ -203,4 +212,4 @@ const PricingMatrix = () => {
   );
 };
 
-export default PricingMatrix;
+export default PricingInsights;

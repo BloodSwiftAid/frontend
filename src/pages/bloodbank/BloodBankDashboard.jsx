@@ -86,8 +86,10 @@ const BloodBankDashboard = () => {
   const [stats, setStats] = useState({
     total_units: 0,
     active_requests: 0,
-    critical_stock: 0
+    critical_stock: 0,
+    wallet_balance: 0
   });
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
@@ -107,10 +109,11 @@ const BloodBankDashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [invRes, statsRes, reqRes] = await Promise.all([
+      const [invRes, statsRes, reqRes, meRes] = await Promise.all([
         inventoryApi.listInventory(),
         inventoryApi.getStats(),
-        transactionApi.listRequests()
+        transactionApi.listRequests(),
+        usersApi.getMe()
       ]);
       
       const inventoryData = (invRes.data.results || invRes.data).filter(i => i.quantity > 0);
@@ -120,11 +123,15 @@ const BloodBankDashboard = () => {
       const critical = inventoryData.filter(i => i.quantity < 5).length;
       const requests = reqRes.data.results || reqRes.data;
       const activeReqs = requests.filter(r => r.status === 'PENDING').length;
+      
+      const profileData = meRes.data.profile_details;
+      setProfile(profileData);
 
       setStats({
         total_units: totalUnits,
         active_requests: activeReqs,
-        critical_stock: critical
+        critical_stock: critical,
+        wallet_balance: profileData?.blood_bank_details?.wallet_balance || 0
       });
     } catch (err) {
       console.error('Dashboard sync failure:', err);
@@ -137,18 +144,32 @@ const BloodBankDashboard = () => {
     <div className="p-8 md:p-12 space-y-12 animate-fade-in relative z-10">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">Dashboard</h1>
+          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">
+            {profile?.blood_bank_details?.name || 'Dashboard'}
+          </h1>
           <p className="text-text-secondary mt-2 flex items-center gap-2 font-bold uppercase tracking-widest text-[10px] opacity-70">
             <Activity className="w-3 h-3 text-emerald-500" />
-            System Status: Operational
+            System Status: Operational | Facility Node
           </p>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="group bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-700 relative overflow-hidden min-h-[220px]">
           <div className="absolute -bottom-8 -right-8 opacity-[0.08] group-hover:opacity-[0.15] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none">
-            <Package className="w-32 h-32 text-emerald-500" />
+            <DollarSign className="w-32 h-32 text-emerald-500" />
+          </div>
+          <div className="relative z-10 space-y-6">
+            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Wallet Balance</p>
+            <h4 className="text-4xl font-black text-text-primary tracking-tighter leading-none">
+              ₦{parseFloat(stats.wallet_balance).toLocaleString()}
+            </h4>
+          </div>
+        </div>
+
+        <div className="group bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-between hover:border-blue-500/30 transition-all duration-700 relative overflow-hidden min-h-[220px]">
+          <div className="absolute -bottom-8 -right-8 opacity-[0.08] group-hover:opacity-[0.15] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none">
+            <Package className="w-32 h-32 text-blue-500" />
           </div>
           <div className="relative z-10 space-y-6">
             <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Inventory Units</p>
@@ -189,7 +210,7 @@ const BloodBankDashboard = () => {
               onClick={() => window.location.href = '/bloodbank/inventory'}
               className="btn btn-outline px-8 py-4 rounded-2xl gap-3 group"
             >
-              <span className="font-black uppercase tracking-widest text-[10px]">Full Matrix View</span>
+              <span className="font-black uppercase tracking-widest text-[10px]">Full Inventory View</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>

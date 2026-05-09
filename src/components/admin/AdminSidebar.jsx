@@ -16,7 +16,8 @@ import {
   Users,
   Sun,
   Moon,
-  DollarSign
+  DollarSign,
+  CreditCard
 } from 'lucide-react';
 import logo from '../../assets/logo.png';
 
@@ -58,7 +59,9 @@ const DashboardSidebar = ({ theme, toggleTheme }) => {
       case 'INTERNAL_ADMIN':
         return [
           { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
-          { icon: DollarSign, label: 'Financials', path: '/admin/revenue' },
+          { icon: DollarSign, label: 'Revenue Insights', path: '/admin/revenue' },
+          { icon: CreditCard, label: 'Payouts', path: '/admin/payouts' },
+          { icon: Settings, label: 'System Config', path: '/admin/config' },
           { icon: Droplet, label: 'Blood Types', path: '/admin/blood-types' },
           { icon: ArrowLeftRight, label: 'Blood Requests', path: '/admin/requests' },
           { icon: Droplet, label: 'Blood Banks', path: '/admin/blood-banks' },
@@ -66,20 +69,23 @@ const DashboardSidebar = ({ theme, toggleTheme }) => {
           { icon: Users, label: 'User Management', path: '/admin/users' },
         ];
       case 'BLOODBANK_ADMIN':
+      case 'BLOODBANK_STAFF':
         return [
           { icon: LayoutDashboard, label: 'Dashboard', path: '/bloodbank' },
-          { icon: Users, label: 'Staff', path: '/bloodbank/staff' },
+          { icon: Users, label: 'Staff Management', path: '/bloodbank/staff' },
           { icon: Package, label: 'Inventory', path: '/bloodbank/inventory' },
-          { icon: DollarSign, label: 'Financials', path: '/bloodbank/revenue' },
+          { icon: DollarSign, label: 'Revenue Insights', path: '/bloodbank/revenue' },
+          { icon: CreditCard, label: 'Payouts', path: '/bloodbank/payouts' },
           { icon: ShoppingCart, label: 'Point of Sale', path: '/bloodbank/pos' },
-          { icon: ArrowLeftRight, label: 'Orders', path: '/bloodbank/orders' },
+          { icon: ArrowLeftRight, label: 'Order History', path: '/bloodbank/orders' },
         ];
       case 'HOSPITAL_ADMIN':
+      case 'HOSPITAL_STAFF':
         return [
           { icon: LayoutDashboard, label: 'Dashboard', path: '/hospital' },
           { icon: ShoppingCart, label: 'Marketplace', path: '/hospital/marketplace' },
-          { icon: ArrowLeftRight, label: 'Purchases', path: '/hospital/transactions' },
-          { icon: Users, label: 'User Management', path: '/hospital/users' },
+          { icon: ArrowLeftRight, label: 'Purchase History', path: '/hospital/transactions' },
+          { icon: Users, label: 'Team', path: '/hospital/users' },
         ];
       default:
         return [

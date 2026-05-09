@@ -14,10 +14,12 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { usersApi } from '../../api';
+import { useIsVerified } from '../../hooks/useIsVerified';
 import { toast } from 'react-hot-toast';
 import { createPortal } from 'react-dom';
 
 const HospitalUserManagement = () => {
+  const isVerified = useIsVerified();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,6 +53,10 @@ const HospitalUserManagement = () => {
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
+    if (!isVerified) {
+      toast.error('Verification required for personnel management');
+      return;
+    }
     setLoading(true);
     try {
       if (editingUser) {
@@ -72,6 +78,7 @@ const HospitalUserManagement = () => {
   };
 
   const handleDeleteUser = async (id) => {
+    if (!isVerified) return;
     if (!window.confirm('Are you sure you want to remove this user?')) return;
     try {
       await usersApi.deleteStaff(id);
@@ -83,6 +90,7 @@ const HospitalUserManagement = () => {
   };
 
   const openEditModal = (user) => {
+    if (!isVerified) return;
     setEditingUser(user);
     setNewUser({
       username: user.username,
@@ -111,8 +119,9 @@ const HospitalUserManagement = () => {
           </p>
         </div>
         <button 
-          onClick={() => { setEditingUser(null); setNewUser({ username: '', email: '', first_name: '', last_name: '', password: '' }); setIsModalOpen(true); }}
-          className="btn btn-primary px-8 py-4 rounded-2xl shadow-xl shadow-accent/20 gap-3 group"
+          onClick={() => { if (!isVerified) return; setEditingUser(null); setNewUser({ username: '', email: '', first_name: '', last_name: '', password: '' }); setIsModalOpen(true); }}
+          disabled={!isVerified}
+          className={`btn btn-primary px-8 py-4 rounded-2xl shadow-xl gap-3 group transition-all ${!isVerified ? 'opacity-40 grayscale cursor-not-allowed shadow-none' : 'shadow-accent/20'}`}
         >
           <Plus className="w-5 h-5" />
           <span className="font-bold tracking-tight uppercase tracking-widest text-[11px]">Add User</span>
@@ -185,13 +194,15 @@ const HospitalUserManagement = () => {
                     <div className="flex justify-end items-center gap-3">
                       <button 
                         onClick={() => openEditModal(user)}
-                        className="p-3.5 bg-glass border border-glass-border hover:bg-primary/10 rounded-xl transition-all text-primary"
+                        disabled={!isVerified}
+                        className={`p-3.5 bg-glass border border-glass-border rounded-xl transition-all text-primary ${!isVerified ? 'opacity-20 cursor-not-allowed' : 'hover:bg-primary/10'}`}
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => handleDeleteUser(user.id)}
-                        className="p-3.5 bg-glass border border-glass-border hover:bg-accent/10 rounded-xl transition-all text-accent"
+                        disabled={!isVerified}
+                        className={`p-3.5 bg-glass border border-glass-border rounded-xl transition-all text-accent ${!isVerified ? 'opacity-20 cursor-not-allowed' : 'hover:bg-accent/10'}`}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

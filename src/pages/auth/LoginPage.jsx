@@ -19,6 +19,7 @@ const LoginPage = () => {
       const { data } = await authApi.login({ username: email, password });
       localStorage.setItem('token', data.access);
       localStorage.setItem('role', data.role);
+      localStorage.setItem('facility_verified', data.facility_verified);
       
       if (data.must_change_password) {
         navigate('/setup-password');

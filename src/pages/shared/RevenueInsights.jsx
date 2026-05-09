@@ -92,12 +92,12 @@ const RevenueInsights = ({ isAdmin = false }) => {
           <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase">Revenue <span className="text-gradient">Insights</span></h1>
           <p className="text-text-secondary mt-2 flex items-center gap-2 font-bold uppercase tracking-widest text-[10px] opacity-70">
             <Activity className="w-3 h-3 text-accent" />
-            Financial Performance Overview
+            Platform Financial Performance
           </p>
         </div>
 
         {isAdmin && (
-          <div className="flex bg-glass p-1.5 rounded-2xl border border-glass-border">
+          <div className="flex bg-glass p-1.5 rounded-2xl border border-glass-border shadow-xl">
             <button
               onClick={() => setActiveTab('overview')}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
@@ -118,7 +118,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
               }`}
             >
               <Building2 className="w-4 h-4" />
-              Facility Intelligence
+              Facility Intel
             </button>
           </div>
         )}
@@ -126,7 +126,6 @@ const RevenueInsights = ({ isAdmin = false }) => {
 
       {activeTab === 'overview' ? (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-between hover:border-accent/30 transition-all group relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-accent/5 min-h-[240px]">
               <div className="absolute -bottom-8 -right-8 opacity-[0.08] group-hover:opacity-[0.15] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none">
@@ -140,7 +139,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
               </div>
               <div className={`relative z-10 flex items-center gap-2 font-black text-[10px] uppercase tracking-widest mt-4 ${stats?.revenue_trend >= 0 ? 'text-emerald-500' : 'text-accent'}`}>
                 {stats?.revenue_trend >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                {stats?.revenue_trend >= 0 ? '+' : ''}{stats?.revenue_trend || 0}% vs Last Period
+                {stats?.revenue_trend >= 0 ? '+' : ''}{stats?.revenue_trend || 0}% Performance
               </div>
             </div>
 
@@ -149,14 +148,14 @@ const RevenueInsights = ({ isAdmin = false }) => {
                 <Calendar className="w-40 h-40 text-accent" />
               </div>
               <div className="relative z-10 space-y-6">
-                <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Monthly Cycle</p>
+                <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Monthly Yield</p>
                 <h2 className="text-5xl font-black text-text-primary tracking-tighter leading-none">
                   ₦{stats?.monthly_revenue?.toLocaleString() || 0}
                 </h2>
               </div>
               <div className="relative z-10 flex items-center gap-2 text-emerald-500 font-black text-[10px] uppercase tracking-widest mt-4">
                 <TrendingUp className="w-4 h-4" />
-                Active Growth Phase
+                Active Cycle
               </div>
             </div>
 
@@ -167,12 +166,12 @@ const RevenueInsights = ({ isAdmin = false }) => {
                     <Layers className="w-40 h-40 text-accent" />
                   </div>
                   <div className="relative z-10 space-y-6">
-                    <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Total Earnings</p>
+                    <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Net Earnings</p>
                     <h2 className="text-5xl font-black text-text-primary tracking-tighter leading-none">
                       ₦{stats?.total_profit?.toLocaleString()}
                     </h2>
                   </div>
-                  <p className="relative z-10 text-[10px] text-text-muted font-bold uppercase tracking-widest opacity-60">Commission Accumulation</p>
+                  <p className="relative z-10 text-[10px] text-text-muted font-bold uppercase tracking-widest opacity-60">Verified Accumulation</p>
                 </div>
 
                 <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-between hover:border-accent/30 transition-all group relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-accent/5 min-h-[240px]">
@@ -180,34 +179,33 @@ const RevenueInsights = ({ isAdmin = false }) => {
                     <Activity className="w-40 h-40 text-accent" />
                   </div>
                   <div className="relative z-10 space-y-6">
-                    <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Monthly Earnings</p>
+                    <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Monthly Net</p>
                      <h2 className="text-5xl font-black text-text-primary tracking-tighter leading-none">
                       ₦{stats?.monthly_profit?.toLocaleString()}
                     </h2>
                   </div>
-                  <p className="relative z-10 text-[10px] text-text-muted font-bold uppercase tracking-widest opacity-60">Current Month Revenue</p>
+                  <p className="relative z-10 text-[10px] text-text-muted font-bold uppercase tracking-widest opacity-60">Current Period</p>
                 </div>
               </>
             )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Growth Graph */}
             <div className="lg:col-span-2 bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] space-y-8 shadow-sm">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-xl font-black text-text-primary uppercase tracking-tighter">Earnings Growth</h3>
-                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">Monthly Performance Index</p>
+                  <h3 className="text-xl font-black text-text-primary uppercase tracking-tighter">Revenue Growth</h3>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">Historical Performance Index</p>
                 </div>
                 <div className="flex gap-6">
                    <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-accent shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
-                      <span className="font-black uppercase tracking-widest text-[10px]">Full Insights View</span>
+                      <span className="font-black uppercase tracking-widest text-[10px]">Real-time Feed</span>
                    </div>
                    {isAdmin && (
                      <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted animate-pulse">Synchronizing Marketplace Protocol...</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted">Network Active</p>
                      </div>
                    )}
                 </div>
@@ -257,15 +255,14 @@ const RevenueInsights = ({ isAdmin = false }) => {
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <EmptyState icon={BarChartIcon} title="No Growth Data" description="Insufficient historical transactions to generate growth trajectory." />
+                  <EmptyState icon={BarChartIcon} title="No Analytics Available" description="Insufficient historical data to generate trajectory." />
                 )}
               </div>
             </div>
 
-            {/* Blood Type Distribution */}
             <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] space-y-8 shadow-sm">
                <div>
-                  <p className="text-xs font-black text-text-primary uppercase tracking-widest">User Credentials</p>
+                  <p className="text-xs font-black text-text-primary uppercase tracking-widest">Asset Distribution</p>
                   <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">Earnings per Blood Group</p>
                </div>
 
@@ -298,7 +295,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <EmptyState icon={PieChartIcon} title="No Demand Data" description="Inventory distribution is currently balanced or inactive." />
+                  <EmptyState icon={PieChartIcon} title="No Asset Data" description="Inventory distribution is currently inactive." />
                 )}
                </div>
 
@@ -320,8 +317,8 @@ const RevenueInsights = ({ isAdmin = false }) => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] space-y-8 shadow-sm">
                   <div>
-                    <h3 className="text-xl font-black text-text-primary uppercase tracking-tighter">Sales Channels</h3>
-                    <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">Marketplace vs Point of Sale</p>
+                    <h3 className="text-xl font-black text-text-primary uppercase tracking-tighter">Sales Distribution</h3>
+                    <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">Marketplace vs Direct POS</p>
                   </div>
                   <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -352,7 +349,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
                      <h2 className="text-7xl font-black text-gradient uppercase tracking-tighter">
                        {stats?.total_revenue > 0 ? ((stats?.total_profit / stats?.total_revenue) * 100).toFixed(1) : 0}%
                      </h2>
-                     <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.4em]">Integrated Network Performance Index</p>
+                     <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.4em]">Integrated Performance Index</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <div className="p-8 bg-glass border border-glass-border rounded-[32px] space-y-2 hover:border-accent/30 transition-all group">
@@ -380,4 +377,3 @@ const RevenueInsights = ({ isAdmin = false }) => {
 };
 
 export default RevenueInsights;
-

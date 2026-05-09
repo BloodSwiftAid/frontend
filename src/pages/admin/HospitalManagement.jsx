@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { adminApi } from '../../api';
+import { toast } from 'react-hot-toast';
 import { 
   Plus, 
   Search, 
@@ -120,16 +121,31 @@ const HospitalManagement = () => {
 
   const handleToggleVerification = async (hosp) => {
     try {
-      const newStatus = !hosp.is_verified;
-      await adminApi.updateHospital(hosp.id, { is_verified: newStatus });
-      alert(`Facility ${newStatus ? 'Authorized' : 'Deauthorized'} successfully.`);
+      const res = await adminApi.toggleHospitalVerified(hosp.id);
+      const newStatus = res.data.is_verified;
+      toast.success(`Facility ${newStatus ? 'Authorized' : 'Deauthorized'} successfully.`);
       fetchData();
       if (selectedHospital?.id === hosp.id) {
         setSelectedHospital({ ...selectedHospital, is_verified: newStatus });
       }
     } catch (error) {
       const msg = error.response?.data?.message || 'Authorization failed.';
-      setError(msg);
+      toast.error(msg);
+    }
+  };
+
+  const handleToggleActive = async (hosp) => {
+    try {
+      const res = await adminApi.toggleHospitalActive(hosp.id);
+      const newStatus = res.data.is_active;
+      toast.success(`Facility ${newStatus ? 'Activated' : 'Deactivated'} successfully.`);
+      fetchData();
+      if (selectedHospital?.id === hosp.id) {
+        setSelectedHospital({ ...selectedHospital, is_active: newStatus });
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Failed to toggle facility status.';
+      toast.error(msg);
     }
   };
 
@@ -707,12 +723,14 @@ const HospitalManagement = () => {
                            </div>
 
                            <div className="flex justify-between items-center relative z-10">
-                              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Network Performance</span>
-                              <div className="flex items-center gap-5">
-                                 <div className="px-6 py-3 bg-primary/10 border-2 border-primary/20 rounded-2xl font-black text-primary text-2xl shadow-lg shadow-primary/5">
-                                    94%
-                                 </div>
-                              </div>
+                              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Active Status</span>
+                              <button 
+                                onClick={() => handleToggleActive(selectedHospital)}
+                                className={`px-8 py-3 rounded-[20px] border-2 transition-all flex items-center gap-4 ${selectedHospital.is_active !== false ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-accent/10 border-accent/30 text-accent'}`}
+                              >
+                                 <span className={`w-2.5 h-2.5 rounded-full ${selectedHospital.is_active !== false ? 'bg-emerald-500 animate-pulse' : 'bg-accent'}`} />
+                                 <span className="text-[11px] font-black uppercase tracking-[0.2em]">{selectedHospital.is_active !== false ? 'Online' : 'Offline'}</span>
+                              </button>
                            </div>
 
                            <div className="pt-10 border-t border-glass-border flex justify-between items-center relative z-10">

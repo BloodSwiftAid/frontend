@@ -48,7 +48,14 @@ const TransactionRow = ({ tx }) => {
             </div>
             <div>
               <span className="text-lg font-black text-text-primary tracking-tighter uppercase">{tx.blood_group || 'N/A'}</span>
-              <p className="text-[9px] font-black text-text-muted uppercase tracking-widest opacity-60">{tx.source || 'POS'}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-[9px] font-black text-text-muted uppercase tracking-widest opacity-60">{tx.source || 'POS'}</p>
+                {tx.batch_id && (
+                  <span className="px-1.5 py-0.5 rounded-md bg-blue-500/5 text-blue-500/40 text-[7px] font-mono font-bold border border-blue-500/10">
+                    BATCH: {tx.batch_id.slice(0, 8)}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </td>
@@ -87,51 +94,32 @@ const TransactionRow = ({ tx }) => {
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="p-12 grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div className="p-12 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl">
                    <div className="space-y-4">
-                      <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">Pricing Model</p>
-                      <div className="space-y-3">
+                      <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">Order Summary</p>
+                      <div className="bg-glass p-6 rounded-3xl border border-glass-border">
                          <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-text-secondary">Revenue</span>
-                            <span className="text-[11px] font-black text-text-primary">₦{tx.total_amount?.toLocaleString()}</span>
-                         </div>
-                         <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-text-secondary">Commission ({tx.payment?.commission_percentage || 0}%)</span>
-                            <span className="text-[11px] font-black text-emerald-500">+₦{tx.payment?.service_fee?.toLocaleString() || '0'}</span>
+                            <span className="text-[11px] font-bold text-text-secondary">Total Amount Paid</span>
+                            <span className="text-xl font-black text-text-primary tracking-tighter">₦{tx.total_amount?.toLocaleString()}</span>
                          </div>
                       </div>
                    </div>
 
                    <div className="space-y-4">
-                      <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">Disbursements</p>
-                      <div className="space-y-3">
-                         <div className="flex justify-between items-center text-emerald-500">
-                            <span className="text-[11px] font-bold">Blood Bank Share</span>
-                            <span className="text-[11px] font-black">₦{tx.payment?.blood_bank_fee?.toLocaleString() || '0'}</span>
-                         </div>
-                         <div className="flex justify-between items-center text-accent">
-                            <span className="text-[11px] font-bold">Platform Profit</span>
-                            <span className="text-[11px] font-black">₦{tx.payment?.service_fee?.toLocaleString() || '0'}</span>
-                         </div>
-                      </div>
-                   </div>
-
-                   <div className="space-y-4">
-                      <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">Operational Fees</p>
-                      <div className="space-y-3">
-                         <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-text-secondary">Gateway Fee (Paystack)</span>
-                            <span className="text-[11px] font-black text-text-primary">₦{tx.payment?.gateway_fee?.toLocaleString() || '0'}</span>
-                         </div>
-                      </div>
-                   </div>
-
-                   <div className="space-y-4">
-                      <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">Transmission Meta</p>
-                      <div className="space-y-3">
+                      <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">Payment Meta</p>
+                      <div className="bg-glass p-6 rounded-3xl border border-glass-border space-y-4">
                          <div className="flex flex-col">
-                            <span className="text-[8px] font-black text-text-muted uppercase">Reference</span>
+                            <span className="text-[8px] font-black text-text-muted uppercase tracking-widest">Transaction Reference</span>
                             <span className="text-[10px] font-mono font-black text-text-primary break-all">{tx.payment?.transaction_reference || 'N/A'}</span>
+                         </div>
+                         <div className="flex flex-col">
+                            <span className="text-[8px] font-black text-text-muted uppercase tracking-widest">Authorization Status</span>
+                            <span className={`text-[10px] font-black uppercase tracking-widest ${
+                              tx.payment?.status === 'SUCCESS' ? 'text-emerald-500' : 
+                              tx.payment?.status === 'FAILED' ? 'text-accent' : 'text-amber-500'
+                            }`}>
+                              {tx.payment?.status || 'NO PAYMENT'}
+                            </span>
                          </div>
                       </div>
                    </div>

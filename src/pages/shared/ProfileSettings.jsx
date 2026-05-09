@@ -156,14 +156,14 @@ const ProfileSettings = () => {
 
         {/* Detailed Configurations */}
         <div className="lg:col-span-2 space-y-12">
-          {/* Identity Matrix */}
+          {/* Identity Dashboard */}
           <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border rounded-[48px] p-12">
             <div className="flex items-center gap-4 mb-10">
               <div className="p-3 bg-accent/10 rounded-2xl">
                 <User className="w-6 h-6 text-accent" />
               </div>
               <div>
-                <h3 className="text-2xl font-black text-text-primary uppercase tracking-tighter">User Details</h3>
+                <h3 className="text-2xl font-black text-text-primary uppercase tracking-tighter">Identity Details</h3>
                 <p className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Update your profile information</p>
               </div>
             </div>
@@ -229,7 +229,7 @@ const ProfileSettings = () => {
             </form>
           </div>
 
-          {/* Security Matrix */}
+          {/* Security Dashboard */}
           <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border rounded-[48px] p-12">
             <div className="flex items-center gap-4 mb-10">
               <div className="p-3 bg-blue-500/10 rounded-2xl">

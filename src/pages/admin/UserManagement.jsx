@@ -368,7 +368,7 @@ const UserManagement = () => {
                     <div className="w-12 h-12 rounded-[20px] border-4 border-accent bg-accent/10 text-accent flex items-center justify-center text-sm font-black">01</div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Phase Alpha</p>
-                      <p className="text-xs font-black text-text-primary uppercase tracking-widest">Credential Matrix</p>
+                      <p className="text-xs font-black text-text-primary uppercase tracking-widest">User Credentials</p>
                     </div>
                   </div>
                 </div>

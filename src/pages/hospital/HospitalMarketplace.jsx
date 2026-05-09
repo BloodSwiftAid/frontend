@@ -16,13 +16,16 @@ import {
   TrendingUp,
   Package,
   X,
-  AlertCircle
+  AlertCircle,
+  ShieldAlert
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { inventoryApi, transactionApi, paymentApi, usersApi } from '../../api';
+import { useIsVerified } from '../../hooks/useIsVerified';
 import { toast } from 'react-hot-toast';
 
 const HospitalMarketplace = () => {
+  const isVerified = useIsVerified();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState({}); // { blood_type_id: quantity }
@@ -58,6 +61,10 @@ const HospitalMarketplace = () => {
   };
 
   const updateCart = (id, delta, max) => {
+    if (!isVerified) {
+      toast.error('Verification required to interact with marketplace');
+      return;
+    }
     setCart(prev => {
       const current = prev[id] || 0;
       const next = Math.max(0, Math.min(max, current + delta));
@@ -81,29 +88,27 @@ const HospitalMarketplace = () => {
   };
 
   const handleCheckout = async () => {
-    if (Object.keys(cart).length === 0) return;
+    if (Object.keys(cart).length === 0 || !isVerified) return;
     
     setProcessingOrder(true);
     try {
-      const requests = [];
-      for (const [id, qty] of Object.entries(cart)) {
+      const itemsToOrder = Object.entries(cart).map(([id, qty]) => {
         const item = items.find(i => i.id === parseInt(id));
-        const res = await transactionApi.createRequest({
+        return {
           blood_type: item.id,
           quantity: qty,
-          source: 'MARKETPLACE',
-          status: 'PENDING'
-        });
-        requests.push(res.data);
-      }
+          source: 'MARKETPLACE'
+        };
+      });
 
+      const res = await transactionApi.bulkCreate({ items: itemsToOrder });
+      const { master_request_id } = res.data;
       const totalAmount = calculateTotal();
-      const lastRequest = requests[requests.length - 1];
 
       const paymentInit = await paymentApi.initialize({
-        blood_request_id: lastRequest.id,
+        blood_request_id: master_request_id,
         amount: totalAmount,
-        callback_url: `${window.location.origin}/hospital/transactions` // Redirect back to transactions
+        callback_url: `${window.location.origin}/hospital/transactions`
       });
 
       if (paymentInit.data?.authorization_url) {
@@ -150,6 +155,12 @@ const HospitalMarketplace = () => {
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-[9px] font-black text-text-muted uppercase tracking-widest">Operational</span>
              </div>
+             {!isVerified && (
+               <div className="flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full animate-pulse">
+                 <ShieldAlert className="w-3 h-3 text-amber-500" />
+                 <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">Verification Pending</span>
+               </div>
+             )}
           </div>
           <h1 className="text-6xl font-black tracking-tight text-text-primary uppercase leading-none">
             Market<span className="text-gradient">place</span>
@@ -206,7 +217,7 @@ const HospitalMarketplace = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               key={item.id} 
-              className="group relative bg-card-bg/40 backdrop-blur-xl border border-glass-border rounded-[40px] p-8 hover:border-accent/30 transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-2xl hover:shadow-accent/5 overflow-hidden"
+              className={`group relative bg-card-bg/40 backdrop-blur-xl border border-glass-border rounded-[40px] p-8 hover:border-accent/30 transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-2xl hover:shadow-accent/5 overflow-hidden ${!isVerified ? 'grayscale opacity-60' : ''}`}
             >
               {/* Background Accent */}
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 pointer-events-none group-hover:scale-110">
@@ -245,7 +256,7 @@ const HospitalMarketplace = () => {
                   <div className="flex items-center justify-between p-1.5 bg-glass border border-glass-border rounded-2xl">
                     <button 
                       onClick={() => updateCart(item.id, -1, item.available_units)}
-                      disabled={!cart[item.id]}
+                      disabled={!cart[item.id] || !isVerified}
                       className="w-11 h-11 flex items-center justify-center hover:bg-accent/10 text-text-muted hover:text-accent rounded-xl transition-all disabled:opacity-20"
                     >
                       <Minus className="w-5 h-5" />
@@ -253,7 +264,7 @@ const HospitalMarketplace = () => {
                     <span className="text-xl font-black text-text-primary tabular-nums">{cart[item.id] || 0}</span>
                     <button 
                       onClick={() => updateCart(item.id, 1, item.available_units)}
-                      disabled={item.available_units === 0}
+                      disabled={item.available_units === 0 || !isVerified}
                       className="w-11 h-11 flex items-center justify-center hover:bg-accent/10 text-text-muted hover:text-accent rounded-xl transition-all disabled:opacity-20"
                     >
                       <Plus className="w-5 h-5" />
@@ -262,14 +273,19 @@ const HospitalMarketplace = () => {
                   
                   <button 
                     onClick={() => updateCart(item.id, 1, item.available_units)}
-                    disabled={item.available_units === 0 || cart[item.id] > 0}
+                    disabled={item.available_units === 0 || cart[item.id] > 0 || !isVerified}
                     className={`w-full py-5 rounded-[20px] font-black uppercase tracking-[0.2em] text-[10px] transition-all flex items-center justify-center gap-3 ${
                       cart[item.id] > 0 
                       ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' 
                       : 'bg-accent text-white shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-95 disabled:bg-glass-border/30 disabled:text-text-muted disabled:shadow-none'
                     }`}
                   >
-                    {cart[item.id] > 0 ? (
+                    {!isVerified ? (
+                      <>
+                        <ShieldAlert className="w-4 h-4" />
+                        Verification Required
+                      </>
+                    ) : cart[item.id] > 0 ? (
                       <>
                         <CheckCircle2 className="w-4 h-4" />
                         Selected
@@ -290,7 +306,7 @@ const HospitalMarketplace = () => {
 
       {/* Order Summary Bar */}
       <AnimatePresence>
-        {Object.keys(cart).length > 0 && (
+        {Object.keys(cart).length > 0 && isVerified && (
           <motion.div 
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

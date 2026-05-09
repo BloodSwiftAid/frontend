@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { adminApi } from '../../api';
+import { toast } from 'react-hot-toast';
 import { 
   Plus, 
   Search, 
@@ -123,17 +124,31 @@ const BloodBankManagement = () => {
 
   const handleToggleVerification = async (bank) => {
     try {
-      const newStatus = !bank.is_verified;
-      await adminApi.updateBloodBank(bank.id, { is_verified: newStatus });
-      alert(`Facility ${newStatus ? 'Verified' : 'Unverified'} successfully.`);
+      const res = await adminApi.toggleBloodBankVerified(bank.id);
+      const newStatus = res.data.is_verified;
+      toast.success(`Facility ${newStatus ? 'Authorized' : 'Deauthorized'} successfully.`);
       fetchData();
-      // Update selectedBank state if it's open
       if (selectedBank?.id === bank.id) {
         setSelectedBank({ ...selectedBank, is_verified: newStatus });
       }
     } catch (error) {
-      const msg = error.response?.data?.message || 'Action failed. Please check network logs.';
-      setError(msg);
+      const msg = error.response?.data?.message || 'Authorization failed.';
+      toast.error(msg);
+    }
+  };
+
+  const handleToggleActive = async (bank) => {
+    try {
+      const res = await adminApi.toggleBloodBankActive(bank.id);
+      const newStatus = res.data.is_active;
+      toast.success(`Facility ${newStatus ? 'Activated' : 'Deactivated'} successfully.`);
+      fetchData();
+      if (selectedBank?.id === bank.id) {
+        setSelectedBank({ ...selectedBank, is_active: newStatus });
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Failed to toggle facility status.';
+      toast.error(msg);
     }
   };
 
@@ -696,6 +711,17 @@ const BloodBankManagement = () => {
                                     {selectedBank.commission_percentage}%
                                  </div>
                               </div>
+                           </div>
+
+                           <div className="flex justify-between items-center relative z-10">
+                              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Active Status</span>
+                              <button
+                                onClick={() => handleToggleActive(selectedBank)}
+                                className={`px-8 py-3 rounded-[20px] border-2 transition-all flex items-center gap-4 ${selectedBank.is_active !== false ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-accent/10 border-accent/30 text-accent'}`}
+                              >
+                                 <span className={`w-2.5 h-2.5 rounded-full ${selectedBank.is_active !== false ? 'bg-emerald-500 animate-pulse' : 'bg-accent'}`} />
+                                 <span className="text-[11px] font-black uppercase tracking-[0.2em]">{selectedBank.is_active !== false ? 'Online' : 'Offline'}</span>
+                              </button>
                            </div>
 
                            <div className="pt-10 border-t border-glass-border flex justify-between items-center relative z-10">

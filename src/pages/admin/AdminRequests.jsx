@@ -117,7 +117,7 @@ const AdminRequests = () => {
                 <div className="absolute inset-0 rounded-full border-t-2 border-accent animate-spin" />
                 <Activity className="absolute inset-0 m-auto w-10 h-10 text-accent animate-pulse" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted animate-pulse">Synchronizing Marketplace Matrix...</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted animate-pulse">Synchronizing Marketplace Overview...</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
@@ -226,7 +226,7 @@ const AdminRequests = () => {
                      <div className="inline-block px-4 py-1.5 bg-accent/10 border border-accent/20 rounded-full">
                         <span className="text-[10px] font-black text-accent uppercase tracking-[0.3em]">Logistics Override</span>
                      </div>
-                     <h2 className="text-5xl font-black text-text-primary uppercase tracking-tighter leading-none">Matrix <span className="text-gradient">Coordination</span></h2>
+                     <h2 className="text-5xl font-black text-text-primary uppercase tracking-tighter leading-none">Order <span className="text-gradient">Coordination</span></h2>
                   </div>
                   <button onClick={() => setShowEditModal(false)} className="p-4 bg-glass border border-glass-border rounded-2xl text-text-muted hover:text-accent transition-all">
                      <X className="w-6 h-6" />

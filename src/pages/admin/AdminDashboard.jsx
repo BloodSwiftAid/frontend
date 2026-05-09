@@ -15,7 +15,8 @@ import {
   Globe,
   ChevronRight,
   ExternalLink,
-  Loader2
+  Loader2,
+  DollarSign
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -51,6 +52,15 @@ const AdminDashboard = () => {
 
   const statCards = [
     { 
+      label: 'Platform Revenue', 
+      value: `₦${parseFloat(stats.platform_wallet || 0).toLocaleString()}`, 
+      icon: DollarSign, 
+      color: 'text-emerald-500', 
+      bg: 'bg-emerald-500/10',
+      trend: 'Live',
+      isPositive: true 
+    },
+    { 
       label: 'Blood Banks', 
       value: stats.blood_banks, 
       icon: Building2, 
@@ -72,19 +82,10 @@ const AdminDashboard = () => {
       label: 'Total Users', 
       value: stats.total_users, 
       icon: Users, 
-      color: 'text-emerald-500', 
-      bg: 'bg-emerald-500/10',
+      color: 'text-blue-500', 
+      bg: 'bg-blue-500/10',
       trend: '+18%',
       isPositive: true 
-    },
-    { 
-      label: 'Pending Approvals', 
-      value: stats.pending_verifications, 
-      icon: ShieldAlert, 
-      color: 'text-amber-500', 
-      bg: 'bg-amber-500/10',
-      trend: '-2%',
-      isPositive: false 
     },
   ];
 

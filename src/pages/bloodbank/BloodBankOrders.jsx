@@ -15,8 +15,11 @@ import {
   PackageCheck
 } from 'lucide-react';
 import { transactionApi } from '../../api';
+import { useIsVerified } from '../../hooks/useIsVerified';
+import { toast } from 'react-hot-toast';
 
 const BloodBankOrders = () => {
+  const isVerified = useIsVerified();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('PENDING'); // PENDING, APPROVED, DISPATCHED, etc.
@@ -41,13 +44,17 @@ const BloodBankOrders = () => {
   };
 
   const handleAction = async (id, action) => {
+    if (!isVerified) {
+      toast.error('Facility verification required for fulfillment actions');
+      return;
+    }
     try {
       if (action === 'approve') await transactionApi.approveRequest(id);
       else if (action === 'reject') await transactionApi.rejectRequest(id);
       fetchOrders();
     } catch (err) {
       console.error(`Failed to ${action} order:`, err);
-      alert(err.response?.data?.message || `Failed to ${action} order`);
+      toast.error(err.response?.data?.message || `Failed to ${action} order`);
     }
   };
 
@@ -147,14 +154,16 @@ const BloodBankOrders = () => {
                       {order.status === 'PENDING' && (
                         <>
                           <button 
+                            disabled={!isVerified}
                             onClick={() => handleAction(order.id, 'approve')}
-                            className="p-3 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-xl transition-all shadow-lg shadow-emerald-500/10"
+                            className={`p-3 bg-emerald-500/10 text-emerald-500 transition-all rounded-xl shadow-lg ${!isVerified ? 'opacity-20 cursor-not-allowed' : 'hover:bg-emerald-500 hover:text-white shadow-emerald-500/10'}`}
                           >
                             <CheckCircle2 className="w-4 h-4" />
                           </button>
                           <button 
+                            disabled={!isVerified}
                             onClick={() => handleAction(order.id, 'reject')}
-                            className="p-3 bg-accent/10 text-accent hover:bg-accent hover:text-white rounded-xl transition-all shadow-lg shadow-accent/10"
+                            className={`p-3 bg-accent/10 text-accent transition-all rounded-xl shadow-lg ${!isVerified ? 'opacity-20 cursor-not-allowed' : 'hover:bg-accent hover:text-white shadow-accent/10'}`}
                           >
                             <XCircle className="w-4 h-4" />
                           </button>
