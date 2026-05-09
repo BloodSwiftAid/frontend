@@ -29,31 +29,31 @@ const Join = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Facility Name</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all" placeholder="e.g. St. Nicholas Hospital" />
+                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="e.g. St. Nicholas Hospital" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Work Email</label>
-                <input required type="email" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all" placeholder="procurement@facility.ng" />
+                <input required type="email" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="procurement@facility.ng" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Contact Person</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all" placeholder="Dr. Adebayo Smith" />
+                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="Dr. Adebayo Smith" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Department</label>
-                <select className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all">
-                  <option className="bg-bg-darker">Clinical Procurement</option>
-                  <option className="bg-bg-darker">Administration</option>
-                  <option className="bg-bg-darker">Emergency Services</option>
+                <select className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all">
+                  <option className="bg-card-bg text-text-primary">Clinical Procurement</option>
+                  <option className="bg-card-bg text-text-primary">Administration</option>
+                  <option className="bg-card-bg text-text-primary">Emergency Services</option>
                 </select>
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Operational Address</label>
-              <textarea rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all resize-none" placeholder="Enter full physical address" />
+              <textarea rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
-              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Transmit Partnership Protocol</span> <ChevronRight className="w-5 h-5" /></>}
+              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
             </button>
           </div>
         );
@@ -63,19 +63,19 @@ const Join = () => {
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Partner Facility Name</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all" placeholder="e.g. Lagos Central Lab" />
+                 <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="e.g. Lagos Central Lab" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">License Number</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all" placeholder="L-00XXX" />
+                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="L-00XXX" />
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Cold Chain Logistics Status</label>
-              <textarea rows="3" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all resize-none" placeholder="Describe your current storage and delivery capabilities" />
+              <textarea rows="3" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Describe your current storage and delivery capabilities" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
-              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Initiate Verification</span> <ChevronRight className="w-5 h-5" /></>}
+              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
             </button>
           </div>
         );
@@ -85,25 +85,25 @@ const Join = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Full Name</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all" placeholder="Adebayo Oluasegun" />
+                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="Adebayo Oluasegun" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Blood Group</label>
-                <select className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all">
-                  <option className="bg-bg-darker">O Positive (+)</option>
-                  <option className="bg-bg-darker">O Negative (-)</option>
-                  <option className="bg-bg-darker">A Positive (+)</option>
-                  <option className="bg-bg-darker">B Positive (+)</option>
-                  <option className="bg-bg-darker">AB Positive (+)</option>
+                <select className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all">
+                  <option className="bg-card-bg text-text-primary">O Positive (+)</option>
+                  <option className="bg-card-bg text-text-primary">O Negative (-)</option>
+                  <option className="bg-card-bg text-text-primary">A Positive (+)</option>
+                  <option className="bg-card-bg text-text-primary">B Positive (+)</option>
+                  <option className="bg-card-bg text-text-primary">AB Positive (+)</option>
                 </select>
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Mobile Contact (WhatsApp Enabled)</label>
-              <input required type="tel" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-white outline-none focus:border-accent/50 transition-all" placeholder="+234 ..." />
+              <input required type="tel" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="+234 ..." />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
-              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Join Life-Saving Network</span> <ChevronRight className="w-5 h-5" /></>}
+              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
             </button>
           </div>
         );
@@ -124,7 +124,7 @@ const Join = () => {
           {/* Left: Content */}
           <div className="lg:col-span-5 space-y-12">
             <div>
-              <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none mb-6">
+              <h1 className="text-5xl md:text-7xl font-black text-text-primary tracking-tighter leading-none mb-6">
                 Expand the <br />
                 <span className="text-gradient">Network.</span>
               </h1>
@@ -151,7 +151,7 @@ const Join = () => {
                   <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                   </div>
-                  <span className="text-sm font-bold text-white/80 uppercase tracking-widest">{benefit}</span>
+                  <span className="text-sm font-bold text-text-primary uppercase tracking-widest">{benefit}</span>
                 </div>
               ))}
             </div>
@@ -159,7 +159,7 @@ const Join = () => {
             <div className="bg-glass/50 p-8 rounded-[32px] border border-glass-border">
               <div className="flex items-center gap-4 mb-4">
                 <ShieldCheck className="w-8 h-8 text-accent" />
-                <h4 className="text-lg font-bold text-white">Trust Assurance</h4>
+                <h4 className="text-lg font-bold text-text-primary">Trust Assurance</h4>
               </div>
               <p className="text-sm text-text-secondary leading-relaxed">
                 All partnerships are subject to a 48-hour clinical audit to ensure compliance with SwiftAid's high safety and coordination standards.
@@ -179,7 +179,7 @@ const Join = () => {
                     className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl transition-all duration-500 font-bold text-sm tracking-tight
                       ${activeTab === tab.id 
                         ? 'bg-accent text-white shadow-xl shadow-accent/20' 
-                        : 'text-text-secondary hover:text-white hover:bg-white/5'}`}
+                        : 'text-text-secondary hover:text-accent hover:bg-glass'}`}
                   >
                     <tab.icon className="w-4 h-4" />
                     {tab.label}

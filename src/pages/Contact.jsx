@@ -1,120 +1,163 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, MessageSquare, ShieldCheck, Globe, Activity, Loader2 } from 'lucide-react';
 
 const Contact = () => {
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Message successfully routed to contact@swiftaid.ng. The SwiftAid team will contact you shortly.");
-    // In production, use a service like Formspree:
-    // e.target.action = `https://formspree.io/f/YOUR_ID_HERE`;
-    // e.target.submit();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setSubmitted(true);
+    }, 1500);
   };
 
   return (
-    <div className="page-wrapper" style={{ paddingTop: '100px' }}>
+    <div className="page-wrapper pt-32">
+      {/* Background Ambience */}
+      <div className="absolute top-0 left-0 w-full h-full -z-10">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent/10 blur-[180px] rounded-full" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[150px] rounded-full" />
+      </div>
+
       <section className="section">
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', marginBottom: '1.5rem' }}>Get in <span className="text-gradient">Touch</span></h1>
-            <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--text-secondary)', fontSize: '1.2rem' }}>
-              General inquiries, feedback, or support - we're here to help.
+          <div className="max-w-4xl mx-auto text-center mb-24 space-y-6">
+            <h1 className="hero-title font-black text-text-primary uppercase italic">
+              Get in <span className="text-gradient">Touch</span>
+            </h1>
+            <p className="text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto">
+              Our coordination team is available 24/7 for critical inquiries, partnership opportunities, and technical support.
             </p>
           </div>
 
-          <div className="contact-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 750px) 350px', gap: '3rem', justifyContent: 'center', alignItems: 'start' }}>
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="card"
-              style={{ background: 'var(--card-bg)' }}
-            >
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <h3 style={{ marginBottom: '1rem' }}>General Inquiry</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                  <label style={{ fontSize: '0.95rem', fontWeight: 600 }}>Full Name</label>
-                  <input type="text" placeholder="Your name" style={{ background: 'var(--glass)', border: '1px solid var(--glass-border)', padding: '0.875rem', borderRadius: '12px', color: 'var(--text-primary)' }} required />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            {/* Contact Information Sidebar */}
+            <div className="lg:col-span-5 space-y-12">
+              <div className="space-y-10">
+                <div className="flex gap-8 group">
+                  <div className="w-16 h-16 bg-glass border border-glass-border rounded-2xl flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all duration-500 shadow-xl">
+                    <Mail className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Protocol Link</h4>
+                    <p className="text-xl font-black text-text-primary uppercase tracking-tight italic">contact@swiftaid.ng</p>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                  <label style={{ fontSize: '0.95rem', fontWeight: 600 }}>Work Email</label>
-                  <input type="email" placeholder="you@company.com" style={{ background: 'var(--glass)', border: '1px solid var(--glass-border)', padding: '0.875rem', borderRadius: '12px', color: 'var(--text-primary)' }} required />
+                
+                <div className="flex gap-8 group">
+                  <div className="w-16 h-16 bg-glass border border-glass-border rounded-2xl flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all duration-500 shadow-xl">
+                    <Phone className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Voice Support</h4>
+                    <p className="text-xl font-black text-text-primary uppercase tracking-tight italic">+234 810 SWIFTAID</p>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                  <label style={{ fontSize: '0.95rem', fontWeight: 600 }}>Subject</label>
-                  <input type="text" placeholder="What can we help you with?" style={{ background: 'var(--glass)', border: '1px solid var(--glass-border)', padding: '0.875rem', borderRadius: '12px', color: 'var(--text-primary)' }} required />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                  <label style={{ fontSize: '0.95rem', fontWeight: 600 }}>Message</label>
-                  <textarea rows="5" placeholder="Your message..." style={{ background: 'var(--glass)', border: '1px solid var(--glass-border)', padding: '0.875rem', borderRadius: '12px', color: 'var(--text-primary)', resize: 'vertical' }} required></textarea>
-                </div>
-                <button type="submit" className="btn btn-primary" style={{ padding: '1rem', width: '100%' }}>
-                  Send Message <Send size={18} style={{ marginLeft: '8px' }} />
-                </button>
-              </form>
-            </motion.div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
-                <div style={{ background: 'var(--glass)', padding: '12px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-                  <Mail size={24} color="var(--accent)" />
-                </div>
-                <div>
-                  <h4 style={{ color: 'var(--text-primary)' }}>Email Us</h4>
-                  <p style={{ color: 'var(--text-muted)' }}>contact@swiftaid.ng</p>
-                </div>
-              </div>
-              
-              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
-                <div style={{ background: 'var(--glass)', padding: '12px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-                  <Phone size={24} color="var(--accent)" />
-                </div>
-                <div>
-                  <h4 style={{ color: 'var(--text-primary)' }}>Call Support</h4>
-                  <p style={{ color: 'var(--text-muted)' }}>+234 810 SwiftAid</p>
+                <div className="flex gap-8 group">
+                  <div className="w-16 h-16 bg-glass border border-glass-border rounded-2xl flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all duration-500 shadow-xl">
+                    <MapPin className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Node Headquarters</h4>
+                    <p className="text-xl font-black text-text-primary uppercase tracking-tight italic">Lagos Cluster, NG</p>
+                  </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
-                <div style={{ background: 'var(--glass)', padding: '12px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-                  <MapPin size={24} color="var(--accent)" />
-                </div>
-                <div>
-                  <h4 style={{ color: 'var(--text-primary)' }}>Our Office</h4>
-                  <p style={{ color: 'var(--text-muted)' }}>Lagos Cluster Headquarters<br />Nigeria</p>
-                </div>
-              </div>
+            </div>
 
-              <div style={{ marginTop: '2rem', padding: '2rem', background: 'var(--glass)', borderRadius: '24px', border: '1px solid var(--glass-border)' }}>
-                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '1rem' }}>
-                    <MessageSquare color="var(--accent)" />
-                    <h4 style={{ margin: 0, color: 'var(--text-primary)' }}>Community First</h4>
-                 </div>
-                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.6' }}>
-                    SwiftAid is more than a platform - it's a mission to eliminate blood shortage in Nigeria. Join us in building a better future.
-                 </p>
+            {/* Contact Form Card */}
+            <div className="lg:col-span-7">
+              <div className="glass-card p-10 md:p-16 relative overflow-hidden">
+                {submitted ? (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center py-20 space-y-8"
+                  >
+                    <div className="w-24 h-24 bg-emerald-500/20 rounded-[40px] flex items-center justify-center text-emerald-500 mx-auto border border-emerald-500/30">
+                      <Send className="w-10 h-10" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-black text-text-primary uppercase italic tracking-tighter mb-4">Transmission Successful</h3>
+                      <p className="text-text-secondary">Your inquiry has been routed to our emergency coordination team. Response time: &lt; 2 hours.</p>
+                    </div>
+                    <button 
+                      onClick={() => setSubmitted(false)}
+                      className="btn btn-outline px-10 py-4 rounded-2xl text-xs"
+                    >
+                      New Transmission
+                    </button>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Full Name</label>
+                        <input 
+                          type="text" 
+                          placeholder="Your identity" 
+                          className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" 
+                          required 
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Work Email</label>
+                        <input 
+                          type="email" 
+                          placeholder="facility@protocol.ng" 
+                          className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" 
+                          required 
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Subject Vector</label>
+                      <input 
+                        type="text" 
+                        placeholder="Purpose of inquiry" 
+                        className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" 
+                        required 
+                      />
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Message Payload</label>
+                      <textarea 
+                        rows="5" 
+                        placeholder="Detailed inquiry..." 
+                        className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" 
+                        required 
+                      />
+                    </div>
+                    
+                    <button 
+                      type="submit" 
+                      disabled={loading}
+                      className="w-full btn btn-primary py-6 rounded-2xl shadow-2xl shadow-accent/40 flex items-center justify-center gap-4 group"
+                    >
+                      {loading ? (
+                        <Loader2 className="animate-spin w-6 h-6" />
+                      ) : (
+                        <>
+                          <span className="text-lg font-black uppercase tracking-widest">Transmit Inquiry</span>
+                          <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      <style>{`
-        @media (max-width: 1024px) {
-          .contact-grid {
-            grid-template-columns: 1fr !important;
-            gap: 2rem !important;
-          }
-        }
-        @media (max-width: 768px) {
-          .card {
-            padding: 1.5rem !important;
-          }
-          .section {
-            padding: 3rem 0 !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };

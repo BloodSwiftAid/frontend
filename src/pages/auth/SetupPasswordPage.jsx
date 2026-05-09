@@ -32,7 +32,20 @@ const SetupPasswordPage = () => {
       else if (role?.includes('BLOODBANK')) navigate('/bloodbank');
       else navigate('/marketplace');
     } catch (err) {
-      setError('Failed to update security credentials. Please check your current password.');
+      console.error('Password change error:', err);
+      let msg = 'Failed to update password. Please check your network connection.';
+      
+      if (err.response?.data) {
+        const data = err.response.data;
+        msg = data.message || data.detail || data.error || (typeof data === 'string' ? data : msg);
+        
+        // If data is a dictionary but no known keys, flatten it
+        if (msg === 'Failed to update password. Please check your network connection.' && typeof data === 'object') {
+          msg = Object.values(data).flat().join(', ');
+        }
+      }
+      
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -51,8 +64,8 @@ const SetupPasswordPage = () => {
             <div className="bg-glass p-4 rounded-3xl mb-8 border border-glass-border">
               <img src={logo} alt="SwiftAid" className="h-10 w-auto" />
             </div>
-            <h1 className="text-4xl font-black text-white tracking-tight mb-3 uppercase">Security Setup</h1>
-            <p className="text-text-secondary text-lg">Initialize your secure access credentials</p>
+            <h1 className="text-4xl font-black text-text-primary tracking-tight mb-3 uppercase">Set Password</h1>
+            <p className="text-text-secondary text-lg">Update your account password</p>
           </div>
 
           {error && (
@@ -71,7 +84,7 @@ const SetupPasswordPage = () => {
                 </div>
                 <input
                   type="password"
-                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-accent/50 transition-all"
+                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-text-primary outline-none focus:border-accent/50 transition-all"
                   placeholder="••••••••"
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
@@ -81,14 +94,14 @@ const SetupPasswordPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">New Security Password</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">New Password</label>
               <div className="relative group">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent transition-colors">
                   <Lock className="w-5 h-5" />
                 </div>
                 <input
                   type="password"
-                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-accent/50 transition-all"
+                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-text-primary outline-none focus:border-accent/50 transition-all"
                   placeholder="••••••••"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -105,7 +118,7 @@ const SetupPasswordPage = () => {
                 </div>
                 <input
                   type="password"
-                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-accent/50 transition-all"
+                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-text-primary outline-none focus:border-accent/50 transition-all"
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -123,7 +136,7 @@ const SetupPasswordPage = () => {
                 <Loader2 className="animate-spin" size={24} />
               ) : (
                 <div className="flex items-center justify-center gap-3">
-                  <span className="text-lg font-bold tracking-tight uppercase">Setup Credentials</span>
+                  <span className="text-lg font-bold tracking-tight uppercase">Update Password</span>
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </div>
               )}

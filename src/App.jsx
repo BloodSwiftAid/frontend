@@ -13,6 +13,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Toaster } from 'react-hot-toast';
 
 import logo from './assets/logo.png';
 import LandingPage from './pages/LandingPage';
@@ -21,14 +22,26 @@ import Contact from './pages/Contact';
 import Join from './pages/Join';
 import LoginPage from './pages/auth/LoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminRequests from './pages/admin/AdminRequests';
 import BloodBankManagement from './pages/admin/BloodBankManagement';
 import HospitalManagement from './pages/admin/HospitalManagement';
 import UserManagement from './pages/admin/UserManagement';
-import AdminLayout from './layouts/AdminLayout';
+import InternalBloodTypes from './pages/admin/InternalBloodTypes';
+import RevenueMatrix from './pages/shared/RevenueMatrix';
+import DashboardLayout from './layouts/AdminLayout';
 import BloodBankDashboard from './pages/bloodbank/BloodBankDashboard';
 import HospitalDashboard from './pages/hospital/HospitalDashboard';
+import HospitalMarketplace from './pages/hospital/HospitalMarketplace';
+import HospitalUserManagement from './pages/hospital/HospitalUserManagement';
+import HospitalTransactions from './pages/hospital/HospitalTransactions';
 import Marketplace from './pages/user/Marketplace';
 import SetupPasswordPage from './pages/auth/SetupPasswordPage';
+import BloodBankInventory from './pages/bloodbank/BloodBankInventory';
+import BloodBankStaff from './pages/bloodbank/BloodBankStaff';
+import BloodBankPOS from './pages/bloodbank/BloodBankPOS';
+import BloodBankOrders from './pages/bloodbank/BloodBankOrders';
+import BloodBankPricing from './pages/bloodbank/BloodBankPricing';
+import ProfileSettings from './pages/shared/ProfileSettings';
 
 const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -54,11 +67,10 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
     <div className="min-h-screen flex flex-col relative">
       <nav className={`fixed top-0 w-full z-[1000] transition-all duration-500 ${scrolled ? 'bg-nav-bg backdrop-blur-xl border-b border-glass-border py-4 shadow-2xl' : 'bg-transparent py-8'}`}>
         <div className="container max-w-7xl mx-auto flex justify-between items-center px-6">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform">
-              <Droplet className="text-white w-6 h-6" />
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="bg-glass p-2 rounded-xl border border-glass-border shadow-xl group-hover:scale-105 transition-all duration-500">
+              <img src={logo} alt="SwiftAid" className="h-8 w-auto" />
             </div>
-            <span className="text-2xl font-black tracking-tighter text-white">SWIFTAID</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-10">
@@ -66,7 +78,7 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
               <Link 
                 key={link.path}
                 to={link.path} 
-                className={`text-sm font-bold uppercase tracking-widest transition-all ${location.pathname === link.path ? 'text-accent' : 'text-text-secondary hover:text-white'}`}
+                className={`text-sm font-bold uppercase tracking-widest transition-all ${location.pathname === link.path ? 'text-accent' : 'text-text-secondary hover:text-text-primary'}`}
               >
                 {link.name}
               </Link>
@@ -76,7 +88,8 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
             
             <button 
               onClick={toggleTheme} 
-              className="p-2 text-text-primary hover:bg-glass rounded-xl transition-all"
+              className="p-2 text-accent hover:bg-glass rounded-xl transition-all shadow-lg shadow-accent/5"
+              aria-label="Toggle Theme"
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -86,7 +99,7 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
                 to="/login" 
                 className="btn btn-primary px-8 py-3 rounded-2xl shadow-xl shadow-accent/20 flex items-center gap-2 group"
               >
-                <span className="text-xs font-black uppercase tracking-widest">Portal Access</span>
+                <span className="text-xs font-black uppercase tracking-widest">Login</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             ) : (
@@ -110,18 +123,17 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
         <footer className="bg-bg-darker border-t border-glass-border py-20">
           <div className="container max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="col-span-2">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                  <Droplet className="text-white w-5 h-5" />
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-glass p-2 rounded-xl border border-glass-border shadow-xl">
+                  <img src={logo} alt="SwiftAid" className="h-6 w-auto" />
                 </div>
-                <span className="text-xl font-black tracking-tighter text-white">SWIFTAID</span>
               </div>
               <p className="text-text-secondary max-w-sm leading-relaxed">
                 Empowering the Nigerian healthcare system through rapid, verified, and intelligent blood coordination. Every second counts, every life matters.
               </p>
             </div>
             <div>
-              <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Network</h4>
+              <h4 className="text-text-primary font-black uppercase tracking-widest text-xs mb-6">Network</h4>
               <ul className="space-y-4 text-sm text-text-secondary">
                 <li><Link to="/join" className="hover:text-accent transition-colors">Join as Hospital</Link></li>
                 <li><Link to="/join" className="hover:text-accent transition-colors">Become supply partner</Link></li>
@@ -138,12 +150,6 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
           </div>
           <div className="container max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-glass-border/30 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-[10px] uppercase font-black tracking-[0.3em] text-text-muted">© 2026 SwiftAid Infrastructure. All rights reserved.</p>
-            <div className="flex gap-6">
-               <span className="text-[10px] uppercase font-black tracking-widest text-emerald-500 flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                 System Operational
-               </span>
-            </div>
           </div>
         </footer>
       )}
@@ -152,10 +158,12 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
 };
 
 function App() {
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
   };
 
   useEffect(() => {
@@ -164,6 +172,35 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: 'rgba(15, 15, 20, 0.9)',
+            color: '#fff',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(16px)',
+            borderRadius: '24px',
+            padding: '16px 24px',
+            fontSize: '12px',
+            fontWeight: '900',
+            textTransform: 'uppercase',
+            letterSpacing: '0.2em',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
       <Routes>
         <Route path="/" element={
           <AppLayout theme={theme} toggleTheme={toggleTheme} isPublic={true}><LandingPage /></AppLayout>
@@ -180,23 +217,46 @@ function App() {
         <Route path="/login" element={<LoginPage theme={theme} />} />
         <Route path="/setup-password" element={<SetupPasswordPage theme={theme} />} />
         <Route path="/admin/*" element={
-          <AdminLayout>
+          <DashboardLayout theme={theme} toggleTheme={toggleTheme}>
             <Routes>
               <Route path="/" element={<AdminDashboard />} />
-              <Route path="/blood-banks" element={<BloodBankManagement />} />
-              <Route path="/hospitals" element={<HospitalManagement />} />
-              <Route path="/users" element={<UserManagement />} />
+              <Route path="requests" element={<AdminRequests />} />
+              <Route path="blood-banks" element={<BloodBankManagement />} />
+              <Route path="hospitals" element={<HospitalManagement />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="blood-types" element={<InternalBloodTypes />} />
+              <Route path="revenue" element={<RevenueMatrix isAdmin={true} />} />
+              <Route path="settings" element={<ProfileSettings />} />
             </Routes>
-          </AdminLayout>
+          </DashboardLayout>
         } />
         <Route path="/bloodbank/*" element={
-          <AppLayout theme={theme} toggleTheme={toggleTheme}><BloodBankDashboard /></AppLayout>
+          <DashboardLayout theme={theme} toggleTheme={toggleTheme}>
+            <Routes>
+              <Route path="/" element={<BloodBankDashboard />} />
+              <Route path="inventory" element={<BloodBankInventory />} />
+              <Route path="staff" element={<BloodBankStaff />} />
+              <Route path="pos" element={<BloodBankPOS />} />
+              <Route path="orders" element={<BloodBankOrders />} />
+              <Route path="pricing" element={<BloodBankPricing />} />
+              <Route path="revenue" element={<RevenueMatrix isAdmin={false} />} />
+              <Route path="settings" element={<ProfileSettings />} />
+            </Routes>
+          </DashboardLayout>
         } />
         <Route path="/marketplace" element={
           <AppLayout theme={theme} toggleTheme={toggleTheme}><Marketplace /></AppLayout>
         } />
         <Route path="/hospital/*" element={
-          <AppLayout theme={theme} toggleTheme={toggleTheme}><HospitalDashboard /></AppLayout>
+          <DashboardLayout theme={theme} toggleTheme={toggleTheme}>
+             <Routes>
+                <Route path="/" element={<HospitalDashboard />} />
+                <Route path="marketplace" element={<HospitalMarketplace />} />
+                <Route path="users" element={<HospitalUserManagement />} />
+                <Route path="transactions" element={<HospitalTransactions />} />
+                <Route path="settings" element={<ProfileSettings />} />
+             </Routes>
+          </DashboardLayout>
         } />
       </Routes>
     </BrowserRouter>

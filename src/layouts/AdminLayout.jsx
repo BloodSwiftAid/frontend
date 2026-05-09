@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AdminSidebar from '../components/admin/AdminSidebar';
+import DashboardSidebar from '../components/admin/AdminSidebar';
 
-const AdminLayout = ({ children }) => {
+const DashboardLayout = ({ children, theme, toggleTheme }) => {
   const navigate = useNavigate();
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
     const role = localStorage.getItem('role');
-    if (role !== 'INTERNAL_ADMIN') {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
       navigate('/login');
+      return;
+    }
+
+    const allowedRoles = ['INTERNAL_ADMIN', 'BLOODBANK_ADMIN', 'HOSPITAL_ADMIN'];
+    if (!allowedRoles.includes(role)) {
+      navigate('/marketplace');
     } else {
       setAuthorized(true);
     }
@@ -29,7 +37,7 @@ const AdminLayout = ({ children }) => {
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
       
-      <AdminSidebar />
+      <DashboardSidebar theme={theme} toggleTheme={toggleTheme} />
       
       <main className="flex-1 relative overflow-y-auto">
         <div className="max-w-[1400px] mx-auto min-h-full">
@@ -40,4 +48,4 @@ const AdminLayout = ({ children }) => {
   );
 };
 
-export default AdminLayout;
+export default DashboardLayout;

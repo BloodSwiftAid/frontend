@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Lock, Loader2, ArrowRight, ShieldCheck, Mail, Key } from 'lucide-react';
 import { authApi } from '../../api';
 import logo from '../../assets/logo.png';
@@ -31,7 +31,8 @@ const LoginPage = () => {
       else if (role?.includes('BLOODBANK')) navigate('/bloodbank');
       else navigate('/marketplace');
     } catch (err) {
-      setError('Invalid credentials. Please verify your access codes.');
+      const msg = err.response?.data?.message || err.response?.data?.detail || err.response?.data?.error || 'Invalid credentials. Please verify your login details';
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -49,11 +50,11 @@ const LoginPage = () => {
       <div className="w-full max-w-[480px] relative z-10 animate-fade-in">
         <div className="bg-card-bg/60 backdrop-blur-3xl border border-glass-border rounded-[40px] p-10 md:p-14 shadow-2xl">
           <div className="flex flex-col items-center text-center mb-12">
-            <div className="bg-glass p-4 rounded-3xl mb-8 animate-float border border-glass-border">
+            <Link to="/" className="bg-glass p-4 rounded-3xl mb-8 animate-float border border-glass-border hover:scale-105 transition-all shadow-xl group">
               <img src={logo} alt="SwiftAid" className="h-10 w-auto" />
-            </div>
-            <h1 className="text-4xl font-black text-white tracking-tight mb-3">Welcome Back</h1>
-            <p className="text-text-secondary text-lg">Secure Access to SwiftAid Hub</p>
+            </Link>
+            <h1 className="text-4xl font-black text-text-primary tracking-tight mb-3">Welcome Back</h1>
+            <p className="text-text-secondary text-lg">Login to your account</p>
           </div>
 
           {error && (
@@ -65,14 +66,14 @@ const LoginPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Identity Email</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Email Address</label>
               <div className="relative group">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent transition-colors">
                   <Mail className="w-5 h-5" />
                 </div>
                 <input
                   type="email"
-                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-accent/50 focus:bg-white/5 transition-all"
+                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-text-primary outline-none focus:border-accent/50 focus:bg-accent/5 transition-all placeholder:text-text-muted"
                   placeholder="admin@swiftaid.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -82,14 +83,14 @@ const LoginPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Security Key</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Password</label>
               <div className="relative group">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent transition-colors">
                   <Key className="w-5 h-5" />
                 </div>
                 <input
                   type="password"
-                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-white outline-none focus:border-accent/50 focus:bg-white/5 transition-all"
+                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-text-primary outline-none focus:border-accent/50 focus:bg-accent/5 transition-all placeholder:text-text-muted"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -108,7 +109,7 @@ const LoginPage = () => {
                 <Loader2 className="animate-spin" size={24} />
               ) : (
                 <div className="flex items-center justify-center gap-3">
-                  <span className="text-lg font-bold tracking-tight uppercase">Setup Access</span>
+                  <span className="text-lg font-bold tracking-tight uppercase">Login</span>
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </div>
               )}

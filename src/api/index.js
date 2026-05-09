@@ -30,6 +30,53 @@ export const adminApi = {
   // Profiles
   createProfile: (data) => api.post('/user/profiles/', data),
 
+  // Blood Types
+  listBloodTypes: (params) => api.get('/inventory/blood-types/', { params }),
+  updateBloodType: (id, data) => api.patch(`/inventory/blood-types/${id}/`, data),
+  createBloodType: (data) => api.post('/inventory/blood-types/', data),
+
   // Stats
   getSystemStats: () => api.get('/user/system-stats/'),
+  
+  // Global Config
+  getGlobalConfig: () => api.get('/user/global-config/'),
+  updateGlobalConfig: (data) => api.post('/user/global-config/', data),
+};
+
+export const usersApi = {
+  listStaff: () => api.get('/user/staff/'),
+  getStaff: () => api.get('/user/staff/'), // Alias for component compatibility
+  createStaff: (data) => api.post('/user/staff/', data),
+  updateStaff: (id, data) => api.patch(`/user/staff/${id}/`, data),
+  deleteStaff: (id) => api.delete(`/user/staff/${id}/`),
+  resetStaffPassword: (id, password) => api.post(`/user/staff/${id}/reset-password/`, { password }),
+  getMe: () => api.get('/user/me/'),
+  updateMe: (data) => api.patch('/user/me/', data),
+};
+
+export const inventoryApi = {
+  listInventory: () => api.get('/inventory/inventory/'),
+  getStats: () => api.get('/inventory/stats/'),
+  getMarketplace: () => api.get('/inventory/marketplace/'),
+  listDonations: () => api.get('/inventory/donations/'),
+  createDonation: (data) => api.post('/inventory/donations/', data),
+  updateStock: (id, data) => api.patch(`/inventory/inventory/${id}/`, data),
+  createInventory: (data) => api.post('/inventory/inventory/', data),
+};
+
+export const transactionApi = {
+  listRequests: () => api.get('/transaction/requests/'),
+  getRequests: () => api.get('/transaction/requests/'), // Alias for component compatibility
+  createRequest: (data) => api.post('/transaction/requests/', data),
+  approveRequest: (id) => api.post(`/transaction/requests/${id}/approve/`),
+  rejectRequest: (id) => api.post(`/transaction/requests/${id}/reject/`),
+  directPosSale: (data) => api.post('/transaction/requests/pos-sale/', data),
+  getRevenueStats: () => api.get('/transaction/revenue-stats/'),
+  getLiveActivity: () => api.get('/transaction/live-activity/'),
+};
+
+export const paymentApi = {
+  initialize: (data) => api.post('/payment/payments/initialize/', data),
+  verify: (data) => api.post('/payment/payments/verify/', data),
+  listPayments: () => api.get('/payment/payments/'),
 };

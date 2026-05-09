@@ -1,0 +1,344 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Droplet, 
+  ShoppingCart, 
+  Plus, 
+  Minus, 
+  Search, 
+  ShieldCheck, 
+  ArrowRight,
+  Clock,
+  Zap,
+  Info,
+  Loader2,
+  CheckCircle2,
+  Filter,
+  TrendingUp,
+  Package,
+  X,
+  AlertCircle
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { inventoryApi, transactionApi, paymentApi, usersApi } from '../../api';
+import { toast } from 'react-hot-toast';
+
+const HospitalMarketplace = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState({}); // { blood_type_id: quantity }
+  const [processingOrder, setProcessingOrder] = useState(false);
+  const [orderComplete, setOrderComplete] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilter, setActiveFilter] = useState('ALL');
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    fetchMarketplace();
+    fetchUser();
+  }, []);
+
+  const fetchUser = async () => {
+    try {
+      const res = await usersApi.getMe();
+      setCurrentUser(res.data);
+    } catch (err) {
+      console.error('Failed to fetch user profile');
+    }
+  };
+
+  const fetchMarketplace = async () => {
+    try {
+      const response = await inventoryApi.getMarketplace();
+      setItems(response.data);
+    } catch (error) {
+      toast.error('Failed to load marketplace data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateCart = (id, delta, max) => {
+    setCart(prev => {
+      const current = prev[id] || 0;
+      const next = Math.max(0, Math.min(max, current + delta));
+      if (next === 0 && delta < 0) {
+        const { [id]: _, ...rest } = prev;
+        return rest;
+      }
+      if (next > current && current >= max) {
+        toast.error('Maximum available units reached');
+        return prev;
+      }
+      return { ...prev, [id]: next };
+    });
+  };
+
+  const calculateTotal = () => {
+    return Object.entries(cart).reduce((acc, [id, qty]) => {
+      const item = items.find(i => i.id === parseInt(id));
+      return acc + (item?.total_price || 0) * qty;
+    }, 0);
+  };
+
+  const handleCheckout = async () => {
+    if (Object.keys(cart).length === 0) return;
+    
+    setProcessingOrder(true);
+    try {
+      const requests = [];
+      for (const [id, qty] of Object.entries(cart)) {
+        const item = items.find(i => i.id === parseInt(id));
+        const res = await transactionApi.createRequest({
+          blood_type: item.id,
+          quantity: qty,
+          source: 'MARKETPLACE',
+          status: 'PENDING'
+        });
+        requests.push(res.data);
+      }
+
+      const totalAmount = calculateTotal();
+      const lastRequest = requests[requests.length - 1];
+
+      const paymentInit = await paymentApi.initialize({
+        blood_request_id: lastRequest.id,
+        amount: totalAmount,
+        callback_url: `${window.location.origin}/hospital/transactions` // Redirect back to transactions
+      });
+
+      if (paymentInit.data?.authorization_url) {
+        toast.loading('Redirecting to secure gateway...');
+        window.location.href = paymentInit.data.authorization_url;
+      } else {
+        throw new Error('No authorization URL received');
+      }
+
+    } catch (error) {
+      toast.error('Protocol failure: Order could not be initialized');
+      setProcessingOrder(false);
+    }
+  };
+
+  const filteredItems = items.filter(item => {
+    const matchesSearch = item.group.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = activeFilter === 'ALL' || (activeFilter === 'LOW' && item.available_units < 10 && item.available_units > 0);
+    return matchesSearch && matchesFilter;
+  });
+
+  if (loading) {
+    return (
+      <div className="h-[70vh] flex flex-col items-center justify-center space-y-6">
+        <div className="relative">
+          <Loader2 className="w-16 h-16 text-accent animate-spin" />
+          <Droplet className="w-6 h-6 text-accent absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        </div>
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted animate-pulse">Syncing Global Inventory...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-8 md:p-12 space-y-12 animate-fade-in relative z-10">
+      {/* Premium Header */}
+      <header className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-glass-border pb-12">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+             <div className="px-3 py-1 bg-accent/10 border border-accent/20 rounded-full">
+                <span className="text-[9px] font-black text-accent uppercase tracking-widest">Network Active</span>
+             </div>
+             <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[9px] font-black text-text-muted uppercase tracking-widest">Operational</span>
+             </div>
+          </div>
+          <h1 className="text-6xl font-black tracking-tight text-text-primary uppercase leading-none">
+            Market<span className="text-gradient">place</span>
+          </h1>
+          <p className="text-text-secondary max-w-xl font-bold uppercase tracking-widest text-[10px] leading-relaxed opacity-60">
+            Secure procurement portal for clinical blood assets. Real-time inventory syncing across all verified supply nodes.
+          </p>
+        </div>
+
+        <div className="flex gap-4">
+           <div className="bg-glass border border-glass-border p-6 rounded-[32px] flex items-center gap-6">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                 <Package className="w-6 h-6" />
+              </div>
+              <div>
+                 <p className="text-[9px] font-black text-text-muted uppercase tracking-widest">Total Supply</p>
+                 <h4 className="text-2xl font-black text-text-primary">{items.reduce((acc, i) => acc + i.available_units, 0)} Units</h4>
+              </div>
+           </div>
+        </div>
+      </header>
+
+      {/* Modern Filter Bar */}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex-1 relative group">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted group-focus-within:text-accent transition-colors" />
+          <input 
+            type="text" 
+            className="w-full bg-card-bg/30 backdrop-blur-xl border border-glass-border rounded-2xl py-5 pl-16 pr-8 text-text-primary font-bold uppercase tracking-widest text-xs outline-none focus:border-accent/50 transition-all shadow-sm" 
+            placeholder="Search blood group..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-2 p-1.5 bg-glass border border-glass-border rounded-2xl">
+           {['ALL', 'LOW'].map(filter => (
+             <button 
+               key={filter}
+               onClick={() => setActiveFilter(filter)}
+               className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all ${activeFilter === filter ? 'bg-accent text-white shadow-lg' : 'text-text-muted hover:text-text-primary'}`}
+             >
+               {filter}
+             </button>
+           ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <AnimatePresence mode="popLayout">
+          {filteredItems.map((item) => (
+            <motion.div 
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              key={item.id} 
+              className="group relative bg-card-bg/40 backdrop-blur-xl border border-glass-border rounded-[40px] p-8 hover:border-accent/30 transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-2xl hover:shadow-accent/5 overflow-hidden"
+            >
+              {/* Background Accent */}
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 pointer-events-none group-hover:scale-110">
+                <Droplet className="w-40 h-40 text-accent" />
+              </div>
+              
+              <div className="relative z-10 flex flex-col flex-1 space-y-8">
+                {/* Card Header: Group & Status */}
+                <div className="flex justify-between items-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/10 flex items-center justify-center text-accent font-black text-2xl shadow-inner">
+                    {item.group}
+                  </div>
+                  {item.available_units > 0 ? (
+                    <div className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2">
+                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                       <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">{item.available_units} Units</span>
+                    </div>
+                  ) : (
+                    <div className="px-4 py-2 rounded-xl bg-accent/10 border border-accent/20 flex items-center gap-2">
+                       <AlertCircle className="w-3 h-3 text-accent" />
+                       <span className="text-[10px] font-black text-accent uppercase tracking-widest">Depleted</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Price Section */}
+                <div className="space-y-1">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted opacity-60">Price per unit</p>
+                  <h3 className="text-4xl font-black text-text-primary tracking-tighter">
+                    ₦{item.total_price.toLocaleString()}
+                  </h3>
+                </div>
+
+                {/* Selection Section */}
+                <div className="mt-auto pt-8 border-t border-glass-border space-y-6">
+                  <div className="flex items-center justify-between p-1.5 bg-glass border border-glass-border rounded-2xl">
+                    <button 
+                      onClick={() => updateCart(item.id, -1, item.available_units)}
+                      disabled={!cart[item.id]}
+                      className="w-11 h-11 flex items-center justify-center hover:bg-accent/10 text-text-muted hover:text-accent rounded-xl transition-all disabled:opacity-20"
+                    >
+                      <Minus className="w-5 h-5" />
+                    </button>
+                    <span className="text-xl font-black text-text-primary tabular-nums">{cart[item.id] || 0}</span>
+                    <button 
+                      onClick={() => updateCart(item.id, 1, item.available_units)}
+                      disabled={item.available_units === 0}
+                      className="w-11 h-11 flex items-center justify-center hover:bg-accent/10 text-text-muted hover:text-accent rounded-xl transition-all disabled:opacity-20"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  </div>
+                  
+                  <button 
+                    onClick={() => updateCart(item.id, 1, item.available_units)}
+                    disabled={item.available_units === 0 || cart[item.id] > 0}
+                    className={`w-full py-5 rounded-[20px] font-black uppercase tracking-[0.2em] text-[10px] transition-all flex items-center justify-center gap-3 ${
+                      cart[item.id] > 0 
+                      ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' 
+                      : 'bg-accent text-white shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-95 disabled:bg-glass-border/30 disabled:text-text-muted disabled:shadow-none'
+                    }`}
+                  >
+                    {cart[item.id] > 0 ? (
+                      <>
+                        <CheckCircle2 className="w-4 h-4" />
+                        Selected
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCart className="w-4 h-4" />
+                        Add to Order
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Order Summary Bar */}
+      <AnimatePresence>
+        {Object.keys(cart).length > 0 && (
+          <motion.div 
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[2000] w-full max-w-3xl px-6"
+          >
+            <div className="bg-bg-darker/90 backdrop-blur-2xl border border-glass-border p-6 rounded-[32px] shadow-[0_30px_60px_rgba(0,0,0,0.4)] flex items-center justify-between gap-8">
+              <div className="flex items-center gap-6 pl-2">
+                <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center text-white relative shadow-lg shadow-accent/20">
+                   <ShoppingCart className="w-6 h-6" />
+                   <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-text-primary text-bg-darker rounded-full flex items-center justify-center text-[9px] font-black border-2 border-bg-darker">
+                      {Object.values(cart).reduce((a, b) => a + b, 0)}
+                   </div>
+                </div>
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-text-muted">Order Total</p>
+                  <h3 className="text-2xl font-black text-text-primary">₦{calculateTotal().toLocaleString()}</h3>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                 <button 
+                   onClick={() => setCart({})}
+                   className="p-4 text-text-muted hover:text-accent transition-colors"
+                 >
+                   <X className="w-5 h-5" />
+                 </button>
+                 <button 
+                   onClick={handleCheckout}
+                   disabled={processingOrder}
+                   className="btn btn-primary px-10 py-4 rounded-2xl flex items-center gap-4 group shadow-lg shadow-accent/20"
+                 >
+                   {processingOrder ? (
+                     <Loader2 className="w-5 h-5 animate-spin" />
+                   ) : (
+                     <>
+                        <span className="font-black uppercase tracking-widest text-[10px]">Pay</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                     </>
+                   )}
+                 </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default HospitalMarketplace;

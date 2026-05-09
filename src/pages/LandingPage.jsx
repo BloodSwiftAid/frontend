@@ -32,10 +32,10 @@ const Hero = () => (
       >
         <div className="inline-flex items-center gap-2 bg-glass border border-glass-border px-4 py-2 rounded-full mb-8 animate-fade-in">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Nigeria's #1 Coordination Network</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary">Nigeria's #1 Coordination Network</span>
         </div>
         
-        <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-[0.9] mb-8">
+        <h1 className="hero-title font-black text-text-primary mb-8 animate-fade-in">
           Verified blood <br />
           <span className="text-gradient">Under 20 Minutes.</span>
         </h1>
@@ -46,7 +46,7 @@ const Hero = () => (
         
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link to="/join" className="btn btn-primary px-10 py-5 rounded-2xl text-lg group">
-            Get Priority Access
+            Signup
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link to="/about" className="btn btn-outline bg-glass border-glass-border px-10 py-5 rounded-2xl text-lg hover:bg-white/5 transition-all">
@@ -62,17 +62,17 @@ const Hero = () => (
         transition={{ delay: 0.8, duration: 1 }}
         className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-40 grayscale group hover:grayscale-0 transition-all duration-700"
       >
-        <div className="flex items-center justify-center gap-2 font-black text-white uppercase tracking-widest text-xs">
-          <Globe className="w-4 h-4" /> Global Standards
+        <div className="flex items-center justify-center gap-2 font-black text-text-primary uppercase tracking-widest text-[10px] bg-glass px-4 py-2 rounded-xl border border-glass-border">
+          <Globe className="w-3.5 h-3.5 text-accent" /> Global Standards
         </div>
-        <div className="flex items-center justify-center gap-2 font-black text-white uppercase tracking-widest text-xs">
-          <ShieldCheck className="w-4 h-4" /> Secure Auth
+        <div className="flex items-center justify-center gap-2 font-black text-text-primary uppercase tracking-widest text-[10px] bg-glass px-4 py-2 rounded-xl border border-glass-border">
+          <ShieldCheck className="w-3.5 h-3.5 text-accent" /> Safe & Verified
         </div>
-        <div className="flex items-center justify-center gap-2 font-black text-white uppercase tracking-widest text-xs">
-          <TrendingUp className="w-4 h-4" /> Real-time Nodes
+        <div className="flex items-center justify-center gap-2 font-black text-text-primary uppercase tracking-widest text-[10px] bg-glass px-4 py-2 rounded-xl border border-glass-border">
+          <TrendingUp className="w-3.5 h-3.5 text-accent" /> Live Tracking
         </div>
-        <div className="flex items-center justify-center gap-2 font-black text-white uppercase tracking-widest text-xs">
-          <Heart className="w-4 h-4" /> Life Centric
+        <div className="flex items-center justify-center gap-2 font-black text-text-primary uppercase tracking-widest text-[10px] bg-glass px-4 py-2 rounded-xl border border-glass-border">
+          <Heart className="w-3.5 h-3.5 text-accent" /> Life Centric
         </div>
       </motion.div>
     </div>
@@ -83,7 +83,7 @@ const Features = () => (
   <section className="py-32 bg-bg-darker">
     <div className="container max-w-7xl mx-auto px-6">
       <div className="text-center mb-20">
-        <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-6">Built for <span className="text-gradient">Scale.</span></h2>
+        <h2 className="text-4xl md:text-5xl font-black text-text-primary tracking-tight mb-6">Built for <span className="text-gradient">Scale.</span></h2>
         <p className="text-text-secondary max-w-2xl mx-auto">Our infrastructure is designed to handle thousands of requests simultaneously with millisecond latency.</p>
       </div>
 
@@ -101,7 +101,7 @@ const Features = () => (
             <div className="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center mb-8">
               <feat.icon className="w-7 h-7 text-accent" />
             </div>
-            <h3 className="text-2xl font-black text-white mb-4">{feat.title}</h3>
+            <h3 className="text-2xl font-black text-text-primary mb-4">{feat.title}</h3>
             <p className="text-text-secondary leading-relaxed">{feat.text}</p>
           </motion.div>
         ))}
@@ -116,14 +116,14 @@ const Impact = () => (
       <div className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-[64px] overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="p-12 md:p-20">
-            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-8">The <span className="text-gradient">Impact</span> Score</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-text-primary tracking-tight mb-8">The <span className="text-gradient">Impact</span> Score</h2>
             <div className="space-y-8">
               <div className="flex items-start gap-6 group">
                 <div className="p-4 bg-glass border border-glass-border rounded-2xl group-hover:bg-accent/10 transition-colors">
                   <Activity className="w-8 h-8 text-accent" />
                 </div>
                 <div>
-                  <h4 className="text-3xl font-black text-white mb-2">98%</h4>
+                  <h4 className="text-3xl font-black text-text-primary mb-2">98%</h4>
                   <p className="text-text-secondary">Coordination success rate across Lagos and Port Harcourt clusters.</p>
                 </div>
               </div>
@@ -132,7 +132,7 @@ const Impact = () => (
                   <Clock className="w-8 h-8 text-accent" />
                 </div>
                 <div>
-                  <h4 className="text-3xl font-black text-white mb-2">&lt;14m</h4>
+                  <h4 className="text-3xl font-black text-text-primary mb-2">&lt;14m</h4>
                   <p className="text-text-secondary">Average coordination time from request to logistics dispatch.</p>
                 </div>
               </div>
@@ -161,11 +161,11 @@ const LandingPage = () => (
         <div className="bg-gradient-to-br from-accent/20 to-primary/20 border border-glass-border p-16 md:p-24 rounded-[64px] relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
           
-          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-8 relative z-10">Secure Your Facility.</h2>
+          <h2 className="text-4xl md:text-6xl font-black text-text-primary tracking-tight mb-8 relative z-10">Secure Your Facility.</h2>
           <p className="max-w-xl mx-auto text-lg text-text-secondary mb-12 relative z-10">Join the network of top-tier hospitals relying on SwiftAid for critical inventory coordination.</p>
           
           <Link to="/join" className="btn btn-primary px-12 py-5 rounded-2xl text-lg relative z-10 shadow-2xl shadow-accent/40">
-            Initialize Partnership
+            Signup
           </Link>
         </div>
       </div>
