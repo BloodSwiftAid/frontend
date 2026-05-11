@@ -31,7 +31,7 @@ const Hero = () => (
         transition={{ duration: 1 }}
       >
         <div className="inline-flex items-center gap-2 bg-glass border border-glass-border px-4 py-2 rounded-full mb-8 animate-fade-in">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-primary">Nigeria's #1 Coordination Network</span>
         </div>
         

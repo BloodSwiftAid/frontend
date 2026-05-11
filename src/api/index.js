@@ -30,6 +30,8 @@ export const adminApi = {
   createUser: (data) => api.post('/user/users/', data),
   updateUser: (id, data) => api.patch(`/user/users/${id}/`, data),
   deleteUser: (id) => api.delete(`/user/users/${id}/`),
+  toggleUserActive: (id) => api.post(`/user/users/${id}/toggle-active/`),
+  toggleUserVerified: (id) => api.post(`/user/users/${id}/toggle-verified/`),
   
   // Profiles
   createProfile: (data) => api.post('/user/profiles/', data),
@@ -53,6 +55,8 @@ export const usersApi = {
   createStaff: (data) => api.post('/user/staff/', data),
   updateStaff: (id, data) => api.patch(`/user/staff/${id}/`, data),
   deleteStaff: (id) => api.delete(`/user/staff/${id}/`),
+  toggleStaffActive: (id) => api.post(`/user/staff/${id}/toggle-active/`),
+  toggleStaffVerified: (id) => api.post(`/user/staff/${id}/toggle-verified/`),
   resetStaffPassword: (id, password) => api.post(`/user/staff/${id}/reset-password/`, { password }),
   getMe: () => api.get('/user/me/'),
   updateMe: (data) => api.patch('/user/me/', data),
@@ -66,6 +70,7 @@ export const inventoryApi = {
   createDonation: (data) => api.post('/inventory/donations/', data),
   updateStock: (id, data) => api.patch(`/inventory/inventory/${id}/`, data),
   createInventory: (data) => api.post('/inventory/inventory/', data),
+  bulkCreateInventory: (data) => api.post('/inventory/inventory/bulk-create/', data),
 };
 
 export const transactionApi = {

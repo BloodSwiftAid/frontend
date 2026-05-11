@@ -181,9 +181,9 @@ function App() {
         position="top-right"
         toastOptions={{
           style: {
-            background: 'rgba(15, 15, 20, 0.9)',
-            color: '#fff',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'var(--color-bg-darker)',
+            color: 'var(--color-text-primary)',
+            border: '1px solid var(--color-glass-border)',
             backdropFilter: 'blur(16px)',
             borderRadius: '24px',
             padding: '16px 24px',

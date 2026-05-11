@@ -12,7 +12,9 @@ import {
   ShieldCheck,
   MoreVertical,
   UserPlus,
-  Settings
+  Settings,
+  UserMinus,
+  Unlock
 } from 'lucide-react';
 import { usersApi } from '../../api';
 import { useIsVerified } from '../../hooks/useIsVerified';
@@ -92,7 +94,11 @@ const BloodBankStaff = () => {
     e.preventDefault();
     if (!isVerified) return;
     try {
-      await usersApi.updateStaff(selectedUser.id, editStaff);
+      // Clean payload to remove empty phone or other optional fields if necessary
+      const payload = { ...editStaff };
+      if (!payload.phone) delete payload.phone;
+      
+      await usersApi.updateStaff(selectedUser.id, payload);
       setShowEditModal(false);
       fetchStaff();
       toast.success('Registry updated');
@@ -113,6 +119,28 @@ const BloodBankStaff = () => {
     } catch (err) {
       console.error('Failed to reset password:', err);
       toast.error('Failed to reset credentials.');
+    }
+  };
+
+  const handleToggleStatus = async (user) => {
+    if (!isVerified) return;
+    try {
+      await usersApi.toggleStaffActive(user.id);
+      toast.success(user.is_active ? 'Account suspended' : 'Account restored');
+      fetchStaff();
+    } catch (error) {
+      toast.error('Failed to update account status');
+    }
+  };
+
+  const handleToggleVerification = async (user) => {
+    if (!isVerified) return;
+    try {
+      await usersApi.toggleStaffVerified(user.id);
+      toast.success(user.is_verified ? 'Verification revoked' : 'Personnel verified');
+      fetchStaff();
+    } catch (error) {
+      toast.error('Failed to update verification status');
     }
   };
 
@@ -145,6 +173,20 @@ const BloodBankStaff = () => {
         ) : staff.map((user) => (
           <div key={user.id} className="bg-card-bg/40 backdrop-blur-xl border border-glass-border rounded-[40px] p-8 hover:border-accent/30 transition-all group relative overflow-hidden">
             <div className="absolute top-0 right-0 p-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button 
+                onClick={() => handleToggleVerification(user)}
+                title={user.is_verified ? 'Revoke Verification' : 'Verify Personnel'}
+                className={`p-3 bg-glass border border-glass-border rounded-xl transition-all ${user.is_verified ? 'text-emerald-500 hover:bg-emerald-500/10' : 'text-text-muted hover:text-emerald-500'}`}
+              >
+                <ShieldCheck className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => handleToggleStatus(user)}
+                title={user.is_active ? 'Suspend Account' : 'Restore Account'}
+                className={`p-3 bg-glass border border-glass-border rounded-xl transition-all ${user.is_active ? 'text-text-muted hover:text-accent' : 'text-accent hover:bg-accent/10'}`}
+              >
+                {user.is_active ? <UserMinus size={16} /> : <Unlock size={16} />}
+              </button>
               <button 
                 onClick={() => { 
                   if (!isVerified) return;

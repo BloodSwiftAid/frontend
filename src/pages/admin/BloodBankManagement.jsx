@@ -3,30 +3,26 @@ import { createPortal } from 'react-dom';
 import { adminApi } from '../../api';
 import { toast } from 'react-hot-toast';
 import { 
-  Plus, 
-  Search, 
-  MoreVertical, 
-  MapPin, 
-  Mail, 
-  Phone,
-  ShieldCheck,
-  Building2,
-  Trash2,
-  Edit2,
-  CheckCircle2,
-  X,
-  FileText,
-  Weight,
-  ArrowRight,
-  ArrowLeft,
-  Filter,
-  Loader2,
-  ChevronRight,
-  User,
-  Lock,
+  LayoutGrid,
+  Settings,
+  Key,
+  UserMinus,
+  Unlock,
+  Trash,
   Globe,
-  Award,
-  Activity
+  Plus,
+  Search,
+  MapPin,
+  Building2,
+  User,
+  Activity,
+  ShieldCheck,
+  Database,
+  Droplet,
+  ChevronRight,
+  Zap,
+  X,
+  Weight
 } from 'lucide-react';
 
 const BloodBankManagement = () => {
@@ -44,12 +40,19 @@ const BloodBankManagement = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [editingOrg, setEditingOrg] = useState(null);
   
+  // Portal State
+  const [isPortalOpen, setIsPortalOpen] = useState(false);
+  const [portalTab, setPortalTab] = useState('overview'); // overview, personnel, finance
+  const [portalData, setPortalData] = useState(null);
+  const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
+  const [newStaffData, setNewStaffData] = useState({
+    email: '', password: '', first_name: '', last_name: ''
+  });
+
   // User Modification State
   const [modifyingUser, setModifyingUser] = useState(null);
   const [newPassword, setNewPassword] = useState('');
-  const [forcePasswordChange, setForcePasswordChange] = useState(false);
   const [error, setError] = useState('');
-
 
   useEffect(() => {
     fetchData();
@@ -65,6 +68,12 @@ const BloodBankManagement = () => {
       const data = banksRes.data.results || banksRes.data;
       setBloodBanks(Array.isArray(data) ? data : []);
       setStats(statsRes.data);
+      
+      // Update portal data if open
+      if (portalData) {
+        const updated = data.find(b => b.id === portalData.id);
+        if (updated) setPortalData(updated);
+      }
     } catch (error) {
       const msg = error.response?.data?.message || 'Error fetching blood bank data.';
       setError(msg);
@@ -74,708 +83,485 @@ const BloodBankManagement = () => {
   };
 
   const [newOrg, setNewOrg] = useState({
-    name: '',
-    address: '',
-    state: '',
-    lga: '',
-    contact_email: '',
-    contact_phone: '',
-    license_number: '',
-    storage_capacity_liters: 0,
-    commission_percentage: 10.0
+    name: '', address: '', state: '', lga: '', contact_email: '', contact_phone: '',
+    license_number: '', storage_capacity_liters: 0, commission_percentage: 10.0
   });
   
   const [newAdmin, setNewAdmin] = useState({
-    email: '',
-    password: '',
-    first_name: '',
-    last_name: '',
-    role: 'BLOODBANK_ADMIN'
+    email: '', password: '', first_name: '', last_name: '', role: 'BLOODBANK_ADMIN'
   });
 
   useEffect(() => {
-    if (isModalOpen || selectedBank) {
+    if (isModalOpen || isPortalOpen || isStaffModalOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isModalOpen, selectedBank]);
+  }, [isModalOpen, isPortalOpen, isStaffModalOpen]);
 
-  const handleUpdateUser = async (userId) => {
-    try {
-      const updateData = {};
-      if (newPassword) updateData.password = newPassword;
-      updateData.must_change_password = forcePasswordChange;
-      
-      await adminApi.updateUser(userId, updateData);
-      alert('User updated successfully.');
-      setModifyingUser(null);
-      setNewPassword('');
-      setForcePasswordChange(false);
-      fetchData(); // Refresh to get updated user list in selected bank
-    } catch (error) {
-      const msg = error.response?.data?.message || 'Failed to update user.';
-      setError(msg);
-    }
-  };
-
-  const handleToggleVerification = async (bank) => {
-    try {
-      const res = await adminApi.toggleBloodBankVerified(bank.id);
-      const newStatus = res.data.is_verified;
-      toast.success(`Facility ${newStatus ? 'Authorized' : 'Deauthorized'} successfully.`);
-      fetchData();
-      if (selectedBank?.id === bank.id) {
-        setSelectedBank({ ...selectedBank, is_verified: newStatus });
-      }
-    } catch (error) {
-      const msg = error.response?.data?.message || 'Authorization failed.';
-      toast.error(msg);
-    }
-  };
-
-  const handleToggleActive = async (bank) => {
-    try {
-      const res = await adminApi.toggleBloodBankActive(bank.id);
-      const newStatus = res.data.is_active;
-      toast.success(`Facility ${newStatus ? 'Activated' : 'Deactivated'} successfully.`);
-      fetchData();
-      if (selectedBank?.id === bank.id) {
-        setSelectedBank({ ...selectedBank, is_active: newStatus });
-      }
-    } catch (error) {
-      const msg = error.response?.data?.message || 'Failed to toggle facility status.';
-      toast.error(msg);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to decommission this facility? All linked assets will be archived.')) return;
-    try {
-      await adminApi.deleteBloodBank(id);
-      alert('Facility decommissioned successfully.');
-      fetchData();
-    } catch (error) {
-      const msg = error.response?.data?.message || 'Decommissioning failed.';
-      setError(msg);
-    }
-  };
-
-  const handleOnboard = async (e) => {
-    if (e) e.preventDefault();
+  const handlePortalUpdate = async () => {
     setLoading(true);
     try {
-      if (editingOrg) {
-        await adminApi.updateBloodBank(editingOrg.id, newOrg);
-      } else {
-        const orgRes = await adminApi.createBloodBank(newOrg);
-        const orgId = orgRes.data.id;
-
-        const userRes = await adminApi.createUser({
-          ...newAdmin,
-          username: newAdmin.email,
-          email: newAdmin.email || newOrg.contact_email
-        });
-        const userId = userRes.data.id;
-
-        await adminApi.createProfile({
-          user_id: userId,
-          blood_bank_id: orgId
-        });
-      }
-
-      setIsModalOpen(false);
-      setEditingOrg(null);
-      setCurrentStep(1);
+      const { staff, ...updateData } = portalData;
+      await adminApi.updateBloodBank(portalData.id, updateData);
+      toast.success('Protocol synchronization complete.');
       fetchData();
-      resetForms();
-    } catch (error) {
-      const msg = error.response?.data?.message || 'Operation failed. Please check the details.';
-      setError(msg);
+    } catch (err) {
+      toast.error('Update failure.');
     } finally {
       setLoading(false);
     }
   };
 
-  const openEditModal = (bank) => {
-    setEditingOrg(bank);
-    setNewOrg({
-      name: bank.name,
-      address: bank.address,
-      state: bank.state,
-      lga: bank.lga,
-      contact_email: bank.contact_email,
-      contact_phone: bank.contact_phone,
-      license_number: bank.license_number || '',
-      storage_capacity_liters: bank.storage_capacity_liters || 0,
-      commission_percentage: bank.commission_percentage || 10.0
-    });
-    setCurrentStep(1);
-    setIsModalOpen(true);
-    setSelectedBank(null); // Close detail panel if open
+  const handleToggleUserActive = async (user) => {
+    try {
+      await adminApi.toggleUserActive(user.id);
+      toast.success(user.is_active ? 'Account suspended.' : 'Account restored.');
+      fetchData();
+    } catch (err) {
+      toast.error('Toggle failure.');
+    }
+  };
+
+  const handleToggleUserVerified = async (user) => {
+    try {
+      await adminApi.toggleUserVerified(user.id);
+      toast.success(user.is_verified ? 'Identity unverified.' : 'Identity verified.');
+      fetchData();
+    } catch (err) {
+      toast.error('Verification toggle failure.');
+    }
+  };
+
+  const handleAddStaff = async (e) => {
+    if (e) e.preventDefault();
+    if (!newStaffData.email || !newStaffData.password) {
+      toast.error('Email and password are required.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const userRes = await adminApi.createUser({
+        ...newStaffData,
+        username: newStaffData.email,
+        role: 'BLOODBANK_STAFF'
+      });
+      await adminApi.createProfile({
+        user_id: userRes.data.id,
+        blood_bank_id: portalData.id
+      });
+      toast.success('Personnel integrated successfully.');
+      setIsStaffModalOpen(false);
+      setNewStaffData({ email: '', password: '', first_name: '', last_name: '' });
+      fetchData();
+    } catch (err) {
+      toast.error('Onboarding failure. Ensure all fields are valid.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm('Erase personnel record?')) return;
+    try {
+      await adminApi.deleteUser(userId);
+      toast.success('Personnel erased.');
+      fetchData();
+    } catch (err) {
+      toast.error('Deletion failure.');
+    }
+  };
+
+  const handlePasswordReset = async (userId) => {
+    const password = prompt('Enter new override secret:');
+    if (!password) return;
+    try {
+      await adminApi.updateUser(userId, { password });
+      toast.success('Secret reset complete.');
+    } catch (err) {
+      toast.error('Reset failed.');
+    }
+  };
+
+  const openPortal = (bank) => {
+    setPortalData({ ...bank });
+    setPortalTab('overview');
+    setIsPortalOpen(true);
+  };
+
+  const handleOnboard = async (e) => {
+    if (e) e.preventDefault();
+    if (!newOrg.name || !newAdmin.email) {
+      toast.error('Facility name and Admin email are required.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const orgRes = await adminApi.createBloodBank(newOrg);
+      const orgId = orgRes.data.id;
+      const userRes = await adminApi.createUser({
+        ...newAdmin,
+        username: newAdmin.email,
+        email: newAdmin.email || 'contact@bloodbank.com'
+      });
+      await adminApi.createProfile({
+        user_id: userRes.data.id,
+        blood_bank_id: orgId
+      });
+      setIsModalOpen(false);
+      fetchData();
+      toast.success('Facility and Administrator provisioned.');
+      setNewOrg({ name: '', license_number: '', address: '', state: '', lga: '' });
+      setNewAdmin({ email: '', password: '', first_name: '', last_name: '', role: 'BLOODBANK_ADMIN' });
+    } catch (err) {
+      toast.error('Provision failure. Check network parameters.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetForms = () => {
     setNewOrg({ name: '', address: '', state: '', lga: '', contact_email: '', contact_phone: '', license_number: '', storage_capacity_liters: 0, commission_percentage: 10.0 });
     setNewAdmin({ email: '', password: '', first_name: '', last_name: '', role: 'BLOODBANK_ADMIN' });
-    setEditingOrg(null);
     setCurrentStep(1);
   };
 
   const filteredBanks = Array.isArray(bloodBanks) ? bloodBanks.filter(bank => 
     bank?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    bank?.state?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    bank?.license_number?.toLowerCase().includes(searchTerm.toLowerCase())
+    bank?.state?.toLowerCase().includes(searchTerm.toLowerCase())
   ) : [];
 
-  const nextStep = () => {
-    if (currentStep < (editingOrg ? 1 : 2)) setCurrentStep(currentStep + 1);
-    else handleOnboard();
-  };
-
-  const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
-  };
-
   return (
-    <div className="p-8 md:p-12 space-y-12 animate-fade-in relative z-10">
+    <div className="p-4 md:p-8 lg:p-12 space-y-10 md:space-y-12 animate-fade-in relative z-10 pb-20">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="space-y-1">
-          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">
-            Blood <span className="text-gradient">Banks</span>
+        <div className="space-y-2">
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">
+            Blood <span className="text-primary">Banks</span>
           </h1>
-          <p className="text-text-secondary flex items-center gap-2 font-black uppercase tracking-[0.3em] text-[10px]">
-            <Globe className="w-3.5 h-3.5 text-accent" />
-            Blood Bank Registry
+          <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary flex items-center gap-2">
+            <Globe size={14} className="text-primary" />
+            Registry Control
           </p>
         </div>
         <button 
           onClick={() => { setError(''); resetForms(); setIsModalOpen(true); }}
-          className="btn btn-primary px-10 py-5 rounded-[28px] gap-4 shadow-2xl shadow-accent/20 group"
+          className="btn btn-primary px-8 py-5 rounded-[28px] gap-3 shadow-xl group"
         >
-          <div className="bg-white/20 p-1 rounded-lg group-hover:rotate-90 transition-transform duration-500">
-            <Plus className="w-5 h-5" />
-          </div>
-          <span className="font-black uppercase tracking-widest text-xs">Add Blood Bank</span>
+          <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
+          <span className="font-black uppercase tracking-widest text-[10px]">Onboard Facility</span>
         </button>
       </header>
 
-      {error && (
-        <div className="bg-accent/5 border border-accent/20 text-accent p-6 rounded-3xl flex items-center justify-between gap-4 animate-shake">
-          <div className="flex items-center gap-4">
-            <div className="bg-accent/10 p-2 rounded-xl">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <p className="text-sm font-black uppercase tracking-tight">{error}</p>
-          </div>
-          <button onClick={() => setError('')} className="p-2 hover:bg-accent/10 rounded-xl transition-colors">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-      
-      {/* Executive Stats Ribbon */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Executive Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
         {[
-          { label: 'Total Banks', value: stats.blood_banks, icon: Building2, color: 'text-primary' },
+          { label: 'Facilities', value: stats.blood_banks, icon: Building2, color: 'text-primary' },
           { label: 'Total Capacity', value: `${bloodBanks.reduce((acc, b) => acc + (parseFloat(b.storage_capacity_liters) || 0), 0)}L`, icon: Weight, color: 'text-emerald-500' },
-          { label: 'Total Staff', value: stats.total_users, icon: Award, color: 'text-accent' },
-          { label: 'Pending Review', value: stats.pending_verifications, icon: Activity, color: 'text-amber-500' }
+          { label: 'Personnel', value: stats.total_users, icon: User, color: 'text-accent' },
+          { label: 'Verifications', value: stats.pending_verifications, icon: Activity, color: 'text-amber-500' }
         ].map((stat, i) => (
-          <div key={i} className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border p-8 rounded-[40px] hover:border-accent/30 transition-all group shadow-sm">
-            <div className={`w-14 h-14 rounded-2xl bg-glass border border-glass-border flex items-center justify-center ${stat.color} mb-8 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
-              <stat.icon className="w-7 h-7" />
+          <div key={i} className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border p-8 rounded-[40px] shadow-sm flex flex-col justify-between">
+            <div className={`w-14 h-14 rounded-2xl bg-glass border border-glass-border flex items-center justify-center ${stat.color} mb-8 shadow-inner`}>
+              <stat.icon size={28} />
             </div>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">{stat.label}</p>
-            <h4 className="text-4xl font-black text-text-primary tracking-tighter">{stat.value || 0}</h4>
+            <div>
+               <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-1 opacity-60">{stat.label}</p>
+               <h4 className="text-3xl font-black text-text-primary tracking-tighter tabular-nums">{stat.value || 0}</h4>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex-1 flex items-center gap-5 bg-card-bg/40 backdrop-blur-2xl border border-glass-border px-10 py-6 rounded-3xl focus-within:border-accent/50 transition-all shadow-inner">
-          <Search className="w-5 h-5 text-text-muted" />
+      <div className="flex gap-6">
+        <div className="flex-1 flex items-center gap-4 bg-card-bg/40 backdrop-blur-2xl border border-glass-border px-10 py-6 rounded-3xl shadow-inner">
+          <Search className="w-5 h-5 text-text-muted shrink-0" />
           <input 
             type="text" 
-            placeholder="Search by facility name, license, or administrative zone..." 
-            className="bg-transparent border-none outline-none w-full text-text-primary placeholder:text-text-muted/50 font-black text-sm uppercase tracking-wider"
+            placeholder="Search Registry..." 
+            className="bg-transparent border-none outline-none w-full text-text-primary placeholder:text-text-muted/30 font-black text-sm uppercase tracking-wider"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="btn btn-outline bg-glass border-glass-border px-10 rounded-3xl gap-4 font-black uppercase tracking-widest text-[10px] group">
-          <Filter className="w-4 h-4 group-hover:rotate-180 transition-transform" />
-          Refine Protocol
-        </button>
       </div>
 
-      {loading && bloodBanks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-32 space-y-8">
-          <div className="relative w-20 h-20">
-             <div className="absolute inset-0 rounded-full border-t-2 border-accent animate-spin" />
-             <Activity className="absolute inset-0 m-auto w-8 h-8 text-accent animate-pulse" />
-          </div>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted animate-pulse">Synchronizing Facility Registry...</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
-          {filteredBanks.map((bank) => (
-            <div 
-              key={bank.id} 
-              onClick={() => setSelectedBank(bank)}
-              className="group relative bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-[56px] p-12 hover:border-accent/40 transition-all duration-700 cursor-pointer shadow-sm hover:shadow-2xl hover:shadow-accent/5 overflow-hidden"
-            >
-              <div className="absolute -top-12 -right-12 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 pointer-events-none group-hover:scale-125">
-                <Building2 className="w-64 h-64" />
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+        {filteredBanks.map((bank) => (
+          <div 
+            key={bank.id} 
+            onClick={() => openPortal(bank)}
+            className="group bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-[56px] p-12 hover:border-primary/40 transition-all duration-500 cursor-pointer"
+          >
+            <div className="flex justify-between items-start mb-12">
+              <div className="p-4 rounded-2xl bg-primary/10 text-primary border border-primary/20">
+                <Building2 size={32} />
               </div>
-              
-              <div className="relative z-10">
-                <div className="flex justify-between items-start mb-12">
-                  <div className="p-5 rounded-[28px] bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-all duration-500 border border-accent/20 shadow-xl shadow-accent/5">
-                    <Building2 className="w-8 h-8" />
-                  </div>
-                  <div className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-sm ${bank.is_verified ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}`}>
-                    {bank.is_verified ? 'Authorized Node' : 'Audit Pending'}
-                  </div>
-                </div>
-                
-                <h3 className="text-3xl font-black text-text-primary mb-5 leading-[1.1] tracking-tighter uppercase group-hover:text-accent transition-colors">{bank.name}</h3>
-                
-                <div className="space-y-6 mb-12">
-                  <div className="flex items-start gap-4 text-sm text-text-secondary">
-                    <MapPin className="w-5 h-5 mt-0.5 text-accent/60 flex-shrink-0" />
-                    <span className="leading-relaxed font-black uppercase tracking-tight text-[11px]">{bank.address}, {bank.lga}, {bank.state}</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-text-secondary">
-                    <Mail className="w-5 h-5 text-accent/60 flex-shrink-0" />
-                    <span className="font-black uppercase tracking-tight text-[11px] truncate opacity-70">{bank.contact_email}</span>
-                  </div>
-                </div>
-
-                <div className="pt-10 border-t border-glass-border flex justify-between items-center">
-                  <div className="space-y-1">
-                    <span className="text-[9px] font-black text-text-muted uppercase tracking-[0.3em] block">Payload Cap.</span>
-                    <span className="text-2xl font-black text-text-primary tracking-tighter">{bank.storage_capacity_liters}L</span>
-                  </div>
-                  <div className="flex gap-4">
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); openEditModal(bank); }}
-                      className="p-5 bg-glass border border-glass-border hover:bg-primary/10 rounded-2xl transition-all text-primary hover:text-primary shadow-xl hover:shadow-primary/20"
-                    >
-                      <Edit2 className="w-5 h-5" />
-                    </button>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); handleDelete(bank.id); }}
-                      className="p-5 bg-glass border border-glass-border hover:bg-accent/10 rounded-2xl transition-all text-accent shadow-xl hover:shadow-accent/20"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
+              <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${bank.is_verified ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-accent/10 text-accent border border-accent/20'}`}>
+                {bank.is_verified ? 'Authorized' : 'Pending Review'}
               </div>
             </div>
-          ))}
-        </div>
-      )}
+            
+            <h3 className="text-3xl font-black text-text-primary mb-4 tracking-tighter uppercase truncate">{bank.name}</h3>
+            
+            <div className="space-y-4 mb-12 opacity-80">
+              <div className="flex items-start gap-3 text-[11px] text-text-secondary">
+                <MapPin size={20} className="text-primary/60 shrink-0" />
+                <span className="font-black uppercase tracking-tight line-clamp-2">{bank.address}, {bank.state}</span>
+              </div>
+            </div>
 
-      {/* Immersive Onboarding/Edit Modal */}
-      {isModalOpen && createPortal(
-        <div className="fixed inset-0 z-[2000] bg-bg-darker/95 backdrop-blur-3xl flex items-center justify-center p-6 animate-in fade-in duration-500 overflow-hidden">
-          <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-             <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent blur-[250px] rounded-full animate-pulse" />
-             <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary blur-[250px] rounded-full animate-pulse" />
+            <div className="pt-8 border-t border-glass-border flex justify-between items-center">
+              <div className="space-y-1">
+                <span className="text-[8px] font-black text-text-muted uppercase tracking-widest block">Payload</span>
+                <span className="text-2xl font-black text-text-primary tracking-tighter">{bank.storage_capacity_liters}L</span>
+              </div>
+              <ChevronRight className="text-primary group-hover:translate-x-2 transition-transform" />
+            </div>
           </div>
+        ))}
+      </div>
 
-          <div className="relative w-full max-w-6xl max-h-[90vh] bg-card-bg border border-glass-border rounded-[64px] shadow-[0_0_100px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-scale-up">
-            <div className="p-10 md:p-16 flex flex-col md:flex-row h-full overflow-hidden">
-              {/* Context Sidebar */}
-              <div className="w-full md:w-80 space-y-12 shrink-0 md:border-r border-glass-border md:pr-16 mb-12 md:mb-0">
-                <div className="w-24 h-24 bg-accent rounded-[32px] flex items-center justify-center text-white shadow-2xl shadow-accent/40 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent opacity-50 group-hover:rotate-180 transition-transform duration-1000" />
-                  {editingOrg ? <Edit2 className="w-10 h-10 relative z-10" /> : <Plus className="w-10 h-10 relative z-10" />}
+      {/* Full Facility Intelligence Portal */}
+      {isPortalOpen && portalData && createPortal(
+        <div className="fixed inset-0 z-[3000] bg-bg-darker flex items-center justify-center animate-in fade-in duration-500 overflow-hidden">
+          <div className="w-full h-full flex flex-col md:flex-row">
+            {/* Control Sidebar */}
+            <div className="w-full md:w-80 lg:w-96 bg-card-bg border-r border-glass-border flex flex-col p-12 shrink-0">
+              <div className="mb-16">
+                <div className="w-24 h-24 bg-primary/10 border-2 border-primary/20 rounded-[32px] flex items-center justify-center text-primary mb-8 shadow-xl">
+                  <Activity size={48} />
                 </div>
-                <div>
-                  <h2 className="text-5xl font-black text-text-primary tracking-tighter uppercase leading-[0.9]">
-                    {editingOrg ? 'Update' : 'Provision'}<br/>
-                    <span className="text-accent">Protocol</span>
-                  </h2>
-                  <div className="w-20 h-2 bg-accent mt-8 rounded-full" />
-                </div>
+                <h2 className="text-4xl font-black text-text-primary tracking-tighter uppercase leading-[0.9]">
+                  Facility<br />
+                  <span className="text-primary">Oversight</span>
+                </h2>
+              </div>
 
-                <div className="space-y-10">
-                  <div className={`flex items-center gap-8 transition-all duration-500 ${currentStep === 1 ? 'opacity-100 scale-105 translate-x-2' : 'opacity-30'}`}>
-                    <div className={`w-12 h-12 rounded-[20px] border-4 flex items-center justify-center text-sm font-black ${currentStep === 1 ? 'border-accent bg-accent/10 text-accent' : 'border-glass-border text-text-secondary'}`}>01</div>
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Phase Alpha</p>
-                      <p className="text-xs font-black text-text-primary uppercase tracking-widest">Asset Metrics</p>
+              <div className="space-y-4 flex-1">
+                {[
+                  { id: 'overview', label: 'Overview', icon: LayoutGrid },
+                  { id: 'personnel', label: 'Personnel', icon: User },
+                  { id: 'security', label: 'Directives', icon: ShieldCheck }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setPortalTab(tab.id)}
+                    className={`w-full p-6 rounded-3xl flex items-center gap-6 transition-all ${portalTab === tab.id ? 'bg-primary border-2 border-primary shadow-2xl shadow-primary/20 text-bg-dark' : 'bg-glass border border-glass-border text-text-secondary hover:border-primary/30'}`}
+                  >
+                    <tab.icon size={24} />
+                    <span className="font-black uppercase tracking-widest text-[10px]">{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+
+              <button 
+                onClick={() => setIsPortalOpen(false)}
+                className="mt-12 w-full p-6 bg-glass border border-glass-border rounded-3xl text-text-muted hover:text-accent hover:border-accent/30 transition-all font-black uppercase tracking-widest text-[10px]"
+              >
+                Exit Terminal
+              </button>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-y-auto p-8 md:p-20 custom-scrollbar bg-bg-darker relative">
+              <div className="max-w-4xl mx-auto space-y-20">
+                <header className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-5xl md:text-7xl font-black text-text-primary tracking-tighter uppercase leading-none mb-4">{portalData.name}</h3>
+                    <div className="flex gap-4">
+                      <div className="px-4 py-1.5 bg-primary/5 border border-primary/20 rounded-xl text-[10px] font-black text-primary uppercase tracking-widest">{portalData.license_number}</div>
+                      <div className="px-4 py-1.5 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-[10px] font-black text-emerald-500 uppercase tracking-widest">Active Node</div>
                     </div>
                   </div>
-                  {!editingOrg && (
-                    <div className={`flex items-center gap-8 transition-all duration-500 ${currentStep === 2 ? 'opacity-100 scale-105 translate-x-2' : 'opacity-30'}`}>
-                      <div className={`w-12 h-12 rounded-[20px] border-4 flex items-center justify-center text-sm font-black ${currentStep === 2 ? 'border-accent bg-accent/10 text-accent' : 'border-glass-border text-text-secondary'}`}>02</div>
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Phase Beta</p>
-                        <p className="text-xs font-black text-text-primary uppercase tracking-widest">Identity Control</p>
+                </header>
+
+                {portalTab === 'overview' && (
+                  <div className="space-y-12 animate-fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                      <div className="space-y-3 md:col-span-2">
+                        <label className="label-text">Facility Nomenclature</label>
+                        <input className="portal-input text-2xl font-black uppercase tracking-tight" placeholder="Enter Facility Name" value={portalData.name} onChange={e => setPortalData({...portalData, name: e.target.value})} />
                       </div>
+                      
+                      <div className="md:col-span-2 pt-6">
+                        <div className="h-px bg-gradient-to-r from-glass-border to-transparent mb-10" />
+                        <label className="label-text">Physical Coordination</label>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="md:col-span-3">
+                            <input className="portal-input" placeholder="Full Physical Address" value={portalData.address} onChange={e => setPortalData({...portalData, address: e.target.value})} />
+                          </div>
+                          <div>
+                            <input className="portal-input" placeholder="Administrative State" value={portalData.state} onChange={e => setPortalData({...portalData, state: e.target.value})} />
+                          </div>
+                          <div>
+                            <input className="portal-input" placeholder="Local Government Area" value={portalData.lga} onChange={e => setPortalData({...portalData, lga: e.target.value})} />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="md:col-span-2 pt-6">
+                        <div className="h-px bg-gradient-to-r from-glass-border to-transparent mb-10" />
+                        <label className="label-text">Primary Contacts</label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <input className="portal-input" placeholder="Official Email Address" value={portalData.contact_email} onChange={e => setPortalData({...portalData, contact_email: e.target.value})} />
+                          </div>
+                          <div>
+                            <input className="portal-input" placeholder="Emergency Phone Line" value={portalData.contact_phone} onChange={e => setPortalData({...portalData, contact_phone: e.target.value})} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="pt-10 flex justify-end">
+                      <button onClick={handlePortalUpdate} className="btn btn-primary px-16 py-6 rounded-[28px] font-black uppercase tracking-[0.2em] text-xs shadow-2xl hover:scale-[1.02] transition-transform">
+                        Synchronize Protocol
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {portalTab === 'personnel' && (
+                  <div className="space-y-10 animate-fade-in">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-2xl font-black text-text-primary uppercase tracking-tighter">Personnel Registry</h4>
+                      <button 
+                        onClick={() => setIsStaffModalOpen(true)}
+                        className="btn btn-primary px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3"
+                      >
+                        <Plus size={16} /> Add Personnel
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 gap-6">
+                      {portalData.staff?.map(user => (
+                        <div key={user.id} className="bg-glass/5 border border-glass-border p-8 rounded-[40px] flex items-center justify-between group hover:border-primary/30 transition-all">
+                          <div className="flex items-center gap-8">
+                            <div className="w-20 h-20 rounded-[28px] bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary text-3xl font-black uppercase">
+                              {user.first_name?.[0] || user.email[0]}
+                            </div>
+                            <div>
+                              <h5 className="text-2xl font-black text-text-primary uppercase tracking-tighter">{user.first_name} {user.last_name}</h5>
+                              <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">{user.email} // {user.role.replace('_', ' ')}</p>
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {!user.is_verified && <span className="inline-block px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[8px] font-black text-amber-500 uppercase tracking-widest">Identity Pending</span>}
+                                {!user.is_active && <span className="inline-block px-3 py-1 bg-accent/10 border border-accent/20 rounded-lg text-[8px] font-black text-accent uppercase tracking-widest">Account Suspended</span>}
+                                {user.is_active && user.is_verified && <span className="inline-block px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-[8px] font-black text-emerald-500 uppercase tracking-widest">Authorized Staff</span>}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <button onClick={() => handleToggleUserVerified(user)} title={user.is_verified ? 'Revoke Verification' : 'Grant Verification'} className={`p-4 bg-glass border border-glass-border rounded-2xl transition-all ${user.is_verified ? 'text-emerald-500 shadow-lg shadow-emerald-500/10' : 'text-text-muted hover:text-emerald-500'}`}><ShieldCheck size={20} /></button>
+                            <button onClick={() => handlePasswordReset(user.id)} title="Reset Password" className="p-4 bg-glass border border-glass-border rounded-2xl text-text-muted hover:text-primary transition-all"><Key size={20} /></button>
+                            <button onClick={() => handleToggleUserActive(user)} title={user.is_active ? 'Deactivate' : 'Activate'} className={`p-4 bg-glass border border-glass-border rounded-2xl transition-all ${user.is_active ? 'text-text-muted hover:text-accent' : 'text-accent hover:bg-accent hover:text-white'}`}>{user.is_active ? <UserMinus size={20} /> : <Unlock size={20} />}</button>
+                            <button onClick={() => handleDeleteUser(user.id)} title="Delete Personnel" className="p-4 bg-glass border border-glass-border rounded-2xl text-text-muted hover:text-accent hover:border-accent transition-all"><Trash size={20} /></button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {portalTab === 'security' && (
+                  <div className="space-y-12 animate-fade-in">
+                    <div className="p-12 bg-glass border border-glass-border rounded-[56px] space-y-12">
+                      <div className="flex justify-between items-center pb-12 border-b border-glass-border">
+                        <div>
+                          <p className="text-[10px] font-black text-text-primary uppercase tracking-widest mb-1">Authorization Protocol</p>
+                          <p className="text-[9px] text-text-muted uppercase font-black opacity-60">Control facility marketplace access</p>
+                        </div>
+                        <button onClick={() => adminApi.toggleBloodBankVerified(portalData.id).then(fetchData)} className={`px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all ${portalData.is_verified ? 'bg-emerald-500 text-bg-dark' : 'bg-accent text-white'}`}>
+                          {portalData.is_verified ? 'Authorized' : 'Grant Review'}
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="text-[10px] font-black text-text-primary uppercase tracking-widest mb-1">Operational Status</p>
+                          <p className="text-[9px] text-text-muted uppercase font-black opacity-60">Toggle node visibility in network</p>
+                        </div>
+                        <button onClick={() => adminApi.toggleBloodBankActive(portalData.id).then(fetchData)} className={`px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all ${portalData.is_active !== false ? 'bg-primary text-bg-dark shadow-xl' : 'bg-glass border border-glass-border text-text-muted'}`}>
+                          {portalData.is_active !== false ? 'Online' : 'Offline'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Onboarding Modal */}
+      {isModalOpen && createPortal(
+        <div className="fixed inset-0 z-[2000] bg-bg-darker/95 backdrop-blur-3xl flex items-center justify-center p-6 animate-in fade-in duration-500">
+          <div className="relative w-full max-w-5xl bg-card-bg border border-glass-border rounded-[64px] shadow-2xl flex flex-col overflow-hidden animate-scale-up">
+            <div className="p-16 flex flex-col md:flex-row gap-20">
+               <div className="w-80 space-y-12 shrink-0">
+                  <div className="w-24 h-24 bg-primary/10 border-2 border-primary/20 rounded-[32px] flex items-center justify-center text-primary shadow-xl">
+                    <Plus size={48} />
+                  </div>
+                  <h2 className="text-5xl font-black text-text-primary tracking-tighter uppercase leading-[0.9]">Register<br />Facility</h2>
+                  <div className="space-y-10">
+                     <div className={`flex items-center gap-6 ${currentStep === 1 ? 'opacity-100' : 'opacity-30'}`}>
+                        <div className="w-12 h-12 rounded-[20px] bg-primary/10 border-2 border-primary text-primary flex items-center justify-center font-black text-xs">01</div>
+                        <span className="font-black uppercase tracking-widest text-[10px] text-text-primary">Facility Data</span>
+                     </div>
+                     <div className={`flex items-center gap-6 ${currentStep === 2 ? 'opacity-100' : 'opacity-30'}`}>
+                        <div className="w-12 h-12 rounded-[20px] bg-glass border-2 border-glass-border text-text-muted flex items-center justify-center font-black text-xs">02</div>
+                        <span className="font-black uppercase tracking-widest text-[10px] text-text-primary">Admin Access</span>
+                     </div>
+                  </div>
+               </div>
+
+               <div className="flex-1 space-y-10">
+                  {currentStep === 1 ? (
+                    <div className="grid grid-cols-2 gap-8 animate-fade-in">
+                       <div className="space-y-2 col-span-2">
+                          <label className="label-text">Facility Name</label>
+                          <input className="portal-input" value={newOrg.name} onChange={e => setNewOrg({...newOrg, name: e.target.value})} />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="label-text">License Number</label>
+                          <input className="portal-input" value={newOrg.license_number} onChange={e => setNewOrg({...newOrg, license_number: e.target.value})} />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="label-text">Capacity (L)</label>
+                          <input className="portal-input" type="number" value={newOrg.storage_capacity_liters} onChange={e => setNewOrg({...newOrg, storage_capacity_liters: e.target.value})} />
+                       </div>
+                       <div className="space-y-2 col-span-2">
+                          <label className="label-text">Address</label>
+                          <input className="portal-input" value={newOrg.address} onChange={e => setNewOrg({...newOrg, address: e.target.value})} />
+                       </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-8 animate-fade-in">
+                       <div className="space-y-2 col-span-2">
+                          <label className="label-text">Admin Email</label>
+                          <input className="portal-input" value={newAdmin.email} onChange={e => setNewAdmin({...newAdmin, email: e.target.value})} />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="label-text">First Name</label>
+                          <input className="portal-input" value={newAdmin.first_name} onChange={e => setNewAdmin({...newAdmin, first_name: e.target.value})} />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="label-text">Last Name</label>
+                          <input className="portal-input" value={newAdmin.last_name} onChange={e => setNewAdmin({...newAdmin, last_name: e.target.value})} />
+                       </div>
+                       <div className="space-y-2 col-span-2">
+                          <label className="label-text">Secret Code (Password)</label>
+                          <input className="portal-input" type="password" value={newAdmin.password} onChange={e => setNewAdmin({...newAdmin, password: e.target.value})} />
+                       </div>
                     </div>
                   )}
-                </div>
 
-                <div className="pt-16">
-                   <div className="p-8 bg-glass border border-glass-border rounded-[32px] space-y-6 relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
-                         <ShieldCheck className="w-12 h-12 text-emerald-500" />
-                      </div>
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Security Directive</h4>
-                      <p className="text-[11px] text-text-secondary font-black uppercase leading-relaxed tracking-tight opacity-80 relative z-10">
-                        Facility provisioning requires rigorous biological license verification for compliance.
-                      </p>
-                   </div>
-                </div>
-              </div>
-
-              {/* Form Content */}
-              <div className="flex-1 md:pl-16 overflow-y-auto custom-scrollbar">
-                {currentStep === 1 && (
-                  <div className="space-y-16 animate-in slide-in-from-right-16 duration-700">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                      <div className="space-y-4 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Facility Designation (Full Name)</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[24px] px-8 py-6 text-text-primary outline-none focus:border-accent transition-all font-black text-xl placeholder:text-text-muted/20"
-                          placeholder="e.g. METRO LOGISTICS CENTER"
-                          value={newOrg.name}
-                          onChange={(e) => setNewOrg({...newOrg, name: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Regulatory License Protocol</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black uppercase tracking-widest placeholder:text-text-muted/20"
-                          placeholder="LIC-XXXX-XXXX"
-                          value={newOrg.license_number}
-                          onChange={(e) => setNewOrg({...newOrg, license_number: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Volumetric Capacity</label>
-                        <div className="relative">
-                          <input 
-                            type="number"
-                            className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black text-xl"
-                            value={newOrg.storage_capacity_liters}
-                            onChange={(e) => setNewOrg({...newOrg, storage_capacity_liters: e.target.value})}
-                          />
-                          <span className="absolute right-8 top-1/2 -translate-y-1/2 text-accent font-black text-sm tracking-widest">LTRS</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-accent ml-2">Operational Commission Protocol</label>
-                        <div className="relative">
-                          <input 
-                            type="number"
-                            className="w-full bg-accent/5 border border-accent/20 rounded-[20px] px-8 py-5 text-accent outline-none focus:border-accent transition-all font-black text-2xl"
-                            value={newOrg.commission_percentage}
-                            onChange={(e) => setNewOrg({...newOrg, commission_percentage: e.target.value})}
-                          />
-                          <span className="absolute right-8 top-1/2 -translate-y-1/2 text-accent font-black text-xl">%</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Secure Link (Phone)</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black tracking-widest"
-                          placeholder="+234 ..."
-                          value={newOrg.contact_phone}
-                          onChange={(e) => setNewOrg({...newOrg, contact_phone: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-4 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Physical Coordination Point (Address)</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black opacity-80"
-                          placeholder="COMPLETE PHYSICAL GEOLOCATION DATA"
-                          value={newOrg.address}
-                          onChange={(e) => setNewOrg({...newOrg, address: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Administrative Zone (State)</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black uppercase"
-                          value={newOrg.state}
-                          onChange={(e) => setNewOrg({...newOrg, state: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">LGA Sector</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black uppercase"
-                          value={newOrg.lga}
-                          onChange={(e) => setNewOrg({...newOrg, lga: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep === 2 && (
-                  <div className="space-y-16 animate-in slide-in-from-right-16 duration-700">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                       <div className="space-y-4 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Administrative Identity (Secure Email)</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black"
-                          type="email"
-                          placeholder="admin@facility.cluster"
-                          value={newAdmin.email}
-                          onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">First Identity Name</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black uppercase"
-                          value={newAdmin.first_name}
-                          onChange={(e) => setNewAdmin({...newAdmin, first_name: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Last Identity Name</label>
-                        <input 
-                          className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black uppercase"
-                          value={newAdmin.last_name}
-                          onChange={(e) => setNewAdmin({...newAdmin, last_name: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-4 md:col-span-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Security Override Credential</label>
-                        <div className="relative">
-                          <input 
-                            type="password"
-                            className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-accent transition-all font-black tracking-[0.5em]"
-                            placeholder="••••••••"
-                            value={newAdmin.password}
-                            onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})}
-                          />
-                          <Lock className="absolute right-8 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted/30" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-20 pt-12 border-t border-glass-border flex justify-between items-center gap-8">
-                  <div className="flex gap-4">
-                    {currentStep > 1 && (
-                      <button 
-                        onClick={() => setCurrentStep(1)}
-                        className="btn btn-outline py-5 px-10 rounded-[20px] border-glass-border bg-glass gap-4 group"
-                      >
-                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
-                        <span className="font-black uppercase tracking-[0.2em] text-[10px]">Back</span>
-                      </button>
-                    )}
-                  </div>
-                  
-                  <div className="flex gap-4">
-                    <button 
-                      onClick={() => setIsModalOpen(false)}
-                      className="btn btn-outline py-5 px-10 rounded-[20px] text-text-muted border-glass-border bg-glass font-black uppercase tracking-[0.2em] text-[10px] hover:text-accent"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={editingOrg ? handleOnboard : (currentStep === 1 ? () => setCurrentStep(2) : handleOnboard)}
-                      disabled={loading}
-                      className="btn btn-primary py-5 px-16 rounded-[24px] shadow-2xl shadow-accent/40 flex items-center justify-center gap-6"
-                    >
-                      {loading ? (
-                        <Loader2 className="animate-spin w-6 h-6" />
-                      ) : (
-                        <>
-                          <span className="font-black uppercase tracking-[0.3em] text-[10px]">
-                            {editingOrg ? 'Save Changes' : (currentStep === 2 ? 'Register Blood Bank' : 'Next Step')}
-                          </span>
-                          <ArrowRight className="w-6 h-6" />
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
-
-      {/* Detail Modal / Panel */}
-      {selectedBank && createPortal(
-        <div className="fixed inset-0 z-[2500] flex items-center justify-end animate-in fade-in duration-700 overflow-hidden">
-          <div className="absolute inset-0 bg-bg-darker/80 backdrop-blur-xl" onClick={() => setSelectedBank(null)} />
-          
-          <div className="relative w-full max-w-4xl h-full bg-bg-darker border-l border-glass-border shadow-[0_0_80px_rgba(0,0,0,0.8)] flex flex-col animate-in slide-in-from-right duration-1000 overflow-hidden">
-            <div className="p-12 border-b border-glass-border flex justify-between items-center bg-card-bg/50 backdrop-blur-3xl shrink-0">
-               <div className="flex items-center gap-10">
-                  <div className="w-24 h-24 rounded-[32px] bg-accent/10 border border-accent/20 flex items-center justify-center text-accent shadow-2xl shadow-accent/20 relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50 group-hover:rotate-180 transition-transform duration-1000" />
-                    <Building2 className="w-12 h-12 relative z-10" />
-                  </div>
-                  <div>
-                    <h2 className="text-4xl font-black text-text-primary tracking-tighter uppercase leading-none">{selectedBank.name}</h2>
-                    <div className="flex items-center gap-6 mt-4">
-                       <div className="flex items-center gap-3 text-[10px] font-black uppercase text-accent tracking-[0.3em] bg-accent/5 px-4 py-2 rounded-xl border border-accent/10 shadow-sm">
-                          <Globe className="w-4 h-4" />
-                          {selectedBank.license_number}
-                       </div>
-                       <div className="flex items-center gap-3 text-[10px] font-black uppercase text-emerald-500 tracking-[0.3em] bg-emerald-500/5 px-4 py-2 rounded-xl border border-emerald-500/10 shadow-sm">
-                          <Activity className="w-4 h-4 animate-pulse" />
-                          {selectedBank.storage_capacity_liters}L Payload Cap.
-                       </div>
-                    </div>
-                  </div>
-               </div>
-               <div className="flex gap-5">
-                  <button onClick={() => openEditModal(selectedBank)} className="p-6 bg-glass border border-glass-border hover:bg-primary/10 rounded-[24px] transition-all text-primary shadow-xl hover:shadow-primary/20">
-                    <Edit2 className="w-6 h-6" />
-                  </button>
-                  <button onClick={() => setSelectedBank(null)} className="p-6 bg-glass border border-glass-border hover:bg-accent/10 rounded-[24px] transition-all text-text-primary group shadow-xl">
-                    <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-500" />
-                  </button>
-               </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-16 custom-scrollbar space-y-20">
-               <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                  <div className="space-y-10">
-                     <div>
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted mb-8">Node Coordinates</h4>
-                        <div className="space-y-8">
-                           {[
-                             { icon: MapPin, label: 'Physical Location', value: `${selectedBank.address}, ${selectedBank.lga}, ${selectedBank.state}` },
-                             { icon: Mail, label: 'Digital Terminal', value: selectedBank.contact_email },
-                             { icon: Phone, label: 'Secure Link', value: selectedBank.contact_phone }
-                           ].map((item, i) => (
-                             <div key={i} className="flex items-center gap-8 p-8 bg-glass border border-glass-border rounded-[32px] hover:border-accent/40 transition-all group relative overflow-hidden shadow-sm">
-                                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <div className="w-16 h-16 rounded-[24px] bg-accent/10 border border-accent/20 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all duration-500 relative z-10 shadow-lg shadow-accent/5">
-                                   <item.icon className="w-6 h-6" />
-                                </div>
-                                <div className="relative z-10 space-y-1">
-                                   <p className="text-[9px] font-black uppercase tracking-widest text-text-muted group-hover:text-accent/60 transition-colors">{item.label}</p>
-                                   <span className="text-sm font-black text-text-primary uppercase tracking-tight leading-relaxed">{item.value}</span>
-                                </div>
-                             </div>
-                           ))}
-                        </div>
+                  <div className="pt-12 border-t border-glass-border flex justify-between">
+                     <button onClick={() => setIsModalOpen(false)} className="px-8 py-4 text-text-muted font-black uppercase text-[10px]">Cancel</button>
+                     <div className="flex gap-4">
+                        {currentStep === 2 && <button onClick={() => setCurrentStep(1)} className="px-8 py-4 border border-glass-border rounded-2xl text-text-primary font-black uppercase text-[10px]">Back</button>}
+                        <button onClick={currentStep === 1 ? () => { if(newOrg.name && newOrg.license_number) setCurrentStep(2); } : handleOnboard} className="btn btn-primary px-12 py-5 rounded-2xl shadow-xl font-black uppercase tracking-widest text-[10px]">
+                           {currentStep === 1 ? 'Next Phase' : 'Authorize Provision'}
+                        </button>
                      </div>
-                  </div>
-
-                  <div className="space-y-10">
-                     <div>
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted mb-8">System Authority</h4>
-                        <div className="p-10 bg-glass border border-glass-border rounded-[48px] space-y-12 shadow-inner relative overflow-hidden group">
-                           <div className="absolute -bottom-10 -right-10 opacity-5 group-hover:scale-110 transition-transform duration-1000">
-                              <ShieldCheck className="w-48 h-48" />
-                           </div>
-                           
-                           <div className="flex justify-between items-center relative z-10">
-                              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Authorization Status</span>
-                              <button 
-                                onClick={() => handleToggleVerification(selectedBank)}
-                                className={`px-8 py-3 rounded-[20px] border-2 transition-all flex items-center gap-4 group/btn ${selectedBank.is_verified ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-amber-500/10 border-amber-500/30 text-amber-500'}`}
-                              >
-                                 {selectedBank.is_verified ? <CheckCircle2 className="w-5 h-5" /> : <ShieldCheck className="w-5 h-5 animate-pulse" />}
-                                 <span className="text-[11px] font-black uppercase tracking-[0.2em]">{selectedBank.is_verified ? 'Authorized' : 'Review Required'}</span>
-                              </button>
-                           </div>
-
-                           <div className="flex justify-between items-center relative z-10">
-                              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Revenue Yield Config</span>
-                              <div className="flex items-center gap-5">
-                                 <div className="px-6 py-3 bg-accent/10 border-2 border-accent/20 rounded-2xl font-black text-accent text-2xl shadow-lg shadow-accent/5">
-                                    {selectedBank.commission_percentage}%
-                                 </div>
-                              </div>
-                           </div>
-
-                           <div className="flex justify-between items-center relative z-10">
-                              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Active Status</span>
-                              <button
-                                onClick={() => handleToggleActive(selectedBank)}
-                                className={`px-8 py-3 rounded-[20px] border-2 transition-all flex items-center gap-4 ${selectedBank.is_active !== false ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-accent/10 border-accent/30 text-accent'}`}
-                              >
-                                 <span className={`w-2.5 h-2.5 rounded-full ${selectedBank.is_active !== false ? 'bg-emerald-500 animate-pulse' : 'bg-accent'}`} />
-                                 <span className="text-[11px] font-black uppercase tracking-[0.2em]">{selectedBank.is_active !== false ? 'Online' : 'Offline'}</span>
-                              </button>
-                           </div>
-
-                           <div className="pt-10 border-t border-glass-border flex justify-between items-center relative z-10">
-                              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Network Integrity</span>
-                              <div className="flex gap-2">
-                                 {[1, 2, 3, 4, 5].map(i => <div key={i} className={`w-3 h-3 rounded-full ${i <= 4 ? 'bg-accent shadow-[0_0_12px_rgba(225,29,72,0.6)] animate-pulse' : 'bg-glass-border opacity-30'}`} />)}
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-               <div className="space-y-10">
-                  <div className="flex justify-between items-end">
-                     <div className="space-y-2">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted">Control Layer</h4>
-                        <h3 className="text-4xl font-black text-text-primary tracking-tighter uppercase leading-none">Personnel <span className="text-gradient">Registry</span></h3>
-                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-8">
-                     {selectedBank.staff?.length > 0 ? selectedBank.staff.map(user => (
-                       <div key={user.id} className="p-10 bg-glass border border-glass-border rounded-[40px] flex items-center justify-between hover:bg-glass-border/40 transition-all group relative overflow-hidden">
-                          <div className="absolute inset-y-0 left-0 w-1.5 bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                          <div className="flex items-center gap-10">
-                             <div className="w-20 h-20 rounded-[28px] bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary font-black text-3xl uppercase shadow-lg shadow-primary/5 group-hover:scale-105 transition-transform">
-                                {user.first_name?.[0] || user.email[0]}
-                             </div>
-                             <div>
-                                <p className="text-2xl font-black text-text-primary tracking-tighter uppercase">{user.first_name} {user.last_name}</p>
-                                <p className="text-[10px] text-text-muted uppercase font-black tracking-[0.3em] mt-2 opacity-60">{user.role.replace('_', ' ')} • {user.email}</p>
-                             </div>
-                          </div>
-                          <div className="flex items-center gap-8">
-                             {user.must_change_password && (
-                               <div className="flex items-center gap-4 px-5 py-2.5 bg-amber-500/10 border-2 border-amber-500/20 text-amber-500 rounded-2xl animate-pulse">
-                                  <Lock className="w-4 h-4" />
-                                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Setup Required</span>
-                               </div>
-                             )}
-                             <button onClick={() => setModifyingUser(user)} className="p-5 bg-glass border border-glass-border hover:bg-accent rounded-2xl text-text-primary hover:text-white transition-all shadow-xl hover:shadow-accent/40 group/lock">
-                                <Lock className="w-6 h-6 group-hover/lock:rotate-12 transition-transform" />
-                             </button>
-                          </div>
-                       </div>
-                     )) : (
-                       <div className="p-32 bg-glass border-2 border-glass-border border-dashed rounded-[56px] text-center space-y-6">
-                          <div className="w-20 h-20 bg-glass-border/30 rounded-full flex items-center justify-center mx-auto mb-4 opacity-20">
-                             <User className="w-10 h-10 text-text-muted" />
-                          </div>
-                          <p className="text-text-muted font-black uppercase tracking-[0.4em] text-[10px]">No active personnel assigned to this facility coordinate.</p>
-                       </div>
-                     )}
                   </div>
                </div>
             </div>
@@ -784,76 +570,52 @@ const BloodBankManagement = () => {
         document.body
       )}
 
-      {/* Security Modals */}
-      {modifyingUser && (
-        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 animate-in zoom-in-95 duration-500">
-          <div className="absolute inset-0 bg-bg-darker/90 backdrop-blur-2xl" onClick={() => setModifyingUser(null)} />
-          <div className="relative w-full max-w-lg bg-card-bg border border-glass-border rounded-[48px] p-12 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-500">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-accent to-primary" />
-            
-            <div className="space-y-4 mb-12">
-               <div className="inline-block px-4 py-1.5 bg-accent/10 border border-accent/20 rounded-full">
-                  <span className="text-[10px] font-black text-accent uppercase tracking-[0.3em]">Security Override</span>
-               </div>
-               <h3 className="text-4xl font-black text-text-primary uppercase tracking-tighter leading-none">Access <span className="text-gradient">Control</span></h3>
-               <p className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em]">Identity: <span className="text-text-primary">{modifyingUser.email}</span></p>
-            </div>
-            
-            <div className="space-y-10">
-              <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Hard Reset Protocol</label>
-                <button 
-                  onClick={() => setForcePasswordChange(!forcePasswordChange)}
-                  className={`w-full p-6 rounded-[24px] border-2 transition-all flex items-center justify-between group/switch ${forcePasswordChange ? 'bg-accent/10 border-accent/50 text-accent' : 'bg-glass border-glass-border text-text-muted'}`}
-                >
-                  <span className="font-black uppercase tracking-[0.2em] text-[10px]">Require change on next login</span>
-                  <div className={`w-12 h-6 rounded-full relative transition-all duration-500 ${forcePasswordChange ? 'bg-accent' : 'bg-glass-border'}`}>
-                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-500 ${forcePasswordChange ? 'right-1' : 'left-1'}`} />
-                  </div>
+      {/* Staff Addition Modal */}
+      {isStaffModalOpen && createPortal(
+        <div className="fixed inset-0 z-[4000] bg-bg-darker/95 backdrop-blur-3xl flex items-center justify-center p-6 animate-in fade-in duration-500">
+           <div className="relative w-full max-w-xl bg-card-bg border border-glass-border rounded-[48px] shadow-2xl flex flex-col overflow-hidden animate-scale-up p-12">
+              <div className="flex justify-between items-start mb-10">
+                <div>
+                   <h3 className="text-3xl font-black text-text-primary uppercase tracking-tighter mb-1">Integrate Personnel</h3>
+                   <p className="text-[10px] text-text-muted font-black uppercase tracking-widest">Onboard staff to {portalData?.name}</p>
+                </div>
+                <button onClick={() => setIsStaffModalOpen(false)} className="p-3 bg-glass border border-glass-border rounded-xl text-text-muted hover:text-accent transition-all">
+                  <X size={20} />
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Administrative Credential Override</label>
-                <div className="relative group">
-                  <input 
-                    type="text"
-                    className="w-full bg-glass border border-glass-border rounded-[24px] px-8 py-6 text-text-primary outline-none focus:border-accent transition-all font-black text-sm tracking-[0.4em] placeholder:text-text-muted/10 placeholder:tracking-normal"
-                    placeholder="ENTER OVERRIDE SECRET"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
-                  <button 
-                    onClick={() => setNewPassword(Math.random().toString(36).slice(-8).toUpperCase())}
-                    className="absolute right-8 top-1/2 -translate-y-1/2 text-[10px] font-black text-accent uppercase tracking-[0.3em] hover:text-accent-hover transition-colors bg-accent/5 px-4 py-2 rounded-xl border border-accent/10"
-                  >
-                    Auto-Gen
-                  </button>
+              <form onSubmit={handleAddStaff} className="space-y-6">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="label-text">First Name</label>
+                    <input className="portal-input" value={newStaffData.first_name} onChange={e => setNewStaffData({...newStaffData, first_name: e.target.value})} required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="label-text">Last Name</label>
+                    <input className="portal-input" value={newStaffData.last_name} onChange={e => setNewStaffData({...newStaffData, last_name: e.target.value})} required />
+                  </div>
                 </div>
-              </div>
+                <div className="space-y-2">
+                  <label className="label-text">Email (Username)</label>
+                  <input className="portal-input" type="email" value={newStaffData.email} onChange={e => setNewStaffData({...newStaffData, email: e.target.value})} required />
+                </div>
+                <div className="space-y-2">
+                  <label className="label-text">Temporary Secret (Password)</label>
+                  <input className="portal-input" type="password" value={newStaffData.password} onChange={e => setNewStaffData({...newStaffData, password: e.target.value})} required />
+                </div>
 
-              <div className="pt-6 space-y-4">
-                 <button 
-                   onClick={() => handleUpdateUser(modifyingUser.id)}
-                   className="w-full btn btn-primary py-6 rounded-3xl shadow-2xl shadow-accent/40 font-black uppercase tracking-[0.4em] text-xs group"
-                 >
-                   Save Changes Update
-                   <ShieldCheck className="w-5 h-5 ml-4 group-hover:scale-110 transition-transform inline-block" />
-                 </button>
-                 <button 
-                   onClick={() => setModifyingUser(null)}
-                   className="w-full py-4 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted hover:text-text-primary transition-colors"
-                 >
-                   Cancel Override
-                 </button>
-              </div>
-            </div>
-          </div>
-        </div>
+                <div className="pt-6">
+                   <button type="submit" disabled={loading} className="w-full btn btn-primary py-6 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl">
+                      {loading ? 'Processing...' : 'Complete Onboarding'}
+                   </button>
+                </div>
+              </form>
+           </div>
+        </div>,
+        document.body
       )}
     </div>
   );
 };
 
 export default BloodBankManagement;
-

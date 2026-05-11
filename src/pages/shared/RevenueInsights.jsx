@@ -86,187 +86,167 @@ const RevenueInsights = ({ isAdmin = false }) => {
   const COLORS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 
   return (
-    <div className="p-8 md:p-12 space-y-12 animate-fade-in">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+    <div className="p-4 md:p-8 lg:p-12 space-y-10 md:space-y-12 animate-fade-in pb-20">
+      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-8">
         <div>
-          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase">Revenue <span className="text-gradient">Insights</span></h1>
-          <p className="text-text-secondary mt-2 flex items-center gap-2 font-bold uppercase tracking-widest text-[10px] opacity-70">
-            <Activity className="w-3 h-3 text-accent" />
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">Revenue <span className="text-primary">Insights</span></h1>
+          <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary mt-2 flex items-center gap-2">
+            <Activity size={12} className="text-primary" />
             Platform Financial Performance
           </p>
         </div>
 
         {isAdmin && (
-          <div className="flex bg-glass p-1.5 rounded-2xl border border-glass-border shadow-xl">
+          <div className="flex bg-glass/30 p-1 md:p-1.5 rounded-xl md:rounded-2xl border border-glass-border shadow-xl w-full lg:w-auto">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              className={`flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black uppercase tracking-widest transition-all ${
                 activeTab === 'overview' 
-                ? 'bg-accent text-white shadow-lg shadow-accent/20' 
-                : 'text-text-secondary hover:text-text-primary hover:bg-glass'
+                ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                : 'text-text-secondary'
               }`}
             >
-              <LayoutDashboard className="w-4 h-4" />
-              Network Overview
+              <LayoutDashboard size={14} />
+              Overview
             </button>
             <button
               onClick={() => setActiveTab('facilities')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              className={`flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-lg md:rounded-xl text-[8px] md:text-[10px] font-black uppercase tracking-widest transition-all ${
                 activeTab === 'facilities' 
-                ? 'bg-accent text-white shadow-lg shadow-accent/20' 
-                : 'text-text-secondary hover:text-text-primary hover:bg-glass'
+                ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                : 'text-text-secondary'
               }`}
             >
-              <Building2 className="w-4 h-4" />
-              Facility Intel
+              <Building2 size={14} />
+              Facilities
             </button>
           </div>
         )}
       </header>
 
       {activeTab === 'overview' ? (
-        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-between hover:border-accent/30 transition-all group relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-accent/5 min-h-[240px]">
-              <div className="absolute -bottom-8 -right-8 opacity-[0.08] group-hover:opacity-[0.15] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none">
-                <DollarSign className="w-40 h-40 text-accent" />
-              </div>
-              <div className="relative z-10 space-y-6">
-                <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Aggregate Revenue</p>
-                <h2 className="text-5xl font-black text-text-primary tracking-tighter leading-none">
+        <div className="space-y-8 md:space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] flex flex-col justify-between hover:border-primary/30 transition-all min-h-[160px] md:min-h-[240px]">
+              <div className="space-y-3 md:space-y-6">
+                <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">Aggregate Revenue</p>
+                <h2 className="text-2xl md:text-5xl font-black text-text-primary tracking-tighter leading-none truncate">
                   ₦{stats?.total_revenue?.toLocaleString()}
                 </h2>
               </div>
-              <div className={`relative z-10 flex items-center gap-2 font-black text-[10px] uppercase tracking-widest mt-4 ${stats?.revenue_trend >= 0 ? 'text-emerald-500' : 'text-accent'}`}>
-                {stats?.revenue_trend >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                {stats?.revenue_trend >= 0 ? '+' : ''}{stats?.revenue_trend || 0}% Performance
+              <div className={`flex items-center gap-1.5 font-black text-[8px] md:text-[10px] uppercase tracking-widest mt-4 ${stats?.revenue_trend >= 0 ? 'text-emerald-500' : 'text-accent'}`}>
+                {stats?.revenue_trend >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                {stats?.revenue_trend >= 0 ? '+' : ''}{stats?.revenue_trend || 0}%
               </div>
             </div>
 
-            <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-between hover:border-accent/30 transition-all group relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-accent/5 min-h-[240px]">
-              <div className="absolute -bottom-8 -right-8 opacity-[0.08] group-hover:opacity-[0.15] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none">
-                <Calendar className="w-40 h-40 text-accent" />
-              </div>
-              <div className="relative z-10 space-y-6">
-                <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Monthly Yield</p>
-                <h2 className="text-5xl font-black text-text-primary tracking-tighter leading-none">
+            <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] flex flex-col justify-between hover:border-primary/30 transition-all min-h-[160px] md:min-h-[240px]">
+              <div className="space-y-3 md:space-y-6">
+                <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">Monthly Yield</p>
+                <h2 className="text-2xl md:text-5xl font-black text-text-primary tracking-tighter leading-none truncate">
                   ₦{stats?.monthly_revenue?.toLocaleString() || 0}
                 </h2>
               </div>
-              <div className="relative z-10 flex items-center gap-2 text-emerald-500 font-black text-[10px] uppercase tracking-widest mt-4">
-                <TrendingUp className="w-4 h-4" />
+              <div className="flex items-center gap-1.5 text-emerald-500 font-black text-[8px] md:text-[10px] uppercase tracking-widest mt-4">
+                <TrendingUp size={14} />
                 Active Cycle
               </div>
             </div>
 
             {isAdmin && (
               <>
-                <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-between hover:border-accent/30 transition-all group relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-accent/5 min-h-[240px]">
-                  <div className="absolute -bottom-8 -right-8 opacity-[0.08] group-hover:opacity-[0.15] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none">
-                    <Layers className="w-40 h-40 text-accent" />
-                  </div>
-                  <div className="relative z-10 space-y-6">
-                    <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Net Earnings</p>
-                    <h2 className="text-5xl font-black text-text-primary tracking-tighter leading-none">
+                <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] flex flex-col justify-between hover:border-primary/30 transition-all min-h-[160px] md:min-h-[240px]">
+                  <div className="space-y-3 md:space-y-6">
+                    <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">Net Earnings</p>
+                    <h2 className="text-2xl md:text-5xl font-black text-text-primary tracking-tighter leading-none truncate">
                       ₦{stats?.total_profit?.toLocaleString()}
                     </h2>
                   </div>
-                  <p className="relative z-10 text-[10px] text-text-muted font-bold uppercase tracking-widest opacity-60">Verified Accumulation</p>
+                  <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest opacity-60">Verified</p>
                 </div>
 
-                <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-between hover:border-accent/30 transition-all group relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-accent/5 min-h-[240px]">
-                  <div className="absolute -bottom-8 -right-8 opacity-[0.08] group-hover:opacity-[0.15] transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12 pointer-events-none">
-                    <Activity className="w-40 h-40 text-accent" />
-                  </div>
-                  <div className="relative z-10 space-y-6">
-                    <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Monthly Net</p>
-                     <h2 className="text-5xl font-black text-text-primary tracking-tighter leading-none">
+                <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] flex flex-col justify-between hover:border-primary/30 transition-all min-h-[160px] md:min-h-[240px]">
+                  <div className="space-y-3 md:space-y-6">
+                    <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">Monthly Net</p>
+                     <h2 className="text-2xl md:text-5xl font-black text-text-primary tracking-tighter leading-none truncate">
                       ₦{stats?.monthly_profit?.toLocaleString()}
                     </h2>
                   </div>
-                  <p className="relative z-10 text-[10px] text-text-muted font-bold uppercase tracking-widest opacity-60">Current Period</p>
+                  <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest opacity-60">Current Period</p>
                 </div>
               </>
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] space-y-8 shadow-sm">
-              <div className="flex justify-between items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="lg:col-span-2 bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] space-y-6 md:space-y-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h3 className="text-xl font-black text-text-primary uppercase tracking-tighter">Revenue Growth</h3>
-                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">Historical Performance Index</p>
+                  <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Growth Telemetry</h3>
+                  <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest mt-1">Historical Performance Index</p>
                 </div>
-                <div className="flex gap-6">
+                <div className="flex gap-4">
                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-accent shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
-                      <span className="font-black uppercase tracking-widest text-[10px]">Real-time Feed</span>
+                      <div className="w-2 h-2 rounded-full bg-primary" />
+                      <span className="font-black uppercase tracking-widest text-[8px] md:text-[10px]">Revenue</span>
                    </div>
                    {isAdmin && (
                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted">Network Active</p>
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <span className="font-black uppercase tracking-widest text-[8px] md:text-[10px]">Net Profit</span>
                      </div>
                    )}
                 </div>
               </div>
               
-              <div className="h-[400px] w-full">
+              <div className="h-[250px] md:h-[400px] w-full">
                 {chartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={chartData}>
                       <defs>
                         <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
-                        </linearGradient>
-                        <linearGradient id="colorProf" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
                           <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-text-muted)" strokeOpacity={0.1} vertical={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-text-muted)" strokeOpacity={0.05} vertical={false} />
                       <XAxis 
                         dataKey="name" 
                         axisLine={false} 
                         tickLine={false} 
-                        tick={{fill: 'var(--color-text-secondary)', fontSize: 10, fontWeight: 900}}
+                        tick={{fill: 'var(--color-text-secondary)', fontSize: 8, fontWeight: 900}}
                         dy={10}
                       />
                       <YAxis 
                         axisLine={false} 
                         tickLine={false} 
-                        tick={{fill: 'var(--color-text-secondary)', fontSize: 10, fontWeight: 900}}
+                        tick={{fill: 'var(--color-text-secondary)', fontSize: 8, fontWeight: 900}}
                       />
                       <Tooltip 
                         contentStyle={{ 
                           backgroundColor: 'var(--color-bg-dark)', 
                           border: '1px solid var(--color-glass-border)',
-                          borderRadius: '24px',
-                          padding: '20px',
-                          backdropFilter: 'blur(20px)',
-                          boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+                          borderRadius: '16px',
+                          fontSize: '10px'
                         }}
-                        itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}
-                        cursor={{ stroke: 'var(--color-accent)', strokeWidth: 1, strokeDasharray: '5 5' }}
                       />
-                      <Area type="monotone" dataKey="revenue" stroke="#ef4444" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
-                      {isAdmin && <Area type="monotone" dataKey="profit" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorProf)" />}
+                      <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+                      {isAdmin && <Area type="monotone" dataKey="profit" stroke="#3b82f6" strokeWidth={3} fill="none" />}
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <EmptyState icon={BarChartIcon} title="No Analytics Available" description="Insufficient historical data to generate trajectory." />
+                  <EmptyState icon={BarChartIcon} title="No Analytics" description="Insufficient telemetry data." />
                 )}
               </div>
             </div>
 
-            <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] space-y-8 shadow-sm">
+            <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] space-y-6 md:space-y-8">
                <div>
-                  <p className="text-xs font-black text-text-primary uppercase tracking-widest">Asset Distribution</p>
-                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">Earnings per Blood Group</p>
+                  <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Asset Yield</h3>
+                  <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest mt-1">Earnings per Blood Group</p>
                </div>
 
-               <div className="h-[300px] w-full">
+               <div className="h-[200px] md:h-[250px] w-full">
                 {typeData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -274,8 +254,8 @@ const RevenueInsights = ({ isAdmin = false }) => {
                         data={typeData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={100}
+                        innerRadius={50}
+                        outerRadius={80}
                         paddingAngle={5}
                         dataKey="value"
                         stroke="none"
@@ -288,25 +268,24 @@ const RevenueInsights = ({ isAdmin = false }) => {
                         contentStyle={{ 
                           backgroundColor: 'var(--color-bg-dark)', 
                           border: '1px solid var(--color-glass-border)',
-                          borderRadius: '24px',
-                          backdropFilter: 'blur(20px)'
+                          borderRadius: '16px'
                         }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <EmptyState icon={PieChartIcon} title="No Asset Data" description="Inventory distribution is currently inactive." />
+                  <EmptyState icon={PieChartIcon} title="No Data" description="Asset distribution inactive." />
                 )}
                </div>
 
-               <div className="grid grid-cols-2 gap-3">
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {stats?.revenue_by_type?.map((item, index) => (
-                    <div key={item.product__blood_group} className="flex justify-between items-center p-4 bg-glass border border-glass-border rounded-2xl hover:border-accent/30 transition-all">
-                       <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted">Verified Stock</p>
+                    <div key={item.product__blood_group} className="flex justify-between items-center p-3 md:p-4 bg-glass border border-glass-border rounded-xl md:rounded-2xl">
+                       <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                          <p className="text-[8px] md:text-[9px] font-black uppercase text-text-muted tracking-widest truncate max-w-[50px]">{item.product__blood_group}</p>
                        </div>
-                       <span className="text-[10px] font-mono text-text-secondary font-black">₦{item.amount.toLocaleString()}</span>
+                       <span className="text-[9px] md:text-[10px] font-black text-text-primary">₦{item.amount.toLocaleString()}</span>
                     </div>
                   ))}
                </div>
@@ -314,53 +293,47 @@ const RevenueInsights = ({ isAdmin = false }) => {
           </div>
 
           {isAdmin && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-               <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] space-y-8 shadow-sm">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+               <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] space-y-6 md:space-y-8">
                   <div>
-                    <h3 className="text-xl font-black text-text-primary uppercase tracking-tighter">Sales Distribution</h3>
-                    <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">Marketplace vs Direct POS</p>
+                    <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Sales Split</h3>
+                    <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest mt-1">Market vs POS</p>
                   </div>
-                  <div className="h-[300px] w-full">
+                  <div className="h-[250px] md:h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-text-muted)" strokeOpacity={0.1} vertical={false} />
-                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: 'var(--color-text-secondary)', fontSize: 10, fontWeight: 900}} />
-                        <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--color-text-secondary)', fontSize: 10, fontWeight: 900}} />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'var(--color-bg-dark)', 
-                            border: '1px solid var(--color-glass-border)', 
-                            borderRadius: '24px',
-                            backdropFilter: 'blur(20px)'
-                          }} 
-                        />
-                        <Bar dataKey="market" fill="#ef4444" radius={[12, 12, 0, 0]} name="Marketplace" />
-                        <Bar dataKey="pos" fill="#3b82f6" radius={[12, 12, 0, 0]} name="POS" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-text-muted)" strokeOpacity={0.05} vertical={false} />
+                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: 'var(--color-text-secondary)', fontSize: 8, fontWeight: 900}} />
+                        <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--color-text-secondary)', fontSize: 8, fontWeight: 900}} />
+                        <Tooltip contentStyle={{ backgroundColor: 'var(--color-bg-dark)', border: '1px solid var(--color-glass-border)', borderRadius: '16px' }} />
+                        <Bar dataKey="market" fill="#10b981" radius={[8, 8, 0, 0]} name="Market" />
+                        <Bar dataKey="pos" fill="#3b82f6" radius={[8, 8, 0, 0]} name="POS" />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                </div>
 
-               <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-10 rounded-[48px] flex flex-col justify-center space-y-10 shadow-sm">
-                  <div className="text-center space-y-4">
-                     <div className="inline-block px-6 py-2 bg-accent/10 border border-accent/20 rounded-full">
-                        <span className="text-[10px] font-black text-accent uppercase tracking-[0.3em]">Efficiency Quotient</span>
+               <div className="bg-bg-darker border border-glass-border p-8 md:p-12 rounded-3xl md:rounded-[48px] flex flex-col justify-center space-y-8 md:space-y-10 shadow-2xl relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+                  <div className="text-center space-y-3 md:space-y-4 relative z-10">
+                     <div className="inline-block px-4 py-1 bg-primary/10 border border-primary/20 rounded-full">
+                        <span className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest">Efficiency</span>
                      </div>
-                     <h2 className="text-7xl font-black text-gradient uppercase tracking-tighter">
+                     <h2 className="text-5xl md:text-7xl font-black text-text-primary uppercase tracking-tighter">
                        {stats?.total_revenue > 0 ? ((stats?.total_profit / stats?.total_revenue) * 100).toFixed(1) : 0}%
                      </h2>
-                     <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.4em]">Integrated Performance Index</p>
+                     <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">Performance Index</p>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div className="p-8 bg-glass border border-glass-border rounded-[32px] space-y-2 hover:border-accent/30 transition-all group">
-                        <span className="text-[10px] font-black text-text-muted uppercase tracking-widest group-hover:text-accent transition-colors">Marketplace</span>
-                        <div className="text-2xl font-black text-text-primary tracking-tight">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                     <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2">
+                        <span className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest">Marketplace</span>
+                        <div className="text-lg md:text-2xl font-black text-text-primary tracking-tight">
                           ₦{chartData.reduce((acc, curr) => acc + curr.market, 0).toLocaleString()}
                         </div>
                      </div>
-                     <div className="p-8 bg-glass border border-glass-border rounded-[32px] space-y-2 hover:border-accent/30 transition-all group">
-                        <span className="text-[10px] font-black text-text-muted uppercase tracking-widest group-hover:text-blue-500 transition-colors">POS Direct</span>
-                        <div className="text-2xl font-black text-text-primary tracking-tight">
+                     <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2">
+                        <span className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest">Direct POS</span>
+                        <div className="text-lg md:text-2xl font-black text-text-primary tracking-tight">
                           ₦{chartData.reduce((acc, curr) => acc + curr.pos, 0).toLocaleString()}
                         </div>
                      </div>

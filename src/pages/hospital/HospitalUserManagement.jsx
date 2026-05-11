@@ -11,7 +11,9 @@ import {
   Key,
   Loader2,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  UserMinus,
+  Unlock
 } from 'lucide-react';
 import { usersApi } from '../../api';
 import { useIsVerified } from '../../hooks/useIsVerified';
@@ -60,7 +62,9 @@ const HospitalUserManagement = () => {
     setLoading(true);
     try {
       if (editingUser) {
-        await usersApi.updateStaff(editingUser.id, newUser);
+        const { password, ...updateData } = newUser;
+        const payload = password ? newUser : updateData;
+        await usersApi.updateStaff(editingUser.id, payload);
         toast.success('User updated successfully');
       } else {
         await usersApi.createStaff(newUser);
@@ -86,6 +90,28 @@ const HospitalUserManagement = () => {
       fetchUsers();
     } catch (error) {
       toast.error('Failed to remove user');
+    }
+  };
+
+  const handleToggleStatus = async (user) => {
+    if (!isVerified) return;
+    try {
+      await usersApi.toggleStaffActive(user.id);
+      toast.success(user.is_active ? 'Account suspended' : 'Account restored');
+      fetchUsers();
+    } catch (error) {
+      toast.error('Failed to update account status');
+    }
+  };
+
+  const handleToggleVerification = async (user) => {
+    if (!isVerified) return;
+    try {
+      await usersApi.toggleStaffVerified(user.id);
+      toast.success(user.is_verified ? 'Verification revoked' : 'Personnel verified');
+      fetchUsers();
+    } catch (error) {
+      toast.error('Failed to update verification status');
     }
   };
 
@@ -192,6 +218,20 @@ const HospitalUserManagement = () => {
                   </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex justify-end items-center gap-3">
+                      <button 
+                        onClick={() => handleToggleVerification(user)}
+                        title={user.is_verified ? 'Revoke Verification' : 'Verify Personnel'}
+                        className={`p-3.5 bg-glass border border-glass-border rounded-xl transition-all ${user.is_verified ? 'text-emerald-500 hover:bg-emerald-500/10' : 'text-text-muted hover:text-emerald-500'}`}
+                      >
+                        <ShieldCheck className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleToggleStatus(user)}
+                        title={user.is_active ? 'Suspend Account' : 'Restore Account'}
+                        className={`p-3.5 bg-glass border border-glass-border rounded-xl transition-all ${user.is_active ? 'text-text-muted hover:text-accent' : 'text-accent hover:bg-accent/10'}`}
+                      >
+                        {user.is_active ? <UserMinus className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+                      </button>
                       <button 
                         onClick={() => openEditModal(user)}
                         disabled={!isVerified}

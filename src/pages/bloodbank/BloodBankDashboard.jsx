@@ -51,7 +51,7 @@ const InventoryTable = ({ data, loading }) => (
                   item.quantity > 10 ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
                   item.quantity > 0 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-accent/10 text-accent border border-accent/20'
                 }`}>
-                  {item.quantity > 10 ? 'Optimum' : item.quantity > 0 ? 'Low Stock' : 'Depleted'}
+                  {item.quantity > 10 ? 'Optimum' : item.quantity > 0 ? 'Low Stock' : 'Out of Stock'}
                 </span>
               </td>
               <td className="px-8 py-6 text-right">

@@ -17,7 +17,8 @@ import {
   Sun,
   Moon,
   DollarSign,
-  CreditCard
+  CreditCard,
+  X
 } from 'lucide-react';
 import logo from '../../assets/logo.png';
 
@@ -51,7 +52,7 @@ const SidebarItem = ({ item, end }) => {
   );
 };
 
-const DashboardSidebar = ({ theme, toggleTheme }) => {
+const DashboardSidebar = ({ theme, toggleTheme, onClose }) => {
   const role = localStorage.getItem('role');
   
   const getMenuItems = () => {
@@ -100,6 +101,14 @@ const DashboardSidebar = ({ theme, toggleTheme }) => {
     <aside className="w-80 bg-card-bg/95 backdrop-blur-3xl border-r border-glass-border flex flex-col h-screen sticky top-0 z-[1000] overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
       
+      {/* Mobile Close Button */}
+      <button 
+        onClick={onClose}
+        className="lg:hidden absolute top-6 right-6 p-2 bg-glass border border-glass-border rounded-xl text-accent z-50"
+      >
+        <X size={20} />
+      </button>
+
       <div className="p-10 flex flex-col items-center">
         <div className="w-full flex justify-center mb-8">
           <Link to="/" className="bg-glass p-3 rounded-2xl border border-glass-border shadow-xl group hover:scale-105 transition-all duration-500">
@@ -109,7 +118,7 @@ const DashboardSidebar = ({ theme, toggleTheme }) => {
         <div className="text-center">
           <h2 className="font-black text-xl tracking-tighter text-text-primary uppercase">Swift<span className="text-gradient">Aid</span></h2>
           <div className="flex items-center justify-center gap-2 mt-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             <p className="text-[9px] uppercase tracking-[0.3em] text-accent font-black">
               {typeof role === 'string' ? role.replace(/_/g, ' ') : 'User Access'}
             </p>
@@ -164,5 +173,6 @@ const DashboardSidebar = ({ theme, toggleTheme }) => {
     </aside>
   );
 };
+
 
 export default DashboardSidebar;

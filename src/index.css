@@ -7,25 +7,26 @@
   We define all design tokens as CSS variables first to ensure runtime theme switching works perfectly.
 */
 :root {
-  /* Core Colors - Default (Dark Mode) */
-  --color-primary: #0d9488;
-  --color-primary-dark: #0f766e;
-  --color-primary-light: #2dd4bf;
-  --color-accent: #e11d48;
-  --color-accent-hover: #be123c;
+  /* Core Colors - Original Teal & Rose Palette */
+  --color-primary: #0d9488;        /* Teal 600 */
+  --color-primary-dark: #0f766e;   /* Teal 700 */
+  --color-primary-light: #2dd4bf;  /* Teal 400 */
+  --color-accent: #e11d48;         /* Rose 600 */
+  --color-accent-hover: #be123c;   /* Rose 700 */
   
-  --color-bg-dark: #020617;
-  --color-bg-darker: #000000;
+  /* Background Colors - Restored Slate (Previous) */
+  --color-bg-dark: #020617;        /* Slate 950 */
+  --color-bg-darker: #010413;      /* Deeper Slate */
   
-  /* Text Colors Optimized for Dark Mode (Light on Dark) */
-  --color-text-primary: #f8fafc;    /* Very Light */
-  --color-text-secondary: #cbd5e1;  /* Light Gray */
-  --color-text-muted: #94a3b8;      /* Mid-Light Gray - used for subtext */
+  /* Text Colors Optimized */
+  --color-text-primary: #f8fafc;    /* Slate 50 */
+  --color-text-secondary: #e2e8f0;  /* Slate 200 */
+  --color-text-muted: #94a3b8;      /* Slate 400 */
   
-  --color-glass: rgba(13, 148, 136, 0.15);
-  --color-glass-border: rgba(13, 148, 136, 0.3);
-  --color-nav-bg: rgba(2, 6, 23, 0.85);
-  --color-card-bg: rgba(15, 23, 42, 0.6);
+  --color-glass: rgba(16, 185, 129, 0.1);
+  --color-glass-border: rgba(16, 185, 129, 0.2);
+  --color-nav-bg: rgba(2, 44, 34, 0.9);
+  --color-card-bg: rgba(6, 78, 59, 0.4);
   
   /* Semantic Tokens */
   --color-success: #10b981;
@@ -38,18 +39,18 @@
 }
 
 [data-theme='light'] {
-  /* Core Colors - Light Mode */
-  --color-bg-dark: #ffffff;
-  --color-bg-darker: #f1f5f9;
+  /* Core Colors - Light Mode (Green & Red) */
+  --color-bg-dark: #f0fdf4;        /* Very Light Greenish White */
+  --color-bg-darker: #dcfce7;      /* Light Greenish Gray */
   
-  /* Text Colors Optimized for Light Mode (Dark on Light) */
-  --color-text-primary: #020617;    /* Deep Blue/Black */
-  --color-text-secondary: #334155;  /* Deep Gray */
-  --color-text-muted: #64748b;      /* Mid-Dark Gray - used for subtext */
+  /* Text Colors Optimized for Light Mode */
+  --color-text-primary: #064e3b;    /* Deep Forest Green */
+  --color-text-secondary: #065f46;  /* Deep Emerald */
+  --color-text-muted: #374151;      /* Deep Gray */
   
-  --color-glass: rgba(13, 148, 136, 0.08);
-  --color-glass-border: rgba(13, 148, 136, 0.25);
-  --color-nav-bg: rgba(255, 255, 255, 0.9);
+  --color-glass: rgba(16, 185, 129, 0.05);
+  --color-glass-border: rgba(16, 185, 129, 0.15);
+  --color-nav-bg: rgba(240, 253, 244, 0.9);
   --color-card-bg: #ffffff;
   
   /* Adjust semantic colors for light mode contrast */
@@ -144,7 +145,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 15px rgba(225, 29, 72, 0.15));
+    filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.15));
   }
 
   .text-gradient-primary {
@@ -165,8 +166,8 @@
   }
 
   .glass-card:hover {
-    border-color: rgba(225, 29, 72, 0.3);
-    box-shadow: 0 30px 60px rgba(225, 29, 72, 0.08);
+    border-color: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 30px 60px rgba(239, 68, 68, 0.08);
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -227,12 +228,12 @@
   .btn-primary {
     background-color: var(--color-accent);
     color: white !important;
-    box-shadow: 0 20px 40px rgba(225, 29, 72, 0.2);
+    box-shadow: 0 20px 40px rgba(239, 68, 68, 0.2);
   }
 
   .btn-primary:hover {
     background-color: var(--color-accent-hover);
-    box-shadow: 0 25px 50px rgba(225, 29, 72, 0.35);
+    box-shadow: 0 25px 50px rgba(239, 68, 68, 0.35);
   }
 
   .btn-outline {
@@ -243,8 +244,54 @@
 
   .btn-outline:hover {
     background-color: var(--color-glass);
-    border-color: rgba(225, 29, 72, 0.35);
+    border-color: rgba(239, 68, 68, 0.35);
     color: var(--color-accent);
+  }
+
+  .portal-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-glass-border);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    color: var(--color-text-primary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+  }
+
+  .portal-input:focus {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .portal-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+  }
+
+  .label-text {
+    display: block;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+    margin-left: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .portal-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.25rem center;
+    background-size: 1.25rem;
+    padding-right: 3rem;
   }
 }
 
@@ -282,7 +329,7 @@
 .page-wrapper {
   min-height: 100vh;
   display: flex;
-  flex-col: column;
+  flex-direction: column;
 }
 
 /* Hero Typography Optimization */
