@@ -41,7 +41,7 @@ const InternalBloodTypes = () => {
       setBloodTypes(btRes.data.results || btRes.data);
       setGlobalConfig(configRes.data);
     } catch (err) {
-      console.error('Registry sync failed:', err);
+      console.error('Database sync failed:', err);
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ const InternalBloodTypes = () => {
       setEditingId(null);
       fetchData();
     } catch (err) {
-      console.error('Asset update failed:', err);
+      console.error('Blood type update failed:', err);
     }
   };
 
@@ -71,11 +71,11 @@ const InternalBloodTypes = () => {
       setNewData({ group: '', base_price: 0, is_active: true });
       fetchData();
     } catch (err) {
-      console.error('Asset registration failed:', err);
+      console.error('Blood type registration failed:', err);
     }
   };
 
-  const activeAssets = bloodTypes.filter(b => b.is_active).length;
+  const activeTypes = bloodTypes.filter(b => b.is_active).length;
   const avgPrice = bloodTypes.length > 0 ? bloodTypes.reduce((acc, curr) => acc + parseFloat(curr.base_price), 0) / bloodTypes.length : 0;
 
   return (
@@ -95,14 +95,14 @@ const InternalBloodTypes = () => {
           className="w-full md:w-auto btn btn-primary px-8 py-4 rounded-xl md:rounded-[28px] flex items-center justify-center gap-4 shadow-xl shadow-primary/20 group"
         >
           <Plus size={18} />
-          <span className="font-black uppercase tracking-widest text-[10px]">Add Asset</span>
+          <span className="font-black uppercase tracking-widest text-[10px]">Add Blood Type</span>
         </button>
       </header>
 
       {/* Stats Dashboard */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
         {[
-          { label: 'Active Types', value: activeAssets, icon: Database, color: 'text-primary' },
+          { label: 'Active Types', value: activeTypes, icon: Database, color: 'text-primary' },
           { label: 'Avg Price', value: `₦${Math.round(avgPrice).toLocaleString()}`, icon: Coins, color: 'text-emerald-500' },
           { label: 'Integrity', value: 'SECURE', icon: ShieldCheck, color: 'text-blue-500' }
         ].map((stat, i) => (
@@ -121,7 +121,7 @@ const InternalBloodTypes = () => {
           <div className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-3xl md:rounded-[56px] overflow-hidden shadow-2xl relative">
             <div className="p-6 md:p-10 border-b border-glass-border bg-glass/20 flex items-center justify-between">
               <div>
-                <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Asset Overview</h3>
+                <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Blood Type Overview</h3>
                 <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest mt-1 opacity-60">Reference baseline pricing</p>
               </div>
               <button onClick={fetchData} className="p-3 md:p-4 bg-glass border border-glass-border rounded-xl text-text-muted">
@@ -135,7 +135,7 @@ const InternalBloodTypes = () => {
                 <thead>
                   <tr className="bg-glass/30 border-b border-glass-border">
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted">Group</th>
-                    <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-right">Base Ref</th>
+                    <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-right">Base Price</th>
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-center">Status</th>
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-right">Ops</th>
                   </tr>
@@ -257,9 +257,9 @@ const InternalBloodTypes = () => {
             </h3>
             <div className="space-y-6">
               {[
-                { title: 'Base Ref', text: 'Asset valuation minimum.' },
-                { title: 'Autonomy', text: 'Node pricing variance.' },
-                { title: 'Control', text: 'Restricted procurement.' }
+                { title: 'Base Price', text: 'Minimum price valuation reference.' },
+                { title: 'Autonomy', text: 'Pricing variance allowed for blood banks.' },
+                { title: 'Control', text: 'Access restriction parameters.' }
               ].map((item, i) => (
                 <div key={i} className="flex gap-4 group">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
@@ -284,9 +284,9 @@ const InternalBloodTypes = () => {
                <div className="flex justify-between items-start">
                   <div className="space-y-2 md:space-y-4">
                      <div className="inline-block px-3 py-1 bg-primary/10 border border-primary/20 rounded-lg">
-                        <span className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest">Asset Definition</span>
+                        <span className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest">Blood Type Definition</span>
                      </div>
-                     <h2 className="text-3xl md:text-5xl font-black text-text-primary uppercase tracking-tighter leading-none">Register <span className="text-primary">Asset</span></h2>
+                     <h2 className="text-3xl md:text-5xl font-black text-text-primary uppercase tracking-tighter leading-none">Register <span className="text-primary">Blood Type</span></h2>
                   </div>
                   <button onClick={() => setShowAddModal(false)} className="p-3 md:p-4 bg-glass border border-glass-border rounded-xl text-text-muted">
                      <X size={20} />
@@ -296,7 +296,7 @@ const InternalBloodTypes = () => {
               <form onSubmit={handleCreate} className="space-y-8 md:space-y-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
                   <div className="space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-text-muted ml-4">Identifier</label>
+                    <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-text-muted ml-4">Blood Group</label>
                     <input 
                       required
                       className="w-full bg-glass border-2 border-glass-border rounded-2xl md:rounded-[32px] py-5 md:py-8 px-6 md:px-10 text-2xl md:text-4xl font-black text-text-primary outline-none focus:border-primary transition-all uppercase"
@@ -327,7 +327,7 @@ const InternalBloodTypes = () => {
                     type="submit"
                     className="flex-1 bg-primary text-white py-5 md:py-8 rounded-2xl md:rounded-[32px] font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 flex items-center justify-center gap-3"
                   >
-                    <span>Register Asset</span>
+                    <span>Register Blood Type</span>
                     <ShieldCheck size={20} />
                   </button>
                   <button 
@@ -335,7 +335,7 @@ const InternalBloodTypes = () => {
                     onClick={() => setShowAddModal(false)}
                     className="sm:w-32 py-5 md:py-8 text-[10px] font-black uppercase tracking-widest text-text-muted border border-glass-border rounded-2xl md:rounded-[32px] bg-glass"
                   >
-                    Abort
+                    Cancel
                   </button>
                 </div>
               </form>

@@ -17,7 +17,9 @@ import {
   Package,
   X,
   AlertCircle,
-  ShieldAlert
+  ShieldAlert,
+  ChevronDown,
+  MapPin
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { inventoryApi, transactionApi, paymentApi, usersApi } from '../../api';
@@ -34,11 +36,28 @@ const HospitalMarketplace = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('ALL');
   const [currentUser, setCurrentUser] = useState(null);
+  
+  // Location states
+  const [locations, setLocations] = useState({ countries: [], states: [], cities: [] });
+  const [filters, setFilters] = useState({ country: '', state: '', city: '' });
+
+  useEffect(() => {
+    fetchLocations();
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     fetchMarketplace();
-    fetchUser();
-  }, []);
+  }, [filters]);
+
+  const fetchLocations = async () => {
+    try {
+      const res = await inventoryApi.getMarketplaceLocations();
+      setLocations(res.data);
+    } catch (err) {
+      console.error('Failed to fetch location filters');
+    }
+  };
 
   const fetchUser = async () => {
     try {
@@ -51,7 +70,12 @@ const HospitalMarketplace = () => {
 
   const fetchMarketplace = async () => {
     try {
-      const response = await inventoryApi.getMarketplace();
+      const params = {};
+      if (filters.country) params.country = filters.country;
+      if (filters.state) params.state = filters.state;
+      if (filters.city) params.city = filters.city;
+      
+      const response = await inventoryApi.getMarketplace(params);
       setItems(response.data);
     } catch (error) {
       toast.error('Failed to load marketplace data');
@@ -59,6 +83,22 @@ const HospitalMarketplace = () => {
       setLoading(false);
     }
   };
+
+  const handleFilterChange = (key, value) => {
+    setCart({}); // Reset cart on filter change to prevent inconsistent state
+    setFilters(prev => {
+      const updated = { ...prev, [key]: value };
+      if (key === 'country' && !value) {
+        updated.state = '';
+        updated.city = '';
+      }
+      if (key === 'state' && !value) {
+        updated.city = '';
+      }
+      return updated;
+    });
+  };
+
 
   const updateCart = (id, delta, max) => {
     if (!isVerified) {
@@ -119,7 +159,7 @@ const HospitalMarketplace = () => {
       }
 
     } catch (error) {
-      toast.error('Protocol failure: Order could not be initialized');
+      toast.error('Error: Order could not be initialized');
       setProcessingOrder(false);
     }
   };
@@ -137,7 +177,7 @@ const HospitalMarketplace = () => {
           <Loader2 className="w-16 h-16 text-accent animate-spin" />
           <Droplet className="w-6 h-6 text-accent absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted animate-pulse">Syncing Global Inventory...</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted animate-pulse">Updating Global Inventory...</p>
       </div>
     );
   }
@@ -166,7 +206,7 @@ const HospitalMarketplace = () => {
             Market<span className="text-gradient">place</span>
           </h1>
           <p className="text-text-secondary max-w-xl font-bold uppercase tracking-widest text-[10px] leading-relaxed opacity-60">
-            Secure procurement portal for clinical blood assets. Real-time inventory syncing across all verified supply nodes.
+            Secure procurement portal for blood inventory. Real-time updates across all verified blood banks.
           </p>
         </div>
 
@@ -205,6 +245,72 @@ const HospitalMarketplace = () => {
                {filter}
              </button>
            ))}
+         </div>
+      </div>
+
+      {/* Location Filter Bar */}
+      <div className="bg-card-bg/25 backdrop-blur-xl border border-glass-border p-6 rounded-[28px] grid grid-cols-1 sm:grid-cols-3 gap-6 shadow-sm">
+        {/* Country Select */}
+        <div className="flex flex-col gap-2 relative">
+          <label className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] pl-1 flex items-center gap-1.5">
+            <MapPin className="w-3 h-3 text-accent" />
+            Country
+          </label>
+          <div className="relative">
+            <select
+              value={filters.country}
+              onChange={(e) => handleFilterChange('country', e.target.value)}
+              className="w-full bg-glass border border-glass-border rounded-xl py-3.5 pl-4 pr-10 text-text-primary font-bold uppercase tracking-widest text-[10px] outline-none focus:border-accent/40 transition-all appearance-none cursor-pointer"
+            >
+              <option value="" className="bg-bg-darker text-text-muted">All Countries</option>
+              {locations.countries.map(c => (
+                <option key={c} value={c} className="bg-bg-darker text-text-primary">{c}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+          </div>
+        </div>
+
+        {/* State Select */}
+        <div className="flex flex-col gap-2 relative">
+          <label className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] pl-1 flex items-center gap-1.5">
+            <MapPin className="w-3 h-3 text-accent" />
+            State
+          </label>
+          <div className="relative">
+            <select
+              value={filters.state}
+              onChange={(e) => handleFilterChange('state', e.target.value)}
+              className="w-full bg-glass border border-glass-border rounded-xl py-3.5 pl-4 pr-10 text-text-primary font-bold uppercase tracking-widest text-[10px] outline-none focus:border-accent/40 transition-all appearance-none cursor-pointer"
+            >
+              <option value="" className="bg-bg-darker text-text-muted">All States</option>
+              {locations.states.map(s => (
+                <option key={s} value={s} className="bg-bg-darker text-text-primary">{s}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+          </div>
+        </div>
+
+        {/* City Select */}
+        <div className="flex flex-col gap-2 relative">
+          <label className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] pl-1 flex items-center gap-1.5">
+            <MapPin className="w-3 h-3 text-accent" />
+            City / Area
+          </label>
+          <div className="relative">
+            <select
+              value={filters.city}
+              onChange={(e) => handleFilterChange('city', e.target.value)}
+              className="w-full bg-glass border border-glass-border rounded-xl py-3.5 pl-4 pr-10 text-text-primary font-bold uppercase tracking-widest text-[10px] outline-none focus:border-accent/40 transition-all appearance-none cursor-pointer"
+            >
+              <option value="" className="bg-bg-darker text-text-muted">All Cities</option>
+              {locations.cities.map(c => (
+                <option key={c} value={c} className="bg-bg-darker text-text-primary">{c}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+          </div>
         </div>
       </div>
 
@@ -225,25 +331,26 @@ const HospitalMarketplace = () => {
               </div>
               
               <div className="relative z-10 flex flex-col flex-1 space-y-8">
-                {/* Card Header: Group & Status */}
-                <div className="flex justify-between items-center">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/10 flex items-center justify-center text-accent font-black text-2xl shadow-inner">
+                {/* Card Header: Blood Type Box */}
+                <div className="flex flex-col gap-3">
+                  <div className="w-full h-20 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 border border-accent/20 flex items-center justify-center text-accent font-black text-3xl shadow-inner tracking-tight">
                     {item.group}
                   </div>
                   {item.available_units > 0 ? (
-                    <div className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2">
-                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                       <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">{item.available_units} Units</span>
+                    <div className="w-full px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                      <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">{item.available_units} Units Available</span>
                     </div>
                   ) : (
-                    <div className="px-4 py-2 rounded-xl bg-accent/10 border border-accent/20 flex items-center gap-2">
-                       <AlertCircle className="w-3 h-3 text-accent" />
-                       <span className="text-[10px] font-black text-accent uppercase tracking-widest">Out of Stock</span>
+                    <div className="w-full px-4 py-2.5 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center gap-2">
+                      <AlertCircle className="w-3.5 h-3.5 text-accent shrink-0" />
+                      <span className="text-[10px] font-black text-accent uppercase tracking-widest">Out of Stock</span>
                     </div>
                   )}
                 </div>
 
                 {/* Price Section */}
+
                 <div className="space-y-1">
                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted opacity-60">Price per unit</p>
                   <h3 className="text-4xl font-black text-text-primary tracking-tighter">

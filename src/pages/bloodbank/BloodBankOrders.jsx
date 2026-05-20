@@ -12,7 +12,7 @@ import {
   Hospital as HospitalIcon,
   User,
   AlertCircle,
-  PackageCheck
+  Package
 } from 'lucide-react';
 import { transactionApi } from '../../api';
 import { useIsVerified } from '../../hooks/useIsVerified';
@@ -35,9 +35,11 @@ const BloodBankOrders = () => {
   const fetchOrders = async () => {
     try {
       const { data } = await transactionApi.listRequests();
-      setOrders(data.results || data);
+      const results = data ? (Array.isArray(data.results) ? data.results : Array.isArray(data) ? data : []) : [];
+      setOrders(results);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -60,7 +62,7 @@ const BloodBankOrders = () => {
 
   const tabs = [
     { id: 'PENDING', label: 'Incoming', icon: Clock },
-    { id: 'APPROVED', label: 'Processing', icon: PackageCheck },
+    { id: 'APPROVED', label: 'Processing', icon: Package },
     { id: 'DISPATCHED', label: 'In Transit', icon: Truck },
     { id: 'DELIVERED', label: 'Fulfilled', icon: CheckCircle2 },
   ];
@@ -103,7 +105,7 @@ const BloodBankOrders = () => {
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="p-32 flex flex-col items-center justify-center text-center opacity-30">
-            <PackageCheck className="w-20 h-20 mb-6 text-text-primary" />
+            <Package className="w-20 h-20 mb-6 text-text-primary" />
             <h3 className="text-2xl font-black text-text-primary uppercase tracking-tighter">No Orders</h3>
             <p className="text-sm font-bold uppercase tracking-widest mt-2">No {activeTab.toLowerCase()} orders at this time</p>
           </div>
@@ -135,7 +137,7 @@ const BloodBankOrders = () => {
                       </div>
                       <div>
                         <p className="font-black text-text-primary uppercase tracking-tighter">{order.patient_name || 'Emergency Patient'}</p>
-                        <p className="text-[10px] text-text-muted uppercase tracking-widest truncate max-w-[200px]">{order.hospital_location || 'Not Specified'}</p>
+                        <p className="text-[10px] text-text-muted uppercase tracking-widest">{order.hospital_location || 'Not Specified'}</p>
                       </div>
                     </div>
                   </td>
@@ -187,7 +189,7 @@ const BloodBankOrders = () => {
               <div className="flex justify-between items-start mb-12">
                 <div>
                   <h2 className="text-4xl font-black text-text-primary uppercase tracking-tighter mb-2">Request <span className="text-gradient">Detail</span></h2>
-                  <p className="text-text-secondary text-[10px] font-black uppercase tracking-[0.3em]">Protocol ID: #{selectedOrder.id.slice(0,8)}</p>
+                  <p className="text-text-secondary text-[10px] font-black uppercase tracking-[0.3em]">Order ID: #{selectedOrder.id ? String(selectedOrder.id).slice(0, 8) : ''}</p>
                 </div>
                 <div className="w-20 h-20 bg-accent rounded-3xl flex flex-col items-center justify-center text-white">
                   <span className="text-2xl font-black">{selectedOrder.blood_group}</span>

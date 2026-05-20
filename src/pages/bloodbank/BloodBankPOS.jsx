@@ -108,7 +108,7 @@ const POSItem = ({ item, addToCart, removeFromCart, cart, isVerified }) => {
            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3 border border-primary/20">
               <ShieldCheck size={24} className="text-primary" />
            </div>
-           <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Node Unverified</p>
+           <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Facility Unverified</p>
         </div>
       )}
     </motion.div>
@@ -266,7 +266,7 @@ const BloodBankPOS = () => {
                 <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-1">Network Status</p>
                 <div className="flex items-center gap-2">
                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                   <span className="text-[10px] font-black uppercase tracking-widest text-text-secondary">Synchronized</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-text-secondary">Updated</span>
                 </div>
              </div>
              <div className="flex flex-col">
@@ -320,14 +320,14 @@ const BloodBankPOS = () => {
                 <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-text-muted group-focus-within:text-primary transition-all duration-300" />
                 <input 
                   type="text" 
-                  placeholder="Initiate asset search..."
+                  placeholder="Search blood group..."
                   className="w-full bg-glass/10 border border-glass-border rounded-[32px] py-6 pl-20 pr-8 text-xl font-black placeholder:text-text-muted/30 outline-none focus:border-primary/40 focus:bg-bg-dark/40 transition-all shadow-2xl shadow-black/10 backdrop-blur-xl"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <div className="flex gap-4 shrink-0">
-                <button className="px-10 py-6 bg-primary text-bg-dark rounded-[24px] text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">All Modules</button>
+                <button className="px-10 py-6 bg-primary text-bg-dark rounded-[24px] text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">All Blood Groups</button>
                 <button className="px-10 py-6 bg-glass/10 border border-glass-border text-text-muted rounded-[24px] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-glass/20 transition-all">Priority</button>
               </div>
             </div>
@@ -376,7 +376,7 @@ const BloodBankPOS = () => {
                     </div>
                   </div>
                   <p className="text-[11px] font-black uppercase tracking-[0.5em] text-text-muted max-w-[220px] leading-relaxed">
-                    System Standby.<br/>Select Assets To Begin.
+                    System Standby.<br/>Select blood groups to begin.
                   </p>
                 </div>
               ) : (
@@ -396,7 +396,7 @@ const BloodBankPOS = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start mb-1">
-                            <p className="text-[10px] font-black text-text-muted uppercase tracking-widest truncate">Asset Package</p>
+                            <p className="text-[10px] font-black text-text-muted uppercase tracking-widest truncate">Blood Unit</p>
                             <p className="text-sm font-black text-primary tabular-nums">₦{(parseFloat(item.price) * item.cartQuantity).toLocaleString()}</p>
                           </div>
                           <p className="text-sm font-black text-text-primary mb-4 tracking-tight">₦{parseFloat(item.price).toLocaleString()} <span className="text-[10px] text-text-muted px-1">/ UNIT</span></p>
@@ -444,7 +444,7 @@ const BloodBankPOS = () => {
             <div className="mt-auto space-y-8 pt-10 border-t border-glass-border/30">
               <div className="space-y-4">
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-text-muted px-2">
-                  <span>Gross Assets ({totalUnits})</span>
+                  <span>Total Units ({totalUnits})</span>
                   <span className="text-text-primary tabular-nums">₦{totalAmount.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-text-muted px-2">
@@ -475,7 +475,7 @@ const BloodBankPOS = () => {
                   ) : (
                     <>
                       <ShieldCheck size={20} className={isVerified ? 'text-bg-dark' : 'text-text-muted'} />
-                      <span className="relative z-10">{isVerified ? 'Execute Transaction' : 'Verify Node'}</span>
+                      <span className="relative z-10">{isVerified ? 'Execute Transaction' : 'Verify Facility'}</span>
                     </>
                   )}
                 </button>
@@ -522,7 +522,7 @@ const BloodBankPOS = () => {
                         </div>
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-3">
-                            <p className="text-sm font-black text-text-primary">Asset Unit</p>
+                            <p className="text-sm font-black text-text-primary">Blood Unit</p>
                             <p className="text-sm font-black text-primary">₦{(parseFloat(item.price) * item.cartQuantity).toLocaleString()}</p>
                           </div>
                           <div className="flex items-center justify-between">

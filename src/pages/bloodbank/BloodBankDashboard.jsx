@@ -149,7 +149,7 @@ const BloodBankDashboard = () => {
           </h1>
           <p className="text-text-secondary mt-2 flex items-center gap-2 font-bold uppercase tracking-widest text-[10px] opacity-70">
             <Activity className="w-3 h-3 text-emerald-500" />
-            System Status: Operational | Facility Node
+            System Status: Operational | Facility
           </p>
         </div>
       </header>
@@ -229,7 +229,7 @@ const BloodBankDashboard = () => {
                 <div className="p-3 bg-accent/20 rounded-2xl">
                   <Zap className="w-6 h-6 text-accent animate-pulse" />
                 </div>
-                <h2 className="text-3xl font-black text-text-primary tracking-tighter uppercase">Operator <span className="text-gradient">Briefing</span></h2>
+                <h2 className="text-3xl font-black text-text-primary tracking-tighter uppercase">Operator <span className="text-gradient">Welcome</span></h2>
               </div>
               
               <div className="space-y-6 mb-12">
@@ -254,7 +254,7 @@ const BloodBankDashboard = () => {
                 onClick={dismissOnboarding}
                 className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 uppercase font-black tracking-widest"
               >
-                Enter Command Center
+                Enter Dashboard
               </button>
             </div>
           </div>

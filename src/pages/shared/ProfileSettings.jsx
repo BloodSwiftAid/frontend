@@ -201,13 +201,13 @@ const ProfileSettings = () => {
                   <input 
                     type="email" 
                     value={profile.email}
-                    onChange={(e) => setProfile({...profile, email: e.target.value})}
-                    className="w-full bg-glass/30 border border-glass-border rounded-2xl py-5 pl-14 pr-6 text-sm font-black text-text-primary outline-none focus:border-primary/40 focus:bg-primary/5 transition-all"
+                    onChange={(e) => setProfile({...profile, email: e.target.value.toLowerCase()})}
+                    className="w-full bg-glass/30 border border-glass-border rounded-2xl py-5 pl-14 pr-6 text-sm font-black text-text-primary outline-none focus:border-primary/40 focus:bg-primary/5 transition-all lowercase"
                   />
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-2">Contact Telemetry</label>
+                <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-2">Phone Number</label>
                 <div className="relative group">
                   <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-primary transition-colors" />
                   <input 
@@ -224,7 +224,7 @@ const ProfileSettings = () => {
                   className="w-full md:w-auto px-10 py-5 bg-primary text-white rounded-2xl shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group active:scale-95 transition-all"
                 >
                   <Save size={18} className="group-hover:scale-110 transition-transform" />
-                  <span className="font-black uppercase tracking-[0.2em] text-[10px]">Synchronize Profile</span>
+                  <span className="font-black uppercase tracking-[0.2em] text-[10px]">Update</span>
                 </button>
               </div>
             </form>
@@ -237,14 +237,14 @@ const ProfileSettings = () => {
                 <Lock size={24} className="text-accent" />
               </div>
               <div>
-                <h3 className="text-xl md:text-2xl font-black text-text-primary uppercase tracking-tighter leading-none">Security Override</h3>
+                <h3 className="text-xl md:text-2xl font-black text-text-primary uppercase tracking-tighter leading-none">Update Password</h3>
                 <p className="text-[10px] font-black text-text-secondary uppercase tracking-widest mt-1 opacity-60">Update authentication credentials</p>
               </div>
             </div>
 
             <form onSubmit={handlePasswordChange} className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-2">New Security Key</label>
+                <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-2">New Password</label>
                 <div className="relative group">
                   <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-accent transition-colors" />
                   <input 
@@ -256,7 +256,7 @@ const ProfileSettings = () => {
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-2">Confirm Key</label>
+                <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-2">Confirm Password</label>
                 <div className="relative group">
                   <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-accent transition-colors" />
                   <input 
@@ -273,7 +273,7 @@ const ProfileSettings = () => {
                   className="w-full md:w-auto px-10 py-5 bg-glass border border-accent/30 text-accent rounded-2xl flex items-center justify-center gap-3 group active:scale-95 hover:bg-accent hover:text-white transition-all"
                 >
                   <Lock size={18} className="group-hover:rotate-12 transition-transform" />
-                  <span className="font-black uppercase tracking-[0.2em] text-[10px]">Authorize Password Update</span>
+                  <span className="font-black uppercase tracking-[0.2em] text-[10px]">Update Password</span>
                 </button>
               </div>
             </form>

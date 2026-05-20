@@ -46,7 +46,7 @@ const HospitalUserManagement = () => {
       const userData = Array.isArray(response.data) ? response.data : (response.data.results || []);
       setUsers(userData);
     } catch (error) {
-      toast.error('Failed to load personnel registry');
+      toast.error('Failed to load staff directory');
       setUsers([]);
     } finally {
       setLoading(false);
@@ -56,7 +56,7 @@ const HospitalUserManagement = () => {
   const handleCreateUser = async (e) => {
     e.preventDefault();
     if (!isVerified) {
-      toast.error('Verification required for personnel management');
+      toast.error('Verification required for staff management');
       return;
     }
     setLoading(true);
@@ -108,7 +108,7 @@ const HospitalUserManagement = () => {
     if (!isVerified) return;
     try {
       await usersApi.toggleStaffVerified(user.id);
-      toast.success(user.is_verified ? 'Verification revoked' : 'Personnel verified');
+      toast.success(user.is_verified ? 'Verification revoked' : 'Staff verified');
       fetchUsers();
     } catch (error) {
       toast.error('Failed to update verification status');
@@ -138,10 +138,10 @@ const HospitalUserManagement = () => {
     <div className="p-8 md:p-12 space-y-12 animate-fade-in relative z-10">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">User <span className="text-gradient">Registry</span></h1>
+          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">Staff <span className="text-gradient">Directory</span></h1>
           <p className="text-text-secondary mt-2 flex items-center gap-2 font-bold uppercase tracking-widest text-[10px] opacity-70">
             <ShieldCheck className="w-3 h-3 text-emerald-500" />
-            Authorized Hospital Personnel
+            Authorized Hospital Staff
           </p>
         </div>
         <button 
@@ -157,7 +157,7 @@ const HospitalUserManagement = () => {
       <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border rounded-[48px] p-10">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12">
           <div className="flex flex-col gap-1">
-            <h2 className="text-3xl font-black text-text-primary uppercase tracking-tighter">Personnel Directory</h2>
+            <h2 className="text-3xl font-black text-text-primary uppercase tracking-tighter">Staff Directory</h2>
             <p className="text-text-secondary font-bold text-[10px] uppercase tracking-widest">Manage hospital staff access levels</p>
           </div>
           
@@ -262,7 +262,7 @@ const HospitalUserManagement = () => {
               <div className="flex justify-between items-center">
                 <div>
                   <h2 className="text-4xl font-black text-text-primary tracking-tighter uppercase">{editingUser ? 'Update User' : 'Add New User'}</h2>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mt-2">Hospital Personnel Provisioning</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mt-2">Hospital Staff Management</p>
                 </div>
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/20">
                   {editingUser ? <Edit2 className="w-8 h-8" /> : <Plus className="w-8 h-8" />}
@@ -300,7 +300,7 @@ const HospitalUserManagement = () => {
                 <div className="space-y-4">
                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted ml-2">Email Address</label>
                   <input 
-                    className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-primary transition-all font-black"
+                    className="w-full bg-glass border border-glass-border rounded-[20px] px-8 py-5 text-text-primary outline-none focus:border-primary transition-all font-black lowercase"
                     type="email"
                     value={newUser.email}
                     onChange={(e) => setNewUser({...newUser, email: e.target.value})}

@@ -82,7 +82,7 @@ const PricingInsights = () => {
           <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase">Revenue <span className="text-gradient">Insights</span></h1>
           <p className="text-text-secondary mt-2 flex items-center gap-2 font-bold uppercase tracking-widest text-[10px]">
             <DollarSign className="w-3 h-3 text-emerald-500" />
-            Biological Asset Valuation & Unit Pricing
+            Blood Stock Valuation & Unit Pricing
           </p>
         </div>
         <button 
@@ -95,7 +95,7 @@ const PricingInsights = () => {
           ) : (
             <>
               <Save className="w-5 h-5 transition-transform group-hover:scale-110" />
-              <span className="font-bold tracking-tight uppercase tracking-widest text-[11px]">{isVerified ? 'Deploy Pricing' : 'Pricing Restricted'}</span>
+              <span className="font-bold tracking-tight uppercase tracking-widest text-[11px]">{isVerified ? 'Save Pricing' : 'Pricing Restricted'}</span>
             </>
           )}
         </button>
@@ -107,12 +107,12 @@ const PricingInsights = () => {
             <div className="p-10 border-b border-glass-border bg-glass/20 flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-black text-text-primary uppercase tracking-tight">Price Configuration</h3>
-                <p className="text-[10px] text-text-secondary font-bold uppercase tracking-widest mt-1">Set unit base rates for biological fulfillment</p>
+                <p className="text-[10px] text-text-secondary font-bold uppercase tracking-widest mt-1">Set unit base rates for blood distribution</p>
               </div>
               {success && (
                 <div className="flex items-center gap-2 text-emerald-500 animate-bounce">
                   <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Database Updated</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Pricing Updated</span>
                 </div>
               )}
             </div>
@@ -140,8 +140,8 @@ const PricingInsights = () => {
                               {item.blood_group}
                             </div>
                             <div>
-                              <p className="font-black text-text-primary text-lg leading-none">{item.blood_group} Asset</p>
-                              <p className="text-[10px] text-text-muted uppercase tracking-widest font-bold mt-1.5">Whole Biological Unit</p>
+                              <p className="font-black text-text-primary text-lg leading-none">{item.blood_group} Stock</p>
+                              <p className="text-[10px] text-text-muted uppercase tracking-widest font-bold mt-1.5">Whole Blood Unit</p>
                             </div>
                           </div>
                         </td>
@@ -176,7 +176,7 @@ const PricingInsights = () => {
              <div className="relative z-10">
                <h3 className="text-xl font-black text-text-primary uppercase tracking-tight mb-4">Pricing Strategy</h3>
                <p className="text-sm text-text-secondary leading-relaxed mb-6">
-                 Set competitive but sustainable pricing for your biological assets. These rates will be visible to clinical facilities in the marketplace.
+                 Set competitive but sustainable pricing for your blood stock. These rates will be visible to clinical facilities in the marketplace.
                </p>
                <div className="space-y-4">
                  <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5">
@@ -194,7 +194,7 @@ const PricingInsights = () => {
             </h3>
             <ul className="space-y-4">
               {[
-                'Prices are per single biological unit (approx 450ml).',
+                'Prices are per single blood unit (approx 450ml).',
                 'Updates reflect instantly on the marketplace portal.',
                 'Ensure pricing covers facility overhead and logistics.',
                 'Promotional rates can be adjusted manually here.'

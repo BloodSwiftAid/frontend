@@ -95,7 +95,7 @@ const AdminPayouts = () => {
           </h1>
           <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary flex items-center gap-2">
             <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-            Payout Management Protocol
+            Payout Directory
           </p>
         </div>
         
@@ -113,7 +113,7 @@ const AdminPayouts = () => {
             className="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-primary text-white px-8 py-4 rounded-xl md:rounded-2xl hover:scale-105 transition-all shadow-xl shadow-primary/20"
           >
             <ArrowUpRight size={16} />
-            <span className="text-[10px] font-black uppercase tracking-widest">Initiate</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">Request Payout</span>
           </button>
         </div>
       </header>
@@ -140,7 +140,7 @@ const AdminPayouts = () => {
          <div className="p-6 md:p-10 border-b border-glass-border flex justify-between items-center bg-glass/20">
           <div>
             <h2 className="text-xl md:text-3xl font-black text-text-primary uppercase tracking-tighter">Payout History</h2>
-            <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest mt-1 md:mt-2">Cross-facility telemetry</p>
+            <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest mt-1 md:mt-2">Cross-facility overview</p>
           </div>
           <button className="p-3 bg-glass border border-glass-border rounded-xl text-text-muted">
             <Download size={18} />
@@ -208,10 +208,15 @@ const AdminPayouts = () => {
               <div key={i} className="bg-glass/50 border border-glass-border rounded-2xl p-5 space-y-4">
                  <div className="flex justify-between items-start">
                     <div className="min-w-0">
-                       <p className="text-base font-black text-text-primary uppercase tracking-tight truncate">
+                       <p 
+                          className="font-black text-text-primary uppercase tracking-tight"
+                          style={{ 
+                            fontSize: (payout.is_internal_admin ? 'Treasury (Platform)' : (payout.blood_bank_name || 'Network Node')).length > 20 ? '0.875rem' : '1rem' 
+                          }}
+                       >
                           {payout.is_internal_admin ? 'Treasury (Platform)' : (payout.blood_bank_name || 'Network Node')}
                        </p>
-                       <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mt-1 truncate">Ref: {payout.transaction_reference}</p>
+                       <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mt-1">Ref: {payout.transaction_reference}</p>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
                        payout.status === 'SUCCESS' ? 'bg-emerald-500/10 text-emerald-500' :
@@ -248,8 +253,8 @@ const AdminPayouts = () => {
             <div className="absolute top-0 left-0 w-full h-1.5 bg-primary" />
             
             <header className="mb-8 md:mb-12">
-              <h2 className="text-2xl md:text-3xl font-black text-text-primary uppercase tracking-tighter">Initiate Settlement</h2>
-              <p className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest mt-2">Treasury disbursement authorization</p>
+              <h2 className="text-2xl md:text-3xl font-black text-text-primary uppercase tracking-tighter">Request Payout</h2>
+              <p className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest mt-2">Submit a payout request to your bank account</p>
             </header>
 
             <form onSubmit={handleRequestPayout} className="space-y-6 md:space-y-8">
@@ -295,7 +300,7 @@ const AdminPayouts = () => {
                   disabled={processing || !bankDetails.length || parseFloat(payoutAmount) < 1000}
                   className="flex-1 bg-primary text-white font-black py-5 md:py-6 rounded-xl md:rounded-2xl uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 disabled:grayscale disabled:opacity-50 flex items-center justify-center"
                 >
-                  {processing ? <Loader2 className="w-5 h-5 animate-spin" /> : "Authorize Settlement"}
+                  {processing ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Payout Request"}
                 </button>
                 <button 
                   type="button" 
@@ -310,8 +315,8 @@ const AdminPayouts = () => {
             <div className="mt-8 p-5 bg-amber-500/5 border border-amber-500/20 rounded-2xl flex items-start gap-4">
                <AlertCircle size={18} className="text-amber-500 shrink-0" />
                <p className="text-[8px] font-black text-text-secondary uppercase leading-relaxed opacity-80">
-                 Immediate fund transfer via Paystack infrastructure. 
-                 Final settlement relies on gateway verification.
+                 Immediate transfer via Paystack payment gateway. 
+                 Completed once processed by bank.
                </p>
             </div>
           </div>

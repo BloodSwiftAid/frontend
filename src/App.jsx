@@ -148,8 +148,8 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
             <div>
               <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Legal</h4>
               <ul className="space-y-4 text-sm text-text-secondary">
-                <li><Link to="/privacy" className="hover:text-accent transition-colors">Privacy Protocol</Link></li>
-                <li><Link to="/terms" className="hover:text-accent transition-colors">Terms of Engagement</Link></li>
+                <li><Link to="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="hover:text-accent transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>

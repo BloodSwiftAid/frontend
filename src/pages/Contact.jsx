@@ -43,7 +43,7 @@ const Contact = () => {
                     <Mail className="w-7 h-7" />
                   </div>
                   <div>
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Protocol Link</h4>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Email Address</h4>
                     <p className="text-xl font-black text-text-primary uppercase tracking-tight">contact@swiftaid.ng</p>
                   </div>
                 </div>
@@ -63,8 +63,8 @@ const Contact = () => {
                     <MapPin className="w-7 h-7" />
                   </div>
                   <div>
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Node Headquarters</h4>
-                    <p className="text-xl font-black text-text-primary uppercase tracking-tight">Lagos Cluster, NG</p>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Headquarters</h4>
+                    <p className="text-xl font-black text-text-primary uppercase tracking-tight">Lagos, Nigeria</p>
                   </div>
                 </div>
               </div>
@@ -84,14 +84,14 @@ const Contact = () => {
                       <Send className="w-10 h-10" />
                     </div>
                     <div>
-                      <h3 className="text-3xl font-black text-text-primary uppercase tracking-tighter mb-4">Transmission Successful</h3>
-                      <p className="text-text-secondary">Your inquiry has been routed to our emergency coordination team. Response time: &lt; 2 hours.</p>
+                      <h3 className="text-3xl font-black text-text-primary uppercase tracking-tighter mb-4">Submission Successful</h3>
+                      <p className="text-text-secondary">Your inquiry has been routed to our support coordination team. Response time: &lt; 2 hours.</p>
                     </div>
                     <button 
                       onClick={() => setSubmitted(false)}
                       className="btn btn-outline px-10 py-4 rounded-2xl text-xs"
                     >
-                      New Transmission
+                      New Submission
                     </button>
                   </motion.div>
                 ) : (
@@ -101,7 +101,7 @@ const Contact = () => {
                         <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Full Name</label>
                         <input 
                           type="text" 
-                          placeholder="Your identity" 
+                          placeholder="Your name" 
                           className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" 
                           required 
                         />
@@ -110,7 +110,7 @@ const Contact = () => {
                         <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Work Email</label>
                         <input 
                           type="email" 
-                          placeholder="facility@protocol.ng" 
+                          placeholder="facility@swiftaid.ng" 
                           className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" 
                           required 
                         />
@@ -118,7 +118,7 @@ const Contact = () => {
                     </div>
                     
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Subject Vector</label>
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Subject</label>
                       <input 
                         type="text" 
                         placeholder="Purpose of inquiry" 
@@ -128,7 +128,7 @@ const Contact = () => {
                     </div>
                     
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Message Payload</label>
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary ml-1">Message</label>
                       <textarea 
                         rows="5" 
                         placeholder="Detailed inquiry..." 
@@ -146,7 +146,7 @@ const Contact = () => {
                         <Loader2 className="animate-spin w-6 h-6" />
                       ) : (
                         <>
-                          <span className="text-lg font-black uppercase tracking-widest">Transmit Inquiry</span>
+                          <span className="text-lg font-black uppercase tracking-widest">Send Message</span>
                           <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         </>
                       )}

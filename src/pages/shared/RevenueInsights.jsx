@@ -182,7 +182,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
             <div className="lg:col-span-2 bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] space-y-6 md:space-y-8 shadow-sm">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Growth Telemetry</h3>
+                  <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Growth Overview</h3>
                   <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest mt-1">Historical Performance Index</p>
                 </div>
                 <div className="flex gap-4">
@@ -235,14 +235,14 @@ const RevenueInsights = ({ isAdmin = false }) => {
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <EmptyState icon={BarChartIcon} title="No Analytics" description="Insufficient telemetry data." />
+                  <EmptyState icon={BarChartIcon} title="No Analytics" description="Insufficient performance data." />
                 )}
               </div>
             </div>
 
             <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] space-y-6 md:space-y-8">
                <div>
-                  <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Asset Yield</h3>
+                  <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Earnings Breakdown</h3>
                   <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest mt-1">Earnings per Blood Group</p>
                </div>
 
@@ -274,7 +274,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <EmptyState icon={PieChartIcon} title="No Data" description="Asset distribution inactive." />
+                  <EmptyState icon={PieChartIcon} title="No Data" description="Earnings distribution is inactive." />
                 )}
                </div>
 
@@ -292,14 +292,14 @@ const RevenueInsights = ({ isAdmin = false }) => {
             </div>
           </div>
 
-          {isAdmin && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-               <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] space-y-6 md:space-y-8">
-                  <div>
-                    <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Sales Split</h3>
-                    <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest mt-1">Market vs POS</p>
-                  </div>
-                  <div className="h-[250px] md:h-[300px] w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+             <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] space-y-6 md:space-y-8">
+                <div>
+                  <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tight">Sales Split</h3>
+                  <p className="text-[8px] md:text-[10px] text-text-muted font-black uppercase tracking-widest mt-1">Market vs POS</p>
+                </div>
+                <div className="h-[250px] md:h-[300px] w-full">
+                  {chartData.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--color-text-muted)" strokeOpacity={0.05} vertical={false} />
@@ -310,37 +310,46 @@ const RevenueInsights = ({ isAdmin = false }) => {
                         <Bar dataKey="pos" fill="#3b82f6" radius={[8, 8, 0, 0]} name="POS" />
                       </BarChart>
                     </ResponsiveContainer>
-                  </div>
-               </div>
+                  ) : (
+                    <EmptyState icon={BarChartIcon} title="No Split Data" description="Insufficient split performance data." />
+                  )}
+                </div>
+             </div>
 
-               <div className="bg-bg-darker border border-glass-border p-8 md:p-12 rounded-3xl md:rounded-[48px] flex flex-col justify-center space-y-8 md:space-y-10 shadow-2xl relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
-                  <div className="text-center space-y-3 md:space-y-4 relative z-10">
-                     <div className="inline-block px-4 py-1 bg-primary/10 border border-primary/20 rounded-full">
-                        <span className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest">Efficiency</span>
-                     </div>
-                     <h2 className="text-5xl md:text-7xl font-black text-text-primary uppercase tracking-tighter">
-                       {stats?.total_revenue > 0 ? ((stats?.total_profit / stats?.total_revenue) * 100).toFixed(1) : 0}%
-                     </h2>
-                     <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">Performance Index</p>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
-                     <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2">
-                        <span className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest">Marketplace</span>
-                        <div className="text-lg md:text-2xl font-black text-text-primary tracking-tight">
-                          ₦{chartData.reduce((acc, curr) => acc + curr.market, 0).toLocaleString()}
-                        </div>
-                     </div>
-                     <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2">
-                        <span className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest">Direct POS</span>
-                        <div className="text-lg md:text-2xl font-black text-text-primary tracking-tight">
-                          ₦{chartData.reduce((acc, curr) => acc + curr.pos, 0).toLocaleString()}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-          )}
+             <div className="bg-bg-darker border border-glass-border p-8 md:p-12 rounded-3xl md:rounded-[48px] flex flex-col justify-center space-y-8 md:space-y-10 shadow-2xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+                <div className="text-center space-y-3 md:space-y-4 relative z-10">
+                   <div className="inline-block px-4 py-1 bg-primary/10 border border-primary/20 rounded-full">
+                      <span className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest">
+                        {isAdmin ? "Efficiency" : "Marketplace Share"}
+                      </span>
+                   </div>
+                   <h2 className="text-5xl md:text-7xl font-black text-text-primary uppercase tracking-tighter">
+                     {isAdmin 
+                       ? (stats?.total_revenue > 0 ? ((stats?.total_profit / stats?.total_revenue) * 100).toFixed(1) : 0)
+                       : (stats?.total_revenue > 0 ? ((chartData.reduce((acc, curr) => acc + curr.market, 0) / stats?.total_revenue) * 100).toFixed(1) : 0)
+                     }%
+                   </h2>
+                   <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-widest">
+                     {isAdmin ? "Performance Index" : "Digital Conversion Index"}
+                   </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                   <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2">
+                      <span className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest">Marketplace</span>
+                      <div className="text-lg md:text-2xl font-black text-text-primary tracking-tight">
+                        ₦{chartData.reduce((acc, curr) => acc + curr.market, 0).toLocaleString()}
+                      </div>
+                   </div>
+                   <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2">
+                      <span className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest">Direct POS</span>
+                      <div className="text-lg md:text-2xl font-black text-text-primary tracking-tight">
+                        ₦{chartData.reduce((acc, curr) => acc + curr.pos, 0).toLocaleString()}
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
         </div>
       ) : (
         <FacilityRevenueInsights stats={stats} />

@@ -164,7 +164,7 @@ const HospitalTransactions = () => {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center space-y-4">
         <Loader2 className="w-12 h-12 text-accent animate-spin" />
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted">Syncing Audit Logs...</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted">Updating Audit Logs...</p>
       </div>
     );
   }
@@ -186,7 +186,7 @@ const HospitalTransactions = () => {
             Procurement <span className="text-gradient">Logs</span>
           </h1>
           <p className="text-text-secondary max-w-xl font-bold uppercase tracking-widest text-[10px] leading-relaxed opacity-60">
-            Historical archive of all clinical asset acquisitions. Every transaction is indexed with full pricing model transparency.
+            Historical archive of all blood supply orders. Every transaction is indexed with full pricing model transparency.
           </p>
         </div>
 
@@ -207,8 +207,8 @@ const HospitalTransactions = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-glass/50 border-b border-glass-border">
-                <th className="px-8 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Protocol ID</th>
-                <th className="px-8 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Asset Detail</th>
+                <th className="px-8 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Order ID</th>
+                <th className="px-8 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Blood Details</th>
                 <th className="px-8 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Quantity</th>
                 <th className="px-8 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Revenue</th>
                 <th className="px-8 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Status</th>

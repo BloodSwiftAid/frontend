@@ -137,7 +137,12 @@ const AdminBankDetails = () => {
                         <Building2 size={24} className="md:w-8 md:h-8" />
                       </div>
                       <div className="min-w-0">
-                        <h4 className="text-lg md:text-xl font-black text-text-primary tracking-tight uppercase truncate">{bank.bank_name}</h4>
+                        <h4 
+                          className="font-black text-text-primary tracking-tight uppercase"
+                          style={{ fontSize: (bank.bank_name || '').length > 20 ? '1rem' : '1.125rem' }}
+                        >
+                          {bank.bank_name}
+                        </h4>
                         <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-1">
                           <p className="text-xs md:text-sm font-mono text-text-muted font-bold tracking-widest">{bank.account_number}</p>
                           <span className="hidden sm:block w-1 h-1 rounded-full bg-text-muted opacity-30" />
@@ -145,7 +150,12 @@ const AdminBankDetails = () => {
                             <CheckCircle2 size={12} /> Verified
                           </p>
                         </div>
-                        <p className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest mt-2 md:mt-3 opacity-60 truncate">{bank.account_name}</p>
+                        <p 
+                          className="font-black text-text-muted uppercase tracking-widest mt-2 md:mt-3 opacity-60"
+                          style={{ fontSize: (bank.account_name || '').length > 25 ? '7px' : '9px' }}
+                        >
+                          {bank.account_name}
+                        </p>
                       </div>
                     </div>
                     
@@ -172,13 +182,13 @@ const AdminBankDetails = () => {
           <section className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-3xl md:rounded-[48px] p-6 md:p-10 shadow-2xl relative overflow-hidden">
             <div className="relative z-10">
               <div className="flex justify-between items-center mb-8 md:mb-10">
-                <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tighter">Provision Hub</h3>
+                <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tighter">Add Bank Account</h3>
                 <button onClick={() => setShowAdd(false)} className="text-[9px] font-black text-text-muted uppercase tracking-widest hover:text-accent transition-all">Discard</button>
               </div>
 
               <form onSubmit={handleAdd} className="space-y-6 md:space-y-8">
                 <div className="space-y-2 md:space-y-4">
-                  <label className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest ml-4">Institution Protocol</label>
+                  <label className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest ml-4">Select Bank</label>
                   <select 
                     required
                     onChange={(e) => {
@@ -187,14 +197,14 @@ const AdminBankDetails = () => {
                     }}
                     className="w-full bg-bg-darker/50 border-2 border-glass-border rounded-xl md:rounded-2xl px-6 py-4 md:py-5 text-[11px] md:text-sm font-bold text-text-primary focus:border-primary outline-none appearance-none"
                   >
-                    <option value="">Select Gateway Partner</option>
+                    <option value="">Select Bank</option>
                     {availableBanks.map(b => <option key={b.code} value={b.code}>{b.name}</option>)}
                   </select>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2 md:space-y-4">
-                    <label className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest ml-4">Identifier</label>
+                    <label className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest ml-4">Account Number</label>
                     <input 
                       required
                       placeholder="0123456789"
@@ -204,7 +214,7 @@ const AdminBankDetails = () => {
                     />
                   </div>
                   <div className="space-y-2 md:space-y-4">
-                    <label className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest ml-4">Legal Name</label>
+                    <label className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-widest ml-4">Account Name</label>
                     <input 
                       required
                       placeholder="ENTITY NAME"
@@ -220,7 +230,7 @@ const AdminBankDetails = () => {
                   disabled={processing}
                   className="w-full bg-primary text-white font-black py-5 md:py-6 rounded-xl md:rounded-2xl uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 flex items-center justify-center"
                 >
-                  {processing ? <Loader2 size={20} className="animate-spin" /> : "Authorize Registry"}
+                  {processing ? <Loader2 size={20} className="animate-spin" /> : "Save Bank Details"}
                 </button>
               </form>
             </div>

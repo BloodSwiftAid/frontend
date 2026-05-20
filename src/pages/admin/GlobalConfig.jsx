@@ -71,7 +71,7 @@ const GlobalConfigPage = () => {
         </h1>
         <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary flex items-center gap-2">
           <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-          Core System Governance Protocol
+          Core System Settings
         </p>
       </header>
 
@@ -145,7 +145,7 @@ const GlobalConfigPage = () => {
                   type="email"
                   value={config.contact_email}
                   onChange={(e) => setConfig({...config, contact_email: e.target.value})}
-                  className="w-full bg-bg-darker/50 border-2 border-glass-border rounded-xl md:rounded-2xl pl-16 pr-6 py-4 md:py-5 text-sm md:text-lg font-bold text-text-primary focus:border-primary outline-none transition-all"
+                  className="w-full bg-bg-darker/50 border-2 border-glass-border rounded-xl md:rounded-2xl pl-16 pr-6 py-4 md:py-5 text-sm md:text-lg font-bold text-text-primary focus:border-primary outline-none transition-all lowercase"
                   placeholder="support@swiftaid.com"
                 />
               </div>
@@ -182,7 +182,7 @@ const GlobalConfigPage = () => {
             className="w-full bg-primary text-white font-black uppercase tracking-widest py-5 md:py-6 rounded-xl md:rounded-2xl flex items-center justify-center gap-4 shadow-xl shadow-primary/20"
           >
             {saving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
-            Commit Protocol
+            Save Settings
           </button>
         </div>
       </form>
@@ -191,10 +191,10 @@ const GlobalConfigPage = () => {
       <div className="bg-amber-500/5 border border-amber-500/20 p-6 md:p-8 rounded-2xl md:rounded-3xl flex items-start gap-4 md:gap-6">
         <AlertCircle size={24} className="text-amber-500 shrink-0" />
         <div>
-          <h4 className="text-amber-500 font-black uppercase tracking-widest text-[10px] md:text-xs mb-1 md:mb-2">Protocol Warning</h4>
+          <h4 className="text-amber-500 font-black uppercase tracking-widest text-[10px] md:text-xs mb-1 md:mb-2">Warning</h4>
           <p className="text-text-secondary text-[9px] md:text-[10px] font-black uppercase leading-relaxed opacity-80">
             Modifying parameters affects live transaction processing and revenue distribution. 
-            Commission changes apply to all future orders immediately upon commitment.
+            Commission changes apply to all future orders immediately.
           </p>
         </div>
       </div>

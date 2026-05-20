@@ -92,7 +92,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">Revenue <span className="text-primary">Insights</span></h1>
           <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary mt-3 flex items-center justify-center lg:justify-start gap-2 opacity-70">
             <Activity size={12} className="text-primary" />
-            Financial Intelligence Terminal
+            Financial Performance Terminal
           </p>
         </div>
 
@@ -107,7 +107,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
               }`}
             >
               <LayoutDashboard size={16} />
-              <span className="truncate">Network Grid</span>
+              <span className="truncate">Overview</span>
             </button>
             <button
               onClick={() => setActiveTab('facilities')}
@@ -118,7 +118,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
               }`}
             >
               <Building2 size={16} />
-              <span className="truncate">Node Telemetry</span>
+              <span className="truncate">Facility Earnings</span>
             </button>
           </div>
         )}
@@ -257,7 +257,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <EmptyState icon={BarChartIcon} title="No Growth Data" description="Insufficient historical transactions for trajectory generation." />
+                  <EmptyState icon={BarChartIcon} title="No Growth Data" description="Insufficient historical transactions." />
                 )}
               </div>
             </div>
@@ -265,7 +265,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
             {/* Blood Type Distribution */}
             <div className="bg-card-bg/40 backdrop-blur-xl border border-glass-border p-6 md:p-10 rounded-3xl md:rounded-[48px] space-y-8 shadow-sm">
                <div className="text-center sm:text-left">
-                  <p className="text-[10px] md:text-xs font-black text-text-primary uppercase tracking-widest">Inventory Yield</p>
+                  <p className="text-[10px] md:text-xs font-black text-text-primary uppercase tracking-widest">Earnings Breakdown</p>
                   <p className="text-[8px] md:text-[9px] text-text-muted font-bold uppercase tracking-[0.2em] mt-1">Earnings per Blood Group</p>
                </div>
 
@@ -300,7 +300,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <EmptyState icon={PieChartIcon} title="No Asset Data" description="Inventory distribution is currently balanced or inactive." />
+                  <EmptyState icon={PieChartIcon} title="No Data" description="Earnings distribution is currently balanced or inactive." />
                 )}
                </div>
 
@@ -357,7 +357,7 @@ const RevenueInsights = ({ isAdmin = false }) => {
                      <h2 className="text-5xl md:text-7xl font-black text-text-primary uppercase tracking-tighter tabular-nums leading-none">
                        {stats?.total_revenue > 0 ? ((stats?.total_profit / stats?.total_revenue) * 100).toFixed(1) : 0}%
                      </h2>
-                     <p className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-[0.4em] opacity-60">System-wide Performance Index</p>
+                     <p className="text-[9px] md:text-[10px] font-black text-text-muted uppercase tracking-[0.4em] opacity-60">System Performance Index</p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 relative z-10">
                      <div className="p-6 md:p-8 bg-glass/50 border border-glass-border rounded-2xl md:rounded-[32px] space-y-2 hover:border-primary/30 transition-all group shadow-sm">

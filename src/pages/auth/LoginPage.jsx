@@ -74,7 +74,7 @@ const LoginPage = () => {
                 </div>
                 <input
                   type="email"
-                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-text-primary outline-none focus:border-accent/50 focus:bg-accent/5 transition-all placeholder:text-text-muted"
+                  className="w-full bg-glass border border-glass-border rounded-2xl py-4 pl-12 pr-4 text-text-primary outline-none focus:border-accent/50 focus:bg-accent/5 transition-all placeholder:text-text-muted lowercase"
                   placeholder="admin@swiftaid.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

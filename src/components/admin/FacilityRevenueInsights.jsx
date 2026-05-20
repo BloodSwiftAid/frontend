@@ -96,7 +96,12 @@ const FacilityRevenueInsights = ({ stats }) => {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                   <Building2 size={20} />
                 </div>
-                <h4 className="font-black text-text-primary text-base uppercase tracking-tight truncate">{facility.blood_bank__name}</h4>
+                <h4 
+                  className="font-black text-text-primary uppercase tracking-tight"
+                  style={{ fontSize: (facility.blood_bank__name || '').length > 20 ? '0.875rem' : '1rem' }}
+                >
+                  {facility.blood_bank__name}
+                </h4>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
@@ -139,9 +144,12 @@ const FacilityRevenueInsights = ({ stats }) => {
             <TrendingUp size={24} className="text-primary group-hover:scale-110 transition-transform" />
             <div>
                <p className="text-[8px] md:text-[10px] font-black text-text-muted uppercase tracking-[0.2em] opacity-60 mb-1">Peak Performance Node</p>
-               <h4 className="text-sm md:text-2xl font-black text-text-primary tracking-tighter uppercase truncate">
+                <h4 
+                  className="font-black text-text-primary tracking-tighter uppercase"
+                  style={{ fontSize: (stats?.revenue_by_facility?.[0]?.blood_bank__name || '').length > 25 ? '1rem' : (stats?.revenue_by_facility?.[0]?.blood_bank__name || '').length > 15 ? '1.25rem' : '1.5rem' }}
+                >
                   {stats?.revenue_by_facility?.[0]?.blood_bank__name || 'N/A'}
-               </h4>
+                </h4>
             </div>
          </div>
          <div className="bg-glass/30 border border-glass-border p-5 md:p-8 rounded-3xl md:rounded-[40px] space-y-3 md:space-y-4 shadow-sm group hover:border-emerald-500/30 transition-all">

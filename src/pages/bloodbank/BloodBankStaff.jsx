@@ -68,7 +68,7 @@ const BloodBankStaff = () => {
   const handleCreateStaff = async (e) => {
     e.preventDefault();
     if (!isVerified) {
-      toast.error('Verification required for personnel management');
+      toast.error('Verification required for staff management');
       return;
     }
     try {
@@ -83,10 +83,10 @@ const BloodBankStaff = () => {
         password: 'password123'
       });
       fetchStaff();
-      toast.success('Personnel onboarded successfully');
+      toast.success('Staff member added successfully');
     } catch (err) {
       console.error('Failed to create staff:', err);
-      toast.error('Failed to onboard staff. Protocol violation.');
+      toast.error('Failed to add staff member.');
     }
   };
 
@@ -101,10 +101,10 @@ const BloodBankStaff = () => {
       await usersApi.updateStaff(selectedUser.id, payload);
       setShowEditModal(false);
       fetchStaff();
-      toast.success('Registry updated');
+      toast.success('Staff directory updated');
     } catch (err) {
       console.error('Failed to update staff:', err);
-      toast.error('Failed to update registry.');
+      toast.error('Failed to update staff directory.');
     }
   };
 
@@ -115,10 +115,10 @@ const BloodBankStaff = () => {
       await usersApi.resetStaffPassword(selectedUser.id, resetData.password);
       setShowResetModal(false);
       setResetData({ password: '' });
-      toast.success(`Credential reset successful for ${selectedUser.username}`);
+      toast.success(`Password reset successful for ${selectedUser.username}`);
     } catch (err) {
       console.error('Failed to reset password:', err);
-      toast.error('Failed to reset credentials.');
+      toast.error('Failed to reset password.');
     }
   };
 
@@ -137,7 +137,7 @@ const BloodBankStaff = () => {
     if (!isVerified) return;
     try {
       await usersApi.toggleStaffVerified(user.id);
-      toast.success(user.is_verified ? 'Verification revoked' : 'Personnel verified');
+      toast.success(user.is_verified ? 'Verification revoked' : 'Staff verified');
       fetchStaff();
     } catch (error) {
       toast.error('Failed to update verification status');
@@ -148,7 +148,7 @@ const BloodBankStaff = () => {
     <div className="p-8 md:p-12 space-y-12 animate-fade-in">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase">Personnel <span className="text-gradient">Directory</span></h1>
+          <h1 className="text-5xl font-black tracking-tighter text-text-primary uppercase">Staff <span className="text-gradient">Directory</span></h1>
           <p className="text-text-secondary mt-2 flex items-center gap-2 font-bold uppercase tracking-widest text-[10px]">
             <Shield className="w-3 h-3 text-accent" />
             Facility Permission Management
@@ -160,7 +160,7 @@ const BloodBankStaff = () => {
           className={`btn btn-primary px-8 py-4 rounded-2xl shadow-xl gap-3 group transition-all ${!isVerified ? 'opacity-40 grayscale cursor-not-allowed shadow-none' : 'shadow-accent/20'}`}
         >
           <UserPlus className="w-5 h-5 transition-transform group-hover:scale-110" />
-          <span className="font-bold tracking-tight">Onboard Staff</span>
+          <span className="font-bold tracking-tight">Add Staff</span>
         </button>
       </header>
 
@@ -259,8 +259,8 @@ const BloodBankStaff = () => {
           <div className="absolute inset-0 bg-bg-darker/80 backdrop-blur-xl" onClick={() => setShowEditModal(false)} />
           <div className="bg-card-bg border border-glass-border rounded-[48px] w-full max-w-xl relative z-10 overflow-hidden shadow-2xl animate-scale-up">
             <div className="p-12">
-              <h2 className="text-3xl font-black text-text-primary mb-2 uppercase tracking-tighter">Modify <span className="text-gradient">Operator</span></h2>
-              <p className="text-text-secondary text-sm mb-10 font-bold uppercase tracking-widest">Update personnel credentials</p>
+              <h2 className="text-3xl font-black text-text-primary mb-2 uppercase tracking-tighter">Modify <span className="text-gradient">Staff Member</span></h2>
+              <p className="text-text-secondary text-sm mb-10 font-bold uppercase tracking-widest">Update staff member information</p>
 
               <form onSubmit={handleUpdateStaff} className="space-y-6">
                 <div className="grid grid-cols-2 gap-6">
@@ -288,7 +288,7 @@ const BloodBankStaff = () => {
                   <label className="text-[10px] font-black uppercase tracking-widest text-text-secondary ml-1">Email Address</label>
                   <input 
                     type="email"
-                    className="w-full bg-glass border border-glass-border rounded-2xl py-4 px-6 text-text-primary outline-none focus:border-accent/50 transition-all"
+                    className="w-full bg-glass border border-glass-border rounded-2xl py-4 px-6 text-text-primary outline-none focus:border-accent/50 transition-all lowercase"
                     value={editStaff.email}
                     onChange={(e) => setEditStaff({...editStaff, email: e.target.value})}
                     required
@@ -305,16 +305,16 @@ const BloodBankStaff = () => {
                 </div>
 
                 <div className="space-y-2 pt-4">
-                   <button className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 uppercase font-black tracking-[0.2em]">
-                     Update Registry
-                   </button>
-                   <button 
-                     type="button"
-                     onClick={() => setShowEditModal(false)}
-                     className="w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hover:text-white transition-all"
-                   >
-                     Discard Changes
-                   </button>
+                    <button className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 uppercase font-black tracking-[0.2em]">
+                      Save Changes
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setShowEditModal(false)}
+                      className="w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hover:text-white transition-all"
+                    >
+                      Cancel
+                    </button>
                 </div>
               </form>
             </div>
@@ -328,8 +328,8 @@ const BloodBankStaff = () => {
           <div className="absolute inset-0 bg-bg-darker/80 backdrop-blur-xl" onClick={() => setShowModal(false)} />
           <div className="bg-card-bg border border-glass-border rounded-[48px] w-full max-w-xl relative z-10 overflow-hidden shadow-2xl animate-scale-up">
             <div className="p-12">
-              <h2 className="text-3xl font-black text-text-primary mb-2 uppercase tracking-tighter">Onboard <span className="text-gradient">Staff</span></h2>
-              <p className="text-text-secondary text-sm mb-10 font-bold uppercase tracking-widest">Register a new facility operator</p>
+              <h2 className="text-3xl font-black text-text-primary mb-2 uppercase tracking-tighter">Add <span className="text-gradient">Staff</span></h2>
+              <p className="text-text-secondary text-sm mb-10 font-bold uppercase tracking-widest">Register a new facility staff member</p>
 
               <form onSubmit={handleCreateStaff} className="space-y-6">
                 <div className="grid grid-cols-2 gap-6">
@@ -359,7 +359,7 @@ const BloodBankStaff = () => {
                   <label className="text-[10px] font-black uppercase tracking-widest text-text-secondary ml-1">Email Address</label>
                   <input 
                     type="email"
-                    className="w-full bg-glass border border-glass-border rounded-2xl py-4 px-6 text-text-primary outline-none focus:border-accent/50 transition-all"
+                    className="w-full bg-glass border border-glass-border rounded-2xl py-4 px-6 text-text-primary outline-none focus:border-accent/50 transition-all lowercase"
                     placeholder="staff@swiftaid.com"
                     value={newStaff.email}
                     onChange={(e) => setNewStaff({...newStaff, email: e.target.value, username: e.target.value})}
@@ -379,20 +379,20 @@ const BloodBankStaff = () => {
                       required
                     />
                   </div>
-                  <p className="text-[9px] text-text-muted mt-2 ml-1">Users will be forced to change this upon first authentication.</p>
+                  <p className="text-[9px] text-text-muted mt-2 ml-1">Users will be forced to change this upon first login.</p>
                 </div>
 
                 <div className="space-y-2 pt-4">
                    <button className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 uppercase font-black tracking-[0.2em]">
                      Activate Account
                    </button>
-                   <button 
-                     type="button"
-                     onClick={() => setShowModal(false)}
-                     className="w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hover:text-white transition-all"
-                   >
-                     Abort Process
-                   </button>
+                    <button 
+                      type="button"
+                      onClick={() => setShowModal(false)}
+                      className="w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hover:text-white transition-all"
+                    >
+                      Cancel
+                    </button>
                 </div>
               </form>
             </div>
@@ -406,7 +406,7 @@ const BloodBankStaff = () => {
           <div className="absolute inset-0 bg-bg-darker/80 backdrop-blur-xl" onClick={() => setShowResetModal(false)} />
           <div className="bg-card-bg border border-glass-border rounded-[40px] w-full max-md relative z-10 overflow-hidden shadow-2xl animate-scale-up">
             <div className="p-10">
-              <h2 className="text-2xl font-black text-text-primary mb-6 uppercase tracking-tighter">Reset <span className="text-gradient">Credentials</span></h2>
+              <h2 className="text-2xl font-black text-text-primary mb-6 uppercase tracking-tighter">Reset <span className="text-gradient">Password</span></h2>
               
               <form onSubmit={handleResetPassword} className="space-y-6">
                 <div className="space-y-2">

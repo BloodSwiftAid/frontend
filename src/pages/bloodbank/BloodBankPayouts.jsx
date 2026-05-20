@@ -63,7 +63,7 @@ const BloodBankPayouts = () => {
   const handleRequestPayout = async (e) => {
     e.preventDefault();
     if (!isVerified) {
-      toast.error("Facility verification required for treasury disbursement");
+      toast.error("Facility verification required for payout");
       return;
     }
     if (!payoutAmount || !selectedBankId) {
@@ -113,7 +113,7 @@ const BloodBankPayouts = () => {
           </h1>
           <p className="text-text-secondary mt-2 flex items-center gap-2 font-black uppercase tracking-[0.3em] text-[10px] opacity-70">
             <ShieldCheck className="w-4 h-4 text-accent" />
-            Secure Settlement Protocol | Facility Treasury
+            Secure Settlement | Facility Treasury
           </p>
         </div>
         
@@ -173,7 +173,7 @@ const BloodBankPayouts = () => {
          <div className="p-10 border-b border-glass-border flex justify-between items-center bg-glass/20">
           <div>
             <h2 className="text-3xl font-black text-text-primary uppercase tracking-tighter">Payout History</h2>
-            <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mt-2">Disbursement synchronization logs</p>
+            <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mt-2">Disbursement update logs</p>
           </div>
           <button className="p-3 bg-glass border border-glass-border rounded-xl hover:bg-accent/10 transition-all text-text-muted hover:text-accent">
             <Download className="w-5 h-5" />
@@ -243,7 +243,7 @@ const BloodBankPayouts = () => {
             
             <header className="mb-12">
               <h2 className="text-3xl font-black text-text-primary uppercase tracking-tighter">Initiate Payout</h2>
-              <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mt-2">Treasury disbursement authorization</p>
+              <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mt-2">Authorize withdrawal of earnings</p>
             </header>
 
             <form onSubmit={handleRequestPayout} className="space-y-8">

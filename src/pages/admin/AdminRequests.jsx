@@ -20,6 +20,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { transactionApi, adminApi } from '../../api';
+import { toast } from 'react-hot-toast';
 
 const AdminRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -28,6 +29,7 @@ const AdminRequests = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [newBankId, setNewBankId] = useState('');
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -58,12 +60,17 @@ const AdminRequests = () => {
   };
 
   const handleUpdateBank = async () => {
+    setUpdating(true);
     try {
       await transactionApi.updateRequest(selectedRequest.id, { blood_bank: newBankId });
+      toast.success("Blood bank assigned successfully");
       setShowEditModal(false);
       fetchData();
     } catch (err) {
       console.error('Coordination update failed:', err);
+      toast.error(err.response?.data?.error || "Failed to assign blood bank");
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -113,17 +120,17 @@ const AdminRequests = () => {
           {loading ? (
             <div className="p-40 flex flex-col items-center gap-6">
               <Loader2 className="w-10 h-10 text-primary animate-spin" />
-              <p className="text-[10px] font-black uppercase tracking-widest text-text-muted animate-pulse">Syncing Marketplace...</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-text-muted animate-pulse">Updating Marketplace...</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-glass/50 border-b border-glass-border">
-                  <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Asset Specification</th>
-                  <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Target Endpoint</th>
-                  <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Assigned Node</th>
+                  <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Blood Details</th>
+                  <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Hospital</th>
+                  <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Assigned Blood Bank</th>
                   <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted">Status</th>
-                  <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Ops</th>
+                  <th className="px-10 py-10 text-[10px] font-black uppercase tracking-[0.3em] text-text-muted text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-glass-border/30">
@@ -199,7 +206,7 @@ const AdminRequests = () => {
            {loading ? (
               <div className="flex flex-col items-center py-20 gap-4">
                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                 <p className="text-[9px] font-black uppercase tracking-widest text-text-muted animate-pulse">Syncing orders...</p>
+                 <p className="text-[9px] font-black uppercase tracking-widest text-text-muted animate-pulse">Updating orders...</p>
               </div>
            ) : requests.length === 0 ? (
               <div className="py-20 text-center">
@@ -227,20 +234,20 @@ const AdminRequests = () => {
                     </div>
                     
                     <div className="space-y-4 pt-4 border-t border-glass-border">
-                       <div className="flex flex-col gap-2">
-                          <span className="text-[8px] font-black uppercase tracking-widest text-text-muted">Requester & Location</span>
-                          <div>
-                            <span className="text-[10px] font-black uppercase tracking-widest text-text-primary block">{req.requester_name || req.patient_name || 'EMERGENCY PROTOCOL'}</span>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-text-muted opacity-60 block leading-relaxed mt-1">{req.requester_hospital_details?.address || req.hospital_location}</span>
-                            {req.requester_hospital_details?.contact_phone && <span className="text-[8px] font-black text-primary uppercase tracking-widest mt-1 block">{req.requester_hospital_details.contact_phone}</span>}
-                          </div>
-                       </div>
-                       
-                       <div className="flex items-center justify-between">
-                          <div className="flex flex-col gap-1">
-                             <span className="text-[8px] font-black uppercase tracking-widest text-text-muted">Fulfillment</span>
-                             <span className={`text-[10px] font-black uppercase tracking-widest ${req.blood_bank ? 'text-emerald-500' : 'text-accent'}`}>{req.blood_bank ? req.blood_bank_details?.name : 'UNASSIGNED'}</span>
-                          </div>
+                        <div className="flex flex-col gap-2">
+                           <span className="text-[8px] font-black uppercase tracking-widest text-text-muted">Requester & Location</span>
+                           <div>
+                             <span className="text-[10px] font-black uppercase tracking-widest text-text-primary block">{req.requester_name || req.patient_name || 'EMERGENCY REQUEST'}</span>
+                             <span className="text-[9px] font-black uppercase tracking-widest text-text-muted opacity-60 block leading-relaxed mt-1">{req.requester_hospital_details?.address || req.hospital_location}</span>
+                             {req.requester_hospital_details?.contact_phone && <span className="text-[8px] font-black text-primary uppercase tracking-widest mt-1 block">{req.requester_hospital_details.contact_phone}</span>}
+                           </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                           <div className="flex flex-col gap-1">
+                              <span className="text-[8px] font-black uppercase tracking-widest text-text-muted">Assigned Blood Bank</span>
+                              <span className={`text-[10px] font-black uppercase tracking-widest ${req.blood_bank ? 'text-emerald-500' : 'text-accent'}`}>{req.blood_bank ? req.blood_bank_details?.name : 'UNASSIGNED'}</span>
+                           </div>
                           <div className={`px-3 py-1 rounded-lg border text-[8px] font-black uppercase tracking-widest ${isPending ? 'bg-accent/10 border-accent/20 text-accent' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'}`}>
                              {req.status}
                           </div>
@@ -264,24 +271,24 @@ const AdminRequests = () => {
                <div className="flex justify-between items-start mb-8 md:mb-12">
                   <div className="space-y-2">
                      <div className="inline-block px-3 py-1 bg-accent/10 border border-accent/20 rounded-lg">
-                        <span className="text-[8px] font-black text-accent uppercase tracking-widest">Allocation Directive</span>
+                        <span className="text-[8px] font-black text-accent uppercase tracking-widest">Assign Request</span>
                      </div>
-                     <h2 className="text-3xl md:text-5xl font-black text-text-primary uppercase tracking-tighter leading-none">Order <span className="text-primary">Fulfillment</span></h2>
+                     <h2 className="text-3xl md:text-5xl font-black text-text-primary uppercase tracking-tighter leading-none">Assign <span className="text-primary">Blood Bank</span></h2>
                   </div>
                   <button onClick={() => setShowEditModal(false)} className="p-4 bg-glass border border-glass-border rounded-2xl text-text-muted hover:text-accent transition-all shrink-0">
                      <X size={24} />
                   </button>
                </div>
 
-               {/* Logistics Intelligence Section */}
+               {/* Logistics Details */}
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 p-8 bg-glass/20 border border-glass-border rounded-[40px]">
                   <div className="space-y-4">
                      <div className="flex items-center gap-3">
                         <Hospital className="w-5 h-5 text-primary" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-text-primary">Requester Details</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-text-primary">Hospital Details</span>
                      </div>
                      <div className="space-y-2">
-                        <p className="text-[11px] font-black text-text-primary uppercase tracking-tight">{selectedRequest.requester_name || selectedRequest.patient_name || 'Emergency Protocol'}</p>
+                        <p className="text-[11px] font-black text-text-primary uppercase tracking-tight">{selectedRequest.requester_name || selectedRequest.patient_name || 'Emergency Request'}</p>
                         <p className="text-[9px] text-text-muted font-black uppercase tracking-widest leading-relaxed opacity-60">{selectedRequest.requester_hospital_details?.address || selectedRequest.hospital_location || 'Address not logged'}</p>
                         {selectedRequest.requester_hospital_details?.contact_phone && <p className="text-[9px] text-primary font-black uppercase tracking-widest">{selectedRequest.requester_hospital_details.contact_phone}</p>}
                      </div>
@@ -289,7 +296,7 @@ const AdminRequests = () => {
                   <div className="space-y-4">
                      <div className="flex items-center gap-3">
                         <Database className="w-5 h-5 text-emerald-500" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-text-primary">Assigned Node Details</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-text-primary">Assigned Blood Bank</span>
                      </div>
                      <div className="space-y-2">
                         {selectedRequest.blood_bank ? (
@@ -299,49 +306,53 @@ const AdminRequests = () => {
                               {selectedRequest.blood_bank_details?.contact_phone && <p className="text-[9px] text-primary font-black uppercase tracking-widest">{selectedRequest.blood_bank_details.contact_phone}</p>}
                            </>
                         ) : (
-                           <p className="text-[9px] text-accent font-black uppercase tracking-widest animate-pulse">Node Pending Assignment</p>
+                           <p className="text-[9px] text-accent font-black uppercase tracking-widest animate-pulse">Pending Assignment</p>
                         )}
                      </div>
                   </div>
                </div>
               
               <div className="space-y-8 md:space-y-12">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
-                   <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2 md:space-y-3 relative overflow-hidden">
-                      <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-text-muted">Asset Specification</p>
-                      <p className="text-3xl md:text-4xl font-black text-text-primary">{selectedRequest?.blood_group}</p>
-                      <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-accent">{selectedRequest?.quantity} Units Requested</p>
-                   </div>
-                   <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2 md:space-y-3 relative overflow-hidden">
-                      <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-text-muted">Target Endpoint</p>
-                       <p className="text-lg md:text-xl font-black text-text-primary uppercase">{selectedRequest?.patient_name || 'EMERGENCY'}</p>
-                       <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-text-muted opacity-60">{selectedRequest?.hospital_location}</p>
-                   </div>
-                </div>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
+                    <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2 md:space-y-3 relative overflow-hidden">
+                       <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-text-muted">Blood Group</p>
+                       <p className="text-3xl md:text-4xl font-black text-text-primary">{selectedRequest?.blood_group}</p>
+                       <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-accent">{selectedRequest?.quantity} Units Requested</p>
+                    </div>
+                    <div className="p-6 md:p-8 bg-glass border border-glass-border rounded-2xl md:rounded-[32px] space-y-2 md:space-y-3 relative overflow-hidden">
+                       <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-text-muted">Patient Info</p>
+                        <p className="text-lg md:text-xl font-black text-text-primary uppercase">{selectedRequest?.patient_name || 'EMERGENCY'}</p>
+                        <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-text-muted opacity-60">{selectedRequest?.hospital_location}</p>
+                    </div>
+                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-[9px] font-black uppercase tracking-widest text-text-muted ml-4">Fulfillment Node Assignment</label>
-                  <div className="relative">
-                     <select 
-                        className="w-full bg-glass border-2 border-glass-border rounded-2xl md:rounded-[32px] py-5 md:py-8 px-6 md:px-10 text-text-primary outline-none focus:border-primary transition-all appearance-none font-black text-base md:text-lg uppercase tracking-tight"
-                        value={newBankId}
-                        onChange={(e) => setNewBankId(e.target.value)}
-                     >
-                        <option value="">DE-COUPLE fulfillment NODE</option>
-                        {bloodBanks.map(bank => (
-                        <option key={bank.id} value={bank.id}>{bank.name} // {bank.area}, {bank.state}</option>
-                        ))}
-                     </select>
-                     <ChevronRight className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 w-6 h-6 md:w-8 md:h-8 text-text-muted/30 rotate-90 pointer-events-none" />
+                 <div className="space-y-3">
+                   <label className="text-[9px] font-black uppercase tracking-widest text-text-muted ml-4">Select Blood Bank to Assign</label>
+                   <div className="relative">
+                      <select 
+                         className="w-full bg-glass border-2 border-glass-border rounded-2xl md:rounded-[32px] py-5 md:py-8 px-6 md:px-10 text-text-primary outline-none focus:border-primary transition-all appearance-none font-black text-base md:text-lg uppercase tracking-tight"
+                         value={newBankId}
+                         onChange={(e) => setNewBankId(e.target.value)}
+                      >
+                         <option value="">UNASSIGN BLOOD BANK</option>
+                         {bloodBanks.map(bank => (
+                         <option key={bank.id} value={bank.id}>{bank.name} // {bank.area}, {bank.state}</option>
+                         ))}
+                      </select>
+                      <ChevronRight className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 w-6 h-6 md:w-8 md:h-8 text-text-muted/30 rotate-90 pointer-events-none" />
+                   </div>
+                 </div>
+
+                  <div className="pt-6 md:pt-10 border-t border-glass-border flex flex-col sm:flex-row gap-4 md:gap-6">
+                    <button 
+                      onClick={handleUpdateBank} 
+                      disabled={updating}
+                      className="flex-1 btn btn-primary py-5 md:py-8 rounded-2xl md:rounded-[32px] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {updating ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Assign <ShieldCheck size={20} /></>}
+                    </button>
+                    <button onClick={() => setShowEditModal(false)} disabled={updating} className="sm:w-48 py-5 md:py-8 text-[10px] font-black uppercase tracking-widest text-text-muted border border-glass-border rounded-2xl md:rounded-[32px] bg-glass disabled:opacity-50">Cancel</button>
                   </div>
-                </div>
-
-                <div className="pt-6 md:pt-10 border-t border-glass-border flex flex-col sm:flex-row gap-4 md:gap-6">
-                  <button onClick={handleUpdateBank} className="flex-1 btn btn-primary py-5 md:py-8 rounded-2xl md:rounded-[32px] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3">
-                    Commit Protocol <ShieldCheck size={20} />
-                  </button>
-                  <button onClick={() => setShowEditModal(false)} className="sm:w-48 py-5 md:py-8 text-[10px] font-black uppercase tracking-widest text-text-muted border border-glass-border rounded-2xl md:rounded-[32px] bg-glass">Discard Override</button>
-                </div>
               </div>
             </div>
           </div>

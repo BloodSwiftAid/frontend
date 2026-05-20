@@ -50,7 +50,7 @@ const Hero = () => (
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link to="/about" className="btn btn-outline bg-glass border-glass-border px-10 py-5 rounded-2xl text-lg hover:bg-white/5 transition-all">
-            See the Protocol
+            How It Works
           </Link>
         </div>
       </motion.div>
@@ -91,7 +91,7 @@ const Features = () => (
         {[
           { icon: Database, title: "Global Inventory", text: "Instant visibility into regional blood stock levels across all partner banks." },
           { icon: Zap, title: "Smart Matching", text: "Automated routing algorithms find the fastest delivery path for urgent needs." },
-          { icon: ShieldCheck, title: "Verified Safety", text: "Multi-point verification protocol ensures every unit meets clinical standards." }
+          { icon: ShieldCheck, title: "Verified Safety", text: "Multi-point verification ensures every unit meets clinical standards." }
         ].map((feat, i) => (
           <motion.div 
             key={i}

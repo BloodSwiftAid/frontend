@@ -143,9 +143,9 @@ const Join = () => {
 
             <div className="space-y-6">
               {[
-                "L3 Encrypted Data Protection",
-                "Priority Matching Protocol",
-                "Direct API Logistics Integration"
+                "Secure Data Protection",
+                "Priority Matching System",
+                "Direct Logistics Integration"
               ].map((benefit, i) => (
                 <div key={i} className="flex items-center gap-4 group">
                   <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">

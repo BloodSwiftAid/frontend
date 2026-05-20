@@ -36,7 +36,7 @@ const RequestHistory = ({ data }) => (
             <td className="px-8 py-6 font-mono text-text-muted font-bold text-xs">#{item.id}</td>
             <td className="px-8 py-6">
               <div className="flex flex-col">
-                <span className="font-black text-text-primary text-lg">{item.product_details?.blood_group || 'N/A'}</span>
+                <span className="font-black text-text-primary text-lg">{item.blood_group || 'N/A'}</span>
                 {item.batch_id && (
                   <span className="text-[7px] font-mono text-blue-500/40 font-black uppercase tracking-tighter">Batch: {item.batch_id.slice(0, 8)}</span>
                 )}

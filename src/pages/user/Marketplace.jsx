@@ -107,7 +107,7 @@ const MarketplacePage = () => {
         hospital_location: '',
         quantity: 1
       });
-      toast.success('Protocol Initiated');
+      toast.success('Order Initiated');
     } catch (err) {
       toast.error('Network Error');
     }
@@ -130,13 +130,13 @@ const MarketplacePage = () => {
         <div className="container max-w-7xl mx-auto px-6 relative z-10 text-center space-y-8 md:space-y-10">
           <div className="inline-flex items-center gap-3 px-4 md:px-6 py-2 bg-glass border border-glass-border rounded-full animate-fade-in">
              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-             <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-text-primary">Live Node Network</span>
+             <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-text-primary">Live Inventory Network</span>
           </div>
           <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter text-text-primary uppercase leading-tight md:leading-[0.9]">
             Emergency <span className="text-gradient">Blood</span> Access
           </h1>
           <p className="text-text-secondary max-w-2xl mx-auto text-base md:text-xl font-medium leading-relaxed opacity-80">
-            Real-time verification of biological inventory across the healthcare infrastructure.
+            Real-time verification of blood inventory across the healthcare infrastructure.
           </p>
           
           <div className="max-w-4xl mx-auto mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-4 gap-4 p-4 md:p-5 bg-glass border border-glass-border rounded-3xl md:rounded-[40px] shadow-2xl">
@@ -187,7 +187,7 @@ const MarketplacePage = () => {
               </div>
               <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">
                 <span className="text-text-primary font-black text-sm mr-2">{filteredInventory.length}</span> 
-                Nodes found in active cluster
+                Blood banks found in active network
               </p>
            </div>
            <button className="w-full md:w-auto flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-primary hover:text-white hover:bg-primary transition-all bg-primary/10 px-6 py-3 rounded-xl border border-primary/20">
@@ -200,7 +200,7 @@ const MarketplacePage = () => {
           {loading ? (
             <div className="p-20 md:p-32 text-center bg-glass rounded-3xl md:rounded-[56px] border border-glass-border backdrop-blur-xl">
               <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-6" />
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted animate-pulse">Syncing Registry...</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted animate-pulse">Updating Inventory...</p>
             </div>
           ) : filteredInventory.length > 0 ? (
             filteredInventory.map(item => {
@@ -225,8 +225,8 @@ const MarketplacePage = () => {
           ) : (
             <div className="p-20 md:p-32 text-center bg-glass rounded-3xl md:rounded-[56px] border border-glass-border backdrop-blur-xl">
               <Droplet className="w-16 h-16 text-text-muted mx-auto mb-8 opacity-10" />
-              <h3 className="text-xl md:text-2xl font-black text-text-primary uppercase tracking-tighter">No biological match</h3>
-              <p className="text-text-secondary mt-3 uppercase tracking-widest text-[10px] font-bold opacity-60">Try adjusting your search cluster</p>
+              <h3 className="text-xl md:text-2xl font-black text-text-primary uppercase tracking-tighter">No matching blood type</h3>
+              <p className="text-text-secondary mt-3 uppercase tracking-widest text-[10px] font-bold opacity-60">Try adjusting your search filters</p>
             </div>
           )}
         </div>
@@ -260,15 +260,15 @@ const MarketplacePage = () => {
                 <div className="flex flex-col md:flex-row justify-between items-center md:items-start mb-10 md:mb-16 gap-8">
                   <div className="space-y-4 text-center md:text-left">
                     <div className="inline-block px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full">
-                      <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Request Protocol</span>
+                      <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Request Details</span>
                     </div>
                     <h2 className="text-3xl md:text-5xl font-black text-text-primary uppercase tracking-tighter leading-none">
-                      Initialize <span className="text-gradient">Order</span>
+                      Request <span className="text-gradient">Order</span>
                     </h2>
                   </div>
                   <div className="w-20 h-20 md:w-24 md:h-24 bg-primary rounded-3xl md:rounded-[40px] flex flex-col items-center justify-center text-white shadow-2xl shadow-primary/40 relative overflow-hidden shrink-0">
                     <span className="text-3xl md:text-4xl font-black relative z-10">{selectedProduct?.blood_group}</span>
-                    <span className="text-[8px] font-black uppercase tracking-widest relative z-10 opacity-80">Biological</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest relative z-10 opacity-80">Blood Group</span>
                   </div>
                 </div>
 
@@ -322,7 +322,7 @@ const MarketplacePage = () => {
 
                   <div className="pt-4 md:pt-6 space-y-6">
                     <button className="w-full btn btn-primary py-5 md:py-6 rounded-2xl md:rounded-3xl text-xs md:text-sm uppercase font-black tracking-[0.4em] group">
-                      Confirm Protocol
+                      Confirm Request
                       <ArrowRight className="w-5 h-5 ml-4 group-hover:translate-x-2 transition-transform" />
                     </button>
                     <div className="flex items-center justify-between px-6 md:px-8 py-4 bg-glass border border-glass-border rounded-xl md:rounded-2xl">

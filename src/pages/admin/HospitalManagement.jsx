@@ -94,7 +94,7 @@ const HospitalManagement = () => {
     try {
       const { staff, ...updateData } = portalData;
       await adminApi.updateHospital(portalData.id, updateData);
-      toast.success('Facility parameters synchronized.');
+      toast.success('Facility parameters updated.');
       fetchData();
     } catch (err) {
       toast.error('Update failure.');
@@ -140,22 +140,22 @@ const HospitalManagement = () => {
         user_id: userRes.data.id,
         hospital_id: portalData.id
       });
-      toast.success('Personnel integrated successfully.');
+      toast.success('Staff member added successfully.');
       setIsStaffModalOpen(false);
       setNewStaffData({ email: '', password: '', first_name: '', last_name: '' });
       fetchData();
     } catch (err) {
-      toast.error('Onboarding failure. Ensure all fields are valid.');
+      toast.error('Registration failed. Please check all fields.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Erase personnel record?')) return;
+    if (!window.confirm('Delete staff member record?')) return;
     try {
       await adminApi.deleteUser(userId);
-      toast.success('Personnel erased.');
+      toast.success('Staff member removed.');
       fetchData();
     } catch (err) {
       toast.error('Deletion failure.');
@@ -201,11 +201,11 @@ const HospitalManagement = () => {
       setIsModalOpen(false);
       fetchData();
       resetForms();
-      toast.success('Facility and Administrator provisioned.');
+      toast.success('Hospital and administrator registered.');
       setNewOrg({ name: '', address: '', state: '', lga: '', hospital_type: 'General', has_emergency_unit: false });
       setNewAdmin({ email: '', password: '', first_name: '', last_name: '', role: 'HOSPITAL_ADMIN' });
     } catch (err) {
-      toast.error('Provision failure. Check network parameters.');
+      toast.error('Registration failed. Please check your network connection.');
     } finally {
       setLoading(false);
     }
@@ -247,7 +247,7 @@ const HospitalManagement = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
         {[
           { label: 'Hospitals', value: stats.hospitals, icon: HospitalIcon, color: 'text-primary' },
-          { label: 'Personnel', value: stats.total_users, icon: User, color: 'text-emerald-500' },
+          { label: 'Staff', value: stats.total_users, icon: User, color: 'text-emerald-500' },
           { label: 'ER Capacity', value: hospitals.filter(h => h.has_emergency_unit).length, icon: Activity, color: 'text-accent' },
           { label: 'Verification', value: stats.pending_verifications, icon: ShieldCheck, color: 'text-amber-500' }
         ].map((stat, i) => (
@@ -292,7 +292,12 @@ const HospitalManagement = () => {
               </div>
             </div>
             
-            <h3 className="text-3xl font-black text-text-primary mb-4 leading-tight tracking-tighter uppercase truncate">{hosp.name}</h3>
+            <h3 
+              className="font-black text-text-primary mb-4 leading-tight tracking-tighter uppercase"
+              style={{ fontSize: (hosp.name || '').length > 25 ? '1.25rem' : (hosp.name || '').length > 18 ? '1.5rem' : '1.875rem' }}
+            >
+              {hosp.name}
+            </h3>
             
             <div className="space-y-4 mb-12 opacity-80">
               <div className="flex items-start gap-3 text-[11px] text-text-secondary">
@@ -336,7 +341,7 @@ const HospitalManagement = () => {
               <div className="space-y-4 flex-1">
                 {[
                   { id: 'overview', label: 'Overview', icon: LayoutGrid },
-                  { id: 'personnel', label: 'Personnel', icon: User },
+                  { id: 'personnel', label: 'Staff', icon: User },
                   { id: 'security', label: 'Directives', icon: ShieldCheck }
                 ].map(tab => (
                   <button
@@ -354,7 +359,7 @@ const HospitalManagement = () => {
                 onClick={() => setIsPortalOpen(false)}
                 className="mt-12 w-full p-6 bg-glass border border-glass-border rounded-3xl text-text-muted hover:text-accent hover:border-accent/30 transition-all font-black uppercase tracking-widest text-[10px]"
               >
-                Exit Terminal
+                Close Panel
               </button>
             </div>
 
@@ -418,7 +423,7 @@ const HospitalManagement = () => {
                     </div>
                     <div className="pt-10 flex justify-end">
                       <button onClick={handlePortalUpdate} className="btn btn-primary px-16 py-6 rounded-[28px] font-black uppercase tracking-[0.2em] text-xs shadow-2xl hover:scale-[1.02] transition-transform">
-                        Synchronize Parameters
+                        Update
                       </button>
                     </div>
                   </div>
@@ -427,12 +432,12 @@ const HospitalManagement = () => {
                 {portalTab === 'personnel' && (
                   <div className="space-y-10 animate-fade-in">
                     <div className="flex justify-between items-center">
-                      <h4 className="text-2xl font-black text-text-primary uppercase tracking-tighter">Clinical Registry</h4>
+                      <h4 className="text-2xl font-black text-text-primary uppercase tracking-tighter">Staff Directory</h4>
                       <button 
                         onClick={() => setIsStaffModalOpen(true)}
                         className="btn btn-primary px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3"
                       >
-                        <Plus size={16} /> Add Personnel
+                        <Plus size={16} /> Add Staff
                       </button>
                     </div>
                     <div className="grid grid-cols-1 gap-6">
@@ -444,7 +449,7 @@ const HospitalManagement = () => {
                             </div>
                             <div>
                               <h5 className="text-2xl font-black text-text-primary uppercase tracking-tighter">{user.first_name} {user.last_name}</h5>
-                              <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">{user.email} // {user.role.replace('_', ' ')}</p>
+                              <p className="text-[10px] font-black text-text-muted tracking-widest normal-case">{user.email} // {user.role.replace('_', ' ')}</p>
                               <div className="mt-3 flex flex-wrap gap-2">
                                 {!user.is_verified && <span className="inline-block px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[8px] font-black text-amber-500 uppercase tracking-widest">Identity Pending</span>}
                                 {!user.is_active && <span className="inline-block px-3 py-1 bg-accent/10 border border-accent/20 rounded-lg text-[8px] font-black text-accent uppercase tracking-widest">Account Suspended</span>}
@@ -504,7 +509,7 @@ const HospitalManagement = () => {
                   <div className="w-24 h-24 bg-primary/10 border-2 border-primary/20 rounded-[32px] flex items-center justify-center text-primary shadow-xl">
                     <Plus size={48} />
                   </div>
-                  <h2 className="text-5xl font-black text-text-primary tracking-tighter uppercase leading-[0.9]">Onboard<br />Facility</h2>
+                  <h2 className="text-5xl font-black text-text-primary tracking-tighter uppercase leading-[0.9]">Add<br />Hospital</h2>
                   <div className="space-y-10">
                      <div className={`flex items-center gap-6 ${currentStep === 1 ? 'opacity-100' : 'opacity-30'}`}>
                         <div className="w-12 h-12 rounded-[20px] bg-primary/10 border-2 border-primary text-primary flex items-center justify-center font-black text-xs">01</div>
@@ -573,7 +578,7 @@ const HospitalManagement = () => {
                      <div className="flex gap-4">
                         {currentStep === 2 && <button onClick={() => setCurrentStep(1)} className="px-8 py-4 border border-glass-border rounded-2xl text-text-primary font-black uppercase text-[10px]">Back</button>}
                         <button onClick={currentStep === 1 ? () => setCurrentStep(2) : handleOnboard} className="btn btn-primary px-12 py-5 rounded-2xl shadow-xl font-black uppercase tracking-widest text-[10px]">
-                           {currentStep === 1 ? 'Next Phase' : 'Authorize Provision'}
+                           {currentStep === 1 ? 'Next Step' : 'Confirm Registration'}
                         </button>
                      </div>
                   </div>
@@ -589,8 +594,8 @@ const HospitalManagement = () => {
            <div className="relative w-full max-w-xl bg-card-bg border border-glass-border rounded-[48px] shadow-2xl flex flex-col overflow-hidden animate-scale-up p-12">
               <div className="flex justify-between items-start mb-10">
                 <div>
-                   <h3 className="text-3xl font-black text-text-primary uppercase tracking-tighter mb-1">Integrate Personnel</h3>
-                   <p className="text-[10px] text-text-muted font-black uppercase tracking-widest">Onboard staff to {portalData?.name}</p>
+                   <h3 className="text-3xl font-black text-text-primary uppercase tracking-tighter mb-1">Add Staff Member</h3>
+                   <p className="text-[10px] text-text-muted font-black uppercase tracking-widest">Add staff to {portalData?.name}</p>
                 </div>
                 <button onClick={() => setIsStaffModalOpen(false)} className="p-3 bg-glass border border-glass-border rounded-xl text-text-muted hover:text-accent transition-all">
                   <X size={20} />
@@ -619,7 +624,7 @@ const HospitalManagement = () => {
 
                 <div className="pt-6">
                    <button type="submit" disabled={loading} className="w-full btn btn-primary py-6 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl">
-                      {loading ? 'Processing...' : 'Complete Onboarding'}
+                      {loading ? 'Processing...' : 'Complete Registration'}
                    </button>
                 </div>
               </form>

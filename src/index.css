@@ -137,7 +137,13 @@
     letter-spacing: -0.03em;
     font-weight: 800;
   }
+
+  /* Global: all email inputs render as lowercase text */
+  input[type="email"] {
+    text-transform: lowercase;
+  }
 }
+
 
 @layer utilities {
   .text-gradient {
@@ -272,6 +278,7 @@
     color: var(--color-text-muted);
     opacity: 0.5;
   }
+
 
   .label-text {
     display: block;

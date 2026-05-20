@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Plus, 
   Database, 
@@ -12,6 +13,7 @@ import { useIsVerified } from '../../hooks/useIsVerified';
 import { toast } from 'react-hot-toast';
 
 const BloodBankInventory = () => {
+  const navigate = useNavigate();
   const isVerified = useIsVerified();
   const [inventory, setInventory] = useState([]);
   const [bloodTypeRegistry, setBloodTypeRegistry] = useState([]);
@@ -76,9 +78,9 @@ const BloodBankInventory = () => {
         genotype: 'AA', notes: ''
       });
       fetchData();
-      toast.success('Record Committed');
+      toast.success('Donation Recorded');
     } catch (err) {
-      toast.error('Protocol Failure');
+      toast.error('Failed to save donation');
     }
   };
 
@@ -93,9 +95,9 @@ const BloodBankInventory = () => {
       setShowBulkModal(false);
       setBulkItems([{ blood_group: 'O+', quantity: 1, notes: '' }]);
       fetchData();
-      toast.success('System Onboarding Successful');
+      toast.success('Bulk Inventory Added');
     } catch (err) {
-      toast.error('Bulk Protocol Failure');
+      toast.error('Failed to add bulk inventory');
     }
   };
 
@@ -116,11 +118,11 @@ const BloodBankInventory = () => {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="space-y-1">
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-text-primary uppercase leading-none">
-            Node <span className="text-gradient">Registry</span>
+            Blood Stock <span className="text-gradient">Inventory</span>
           </h1>
           <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary flex items-center gap-2">
             <Database className="w-3 h-3 text-primary" />
-            Biological Asset Management
+            Blood Inventory Management
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
@@ -130,7 +132,7 @@ const BloodBankInventory = () => {
             className={`flex-1 md:flex-none bg-glass border border-glass-border hover:border-primary/50 text-text-primary px-8 py-4 rounded-xl md:rounded-2xl shadow-xl flex items-center justify-center gap-3 transition-all ${!isVerified ? 'opacity-40 grayscale cursor-not-allowed' : ''}`}
           >
             <Plus className="w-5 h-5 text-primary" />
-            <span className="font-black tracking-tight uppercase text-[10px]">Bulk Onboard</span>
+            <span className="font-black tracking-tight uppercase text-[10px]">Add Multiple Units</span>
           </button>
           <button 
             onClick={() => isVerified ? setShowDonationModal(true) : toast.error('Verification required')}
@@ -289,7 +291,7 @@ const BloodBankInventory = () => {
                 <div className="flex justify-between items-start mb-8">
                   <div>
                     <h2 className="text-2xl md:text-3xl font-black text-text-primary uppercase tracking-tighter leading-none">Record <span className="text-gradient">Donation</span></h2>
-                    <p className="text-[9px] text-text-secondary font-bold uppercase tracking-[0.2em] mt-2">Add new biological asset to registry</p>
+                    <p className="text-[9px] text-text-secondary font-bold uppercase tracking-[0.2em] mt-2">Add new donation record to inventory</p>
                   </div>
                   <button onClick={() => setShowDonationModal(false)} className="p-2 bg-glass border border-glass-border rounded-lg text-text-muted"><X size={18} /></button>
                 </div>
@@ -343,7 +345,7 @@ const BloodBankInventory = () => {
                   </div>
 
                   <div className="pt-4 space-y-4">
-                    <button className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-primary/20 uppercase font-black tracking-[0.3em] text-[10px]">Initialize Commitment</button>
+                    <button className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-primary/20 uppercase font-black tracking-[0.3em] text-[10px]">Save Donation</button>
                   </div>
                 </form>
               </div>
@@ -358,8 +360,8 @@ const BloodBankInventory = () => {
               <div className="p-8 md:p-12 overflow-y-auto custom-scrollbar">
                 <div className="flex justify-between items-start mb-8">
                   <div>
-                    <h2 className="text-2xl md:text-3xl font-black text-text-primary uppercase tracking-tighter leading-none">Bulk <span className="text-gradient">Onboarding</span></h2>
-                    <p className="text-[9px] text-text-secondary font-bold uppercase tracking-[0.2em] mt-2">Initialize mass inventory intake protocol</p>
+                    <h2 className="text-2xl md:text-3xl font-black text-text-primary uppercase tracking-tighter leading-none">Bulk <span className="text-gradient">Import</span></h2>
+                    <p className="text-[9px] text-text-secondary font-bold uppercase tracking-[0.2em] mt-2">Add multiple blood group records to inventory</p>
                   </div>
                   <button onClick={() => setShowBulkModal(false)} className="p-2 bg-glass border border-glass-border rounded-lg text-text-muted transition-all hover:text-accent"><X size={18} /></button>
                 </div>
@@ -434,7 +436,7 @@ const BloodBankInventory = () => {
                       type="submit"
                       className="flex-[2] btn btn-primary py-4 rounded-2xl shadow-xl shadow-primary/20 uppercase font-black tracking-[0.3em] text-[10px]"
                     >
-                      Execute Bulk Injection
+                      Add Bulk Inventory
                     </button>
                   </div>
                 </form>
