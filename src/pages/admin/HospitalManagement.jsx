@@ -22,6 +22,7 @@ import {
   Zap,
   X
 } from 'lucide-react';
+import LocationSelector from '../../components/LocationSelector';
 
 const HospitalManagement = () => {
   const [hospitals, setHospitals] = useState([]);
@@ -74,7 +75,7 @@ const HospitalManagement = () => {
   };
 
   const [newOrg, setNewOrg] = useState({
-    name: '', address: '', state: '', area: '', hospital_type: 'General', has_emergency_unit: false
+    name: '', address: '', state: '', area: '', hospital_type: 'General', has_emergency_unit: false, country: '', city: ''
   });
 
   const [newAdmin, setNewAdmin] = useState({
@@ -551,6 +552,11 @@ const HospitalManagement = () => {
                           <label className="label-text">Physical Address</label>
                           <input className="portal-input" value={newOrg.address} onChange={e => setNewOrg({...newOrg, address: e.target.value})} />
                        </div>
+                       <LocationSelector
+                          country={newOrg.country} setCountry={v => setNewOrg({...newOrg, country: v})}
+                          state={newOrg.state} setState={v => setNewOrg({...newOrg, state: v})}
+                          city={newOrg.city} setCity={v => setNewOrg({...newOrg, city: v})}
+                       />
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-8 animate-fade-in">

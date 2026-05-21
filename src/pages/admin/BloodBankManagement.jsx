@@ -24,6 +24,7 @@ import {
   X,
   Weight
 } from 'lucide-react';
+import LocationSelector from '../../components/LocationSelector';
 
 const BloodBankManagement = () => {
   const [bloodBanks, setBloodBanks] = useState([]);
@@ -84,7 +85,7 @@ const BloodBankManagement = () => {
 
   const [newOrg, setNewOrg] = useState({
     name: '', address: '', state: '', area: '', contact_email: '', contact_phone: '',
-    license_number: '', storage_capacity_liters: 0, commission_percentage: 10.0
+    license_number: '', storage_capacity_liters: 0, commission_percentage: 10.0, country: '', city: ''
   });
   
   const [newAdmin, setNewAdmin] = useState({
@@ -537,6 +538,11 @@ const BloodBankManagement = () => {
                           <label className="label-text">Address</label>
                           <input className="portal-input" value={newOrg.address} onChange={e => setNewOrg({...newOrg, address: e.target.value})} />
                        </div>
+                       <LocationSelector
+                          country={newOrg.country} setCountry={v => setNewOrg({...newOrg, country: v})}
+                          state={newOrg.state} setState={v => setNewOrg({...newOrg, state: v})}
+                          city={newOrg.city} setCity={v => setNewOrg({...newOrg, city: v})}
+                       />
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-8 animate-fade-in">

@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Droplet, Hospital, Send, ArrowRight, ShieldCheck, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
+import LocationSelector from '../components/LocationSelector';
 
 const Join = () => {
   const [activeTab, setActiveTab] = useState('hospital');
   const [loading, setLoading] = useState(false);
+
+  const [locCountry, setLocCountry] = useState('');
+  const [locState, setLocState] = useState('');
+  const [locCity, setLocCity] = useState('');
 
   const tabs = [
     { id: 'donor', label: 'Life Donor', icon: Users, description: "Join Nigeria's fastest growing life-saving community." },
@@ -47,6 +52,12 @@ const Join = () => {
                   <option className="bg-card-bg text-text-primary">Emergency Services</option>
                 </select>
               </div>
+              <LocationSelector 
+                country={locCountry} setCountry={setLocCountry}
+                state={locState} setState={setLocState}
+                city={locCity} setCity={setLocCity}
+                inputClassName="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all"
+              />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Operational Address</label>
@@ -69,6 +80,12 @@ const Join = () => {
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">License Number</label>
                 <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="L-00XXX" />
               </div>
+              <LocationSelector 
+                country={locCountry} setCountry={setLocCountry}
+                state={locState} setState={setLocState}
+                city={locCity} setCity={setLocCity}
+                inputClassName="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all"
+              />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Cold Chain Logistics Status</label>
