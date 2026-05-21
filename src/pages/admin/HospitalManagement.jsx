@@ -74,7 +74,7 @@ const HospitalManagement = () => {
   };
 
   const [newOrg, setNewOrg] = useState({
-    name: '', address: '', state: '', lga: '', hospital_type: 'General', has_emergency_unit: false
+    name: '', address: '', state: '', area: '', hospital_type: 'General', has_emergency_unit: false
   });
 
   const [newAdmin, setNewAdmin] = useState({
@@ -202,7 +202,7 @@ const HospitalManagement = () => {
       fetchData();
       resetForms();
       toast.success('Hospital and administrator registered.');
-      setNewOrg({ name: '', address: '', state: '', lga: '', hospital_type: 'General', has_emergency_unit: false });
+      setNewOrg({ name: '', address: '', state: '', area: '', hospital_type: 'General', has_emergency_unit: false });
       setNewAdmin({ email: '', password: '', first_name: '', last_name: '', role: 'HOSPITAL_ADMIN' });
     } catch (err) {
       toast.error('Registration failed. Please check your network connection.');
@@ -212,7 +212,7 @@ const HospitalManagement = () => {
   };
 
   const resetForms = () => {
-    setNewOrg({ name: '', address: '', state: '', lga: '', hospital_type: 'General', has_emergency_unit: false });
+    setNewOrg({ name: '', address: '', state: '', area: '', hospital_type: 'General', has_emergency_unit: false });
     setNewAdmin({ email: '', password: '', first_name: '', last_name: '', role: 'HOSPITAL_ADMIN' });
     setCurrentStep(1);
   };
@@ -413,7 +413,7 @@ const HospitalManagement = () => {
                             <input className="portal-input" placeholder="Administrative State" value={portalData.state} onChange={e => setPortalData({...portalData, state: e.target.value})} />
                           </div>
                           <div>
-                            <input className="portal-input" placeholder="Local Government Area" value={portalData.lga} onChange={e => setPortalData({...portalData, lga: e.target.value})} />
+                            <input className="portal-input" placeholder="Local Government Area" value={portalData.area || ''} onChange={e => setPortalData({...portalData, area: e.target.value})} />
                           </div>
                           <div className="flex items-center px-4 bg-primary/5 rounded-2xl border border-primary/20 text-[9px] font-black text-primary uppercase tracking-widest">
                             Verified Clinical Node

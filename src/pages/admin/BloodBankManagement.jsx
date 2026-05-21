@@ -83,7 +83,7 @@ const BloodBankManagement = () => {
   };
 
   const [newOrg, setNewOrg] = useState({
-    name: '', address: '', state: '', lga: '', contact_email: '', contact_phone: '',
+    name: '', address: '', state: '', area: '', contact_email: '', contact_phone: '',
     license_number: '', storage_capacity_liters: 0, commission_percentage: 10.0
   });
   
@@ -211,7 +211,7 @@ const BloodBankManagement = () => {
       setIsModalOpen(false);
       fetchData();
       toast.success('Blood bank and administrator registered.');
-      setNewOrg({ name: '', license_number: '', address: '', state: '', lga: '' });
+      setNewOrg({ name: '', license_number: '', address: '', state: '', area: '' });
       setNewAdmin({ email: '', password: '', first_name: '', last_name: '', role: 'BLOODBANK_ADMIN' });
     } catch (err) {
       toast.error('Registration failed. Please check your network connection.');
@@ -221,7 +221,7 @@ const BloodBankManagement = () => {
   };
 
   const resetForms = () => {
-    setNewOrg({ name: '', address: '', state: '', lga: '', contact_email: '', contact_phone: '', license_number: '', storage_capacity_liters: 0, commission_percentage: 10.0 });
+    setNewOrg({ name: '', address: '', state: '', area: '', contact_email: '', contact_phone: '', license_number: '', storage_capacity_liters: 0, commission_percentage: 10.0 });
     setNewAdmin({ email: '', password: '', first_name: '', last_name: '', role: 'BLOODBANK_ADMIN' });
     setCurrentStep(1);
   };
@@ -399,7 +399,7 @@ const BloodBankManagement = () => {
                             <input className="portal-input" placeholder="Administrative State" value={portalData.state} onChange={e => setPortalData({...portalData, state: e.target.value})} />
                           </div>
                           <div>
-                            <input className="portal-input" placeholder="Local Government Area" value={portalData.lga} onChange={e => setPortalData({...portalData, lga: e.target.value})} />
+                            <input className="portal-input" placeholder="Local Government Area" value={portalData.area || ''} onChange={e => setPortalData({...portalData, area: e.target.value})} />
                           </div>
                         </div>
                       </div>
