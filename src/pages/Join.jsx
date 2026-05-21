@@ -7,8 +7,9 @@ const Join = () => {
   const [activeTab, setActiveTab] = useState('hospital');
   const [loading, setLoading] = useState(false);
 
-  const [locCountry, setLocCountry] = useState('');
+  const [locCountry, setLocCountry] = useState('NG');
   const [locState, setLocState] = useState('');
+  const [locLga, setLocLga] = useState('');
   const [locCity, setLocCity] = useState('');
 
   const tabs = [
@@ -55,6 +56,7 @@ const Join = () => {
               <LocationSelector 
                 country={locCountry} setCountry={setLocCountry}
                 state={locState} setState={setLocState}
+                lga={locLga} setLga={setLocLga}
                 city={locCity} setCity={setLocCity}
                 inputClassName="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all"
               />
@@ -83,6 +85,7 @@ const Join = () => {
               <LocationSelector 
                 country={locCountry} setCountry={setLocCountry}
                 state={locState} setState={setLocState}
+                lga={locLga} setLga={setLocLga}
                 city={locCity} setCity={setLocCity}
                 inputClassName="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all"
               />

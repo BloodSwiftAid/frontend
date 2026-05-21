@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Country, State, City } from 'country-state-city';
 
-const LocationSelector = ({ country, state, city, setCountry, setState, setCity, inputClassName }) => {
-  const [countries, setCountries] = useState([]);
+const LocationSelector = ({ country, setCountry, state, setState, lga, setLga, city, setCity, inputClassName }) => {
   const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
+  const [lgas, setLgas] = useState([]);
 
   useEffect(() => {
-    setCountries(Country.getAllCountries());
-  }, []);
-
-  useEffect(() => {
-    if (country) {
-      setStates(State.getStatesOfCountry(country));
-    } else {
-      setStates([]);
-      setCities([]);
+    // Default country to Nigeria
+    if (setCountry && country !== 'NG') {
+      setCountry('NG');
     }
   }, [country]);
 
   useEffect(() => {
-    if (country && state) {
-      setCities(City.getCitiesOfState(country, state));
+    // Nigeria is 'NG'
+    setStates(State.getStatesOfCountry('NG'));
+  }, []);
+
+  useEffect(() => {
+    if (state) {
+      // The country-state-city package returns LGAs/Cities for the state
+      setLgas(City.getCitiesOfState('NG', state));
     } else {
-      setCities([]);
+      setLgas([]);
     }
-  }, [country, state]);
+  }, [state]);
+
+  const defaultClassName = "w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all portal-input";
+  const className = inputClassName || defaultClassName;
 
   return (
     <>
@@ -33,31 +35,23 @@ const LocationSelector = ({ country, state, city, setCountry, setState, setCity,
         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1 label-text">Country</label>
         <select 
           required 
-          className={inputClassName || "w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all portal-input"}
-          value={country}
-          onChange={(e) => {
-            setCountry(e.target.value);
-            setState('');
-            setCity('');
-          }}
+          className={className}
+          value="NG"
+          disabled
         >
-          <option value="" disabled className="bg-card-bg text-text-primary">Select Country</option>
-          {countries.map(c => (
-            <option key={c.isoCode} value={c.isoCode} className="bg-card-bg text-text-primary">{c.name}</option>
-          ))}
+          <option value="NG" className="bg-card-bg text-text-primary">Nigeria</option>
         </select>
       </div>
       <div className="space-y-2">
-        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1 label-text">State/County</label>
+        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1 label-text">State</label>
         <select 
           required 
-          className={inputClassName || "w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all portal-input"}
-          value={state}
+          className={className}
+          value={state || ''}
           onChange={(e) => {
             setState(e.target.value);
-            setCity('');
+            if (setLga) setLga('');
           }}
-          disabled={!country}
         >
           <option value="" disabled className="bg-card-bg text-text-primary">Select State</option>
           {states.map(s => (
@@ -66,21 +60,32 @@ const LocationSelector = ({ country, state, city, setCountry, setState, setCity,
         </select>
       </div>
       <div className="space-y-2">
-        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1 label-text">City</label>
+        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1 label-text">LGA</label>
         <select 
           required 
-          className={inputClassName || "w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all portal-input"}
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          disabled={!state || cities.length === 0}
+          className={className}
+          value={lga || ''}
+          onChange={(e) => setLga && setLga(e.target.value)}
+          disabled={!state || lgas.length === 0}
         >
           <option value="" disabled className="bg-card-bg text-text-primary">
-            {cities.length === 0 && state ? "No Cities Found" : "Select City"}
+            {lgas.length === 0 && state ? "No LGAs Found" : "Select LGA"}
           </option>
-          {cities.map(c => (
+          {lgas.map(c => (
             <option key={c.name} value={c.name} className="bg-card-bg text-text-primary">{c.name}</option>
           ))}
         </select>
+      </div>
+      <div className="space-y-2">
+        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1 label-text">City</label>
+        <input 
+          required 
+          type="text"
+          className={className}
+          value={city || ''}
+          onChange={(e) => setCity && setCity(e.target.value)}
+          placeholder="Enter City"
+        />
       </div>
     </>
   );

@@ -539,9 +539,10 @@ const BloodBankManagement = () => {
                           <input className="portal-input" value={newOrg.address} onChange={e => setNewOrg({...newOrg, address: e.target.value})} />
                        </div>
                        <LocationSelector
-                          country={newOrg.country} setCountry={v => setNewOrg({...newOrg, country: v})}
-                          state={newOrg.state} setState={v => setNewOrg({...newOrg, state: v})}
-                          city={newOrg.city} setCity={v => setNewOrg({...newOrg, city: v})}
+                          country={newOrg.country} setCountry={v => setNewOrg(prev => ({...prev, country: v}))}
+                          state={newOrg.state} setState={v => setNewOrg(prev => ({...prev, state: v}))}
+                          lga={newOrg.area} setLga={v => setNewOrg(prev => ({...prev, area: v}))}
+                          city={newOrg.city} setCity={v => setNewOrg(prev => ({...prev, city: v}))}
                        />
                     </div>
                   ) : (
