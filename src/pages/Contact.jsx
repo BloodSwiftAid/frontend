@@ -44,7 +44,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-2">Email Address</h4>
-                    <p className="text-xl font-black text-text-primary uppercase tracking-tight">contact@swiftaid.ng</p>
+                    <p className="text-xl font-black text-text-primary lowercase tracking-tight">info@swiftaid.co</p>
                   </div>
                 </div>
                 

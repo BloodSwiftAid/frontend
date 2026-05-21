@@ -141,12 +141,11 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
               <h4 className="text-text-primary font-black uppercase tracking-widest text-xs mb-6">Network</h4>
               <ul className="space-y-4 text-sm text-text-secondary">
                 <li><Link to="/join" className="hover:text-accent transition-colors">Join as Hospital</Link></li>
-                <li><Link to="/join" className="hover:text-accent transition-colors">Become supply partner</Link></li>
-                <li><Link to="/donors" className="hover:text-accent transition-colors">Donor Information</Link></li>
+                <li><Link to="/join" className="hover:text-accent transition-colors">Become blood bank</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Legal</h4>
+              <h4 className="text-text-primary font-black uppercase tracking-widest text-xs mb-6">Legal</h4>
               <ul className="space-y-4 text-sm text-text-secondary">
                 <li><Link to="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="hover:text-accent transition-colors">Terms of Service</Link></li>
@@ -163,7 +162,7 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
 };
 
 function App() {
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';

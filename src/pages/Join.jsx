@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Droplet, Hospital, Send, ArrowRight, ShieldCheck, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
+import { Users, Droplet, Hospital, ShieldCheck, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
 import LocationSelector from '../components/LocationSelector';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const Join = () => {
   const [activeTab, setActiveTab] = useState('hospital');
@@ -13,18 +15,41 @@ const Join = () => {
   const [locCity, setLocCity] = useState('');
 
   const tabs = [
-    { id: 'donor', label: 'Life Donor', icon: Users, description: "Join Nigeria's fastest growing life-saving community." },
+    { id: 'donor', label: 'Blood Donor', icon: Users, description: "Join Nigeria's fastest growing life-saving community." },
     { id: 'hospital', label: 'Medical Facility', icon: Hospital, description: "Get verified blood to your clinical ward in under 20 minutes." },
-    { id: 'bloodbank', label: 'Supply Partner', icon: Droplet, description: "Scale your distribution and inventory as a verified supply partner." }
+    { id: 'bloodbank', label: 'Blood Banks', icon: Droplet, description: "Scale your distribution and inventory as a verified supply partner." }
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    data.country = locCountry;
+    data.state = locState;
+    data.lga = locLga;
+    data.city = locCity;
+    data.facility_type = activeTab;
+
+    try {
+      const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+      if (activeTab === 'donor') {
+        await axios.post(`${baseURL}/auth/register-donor/`, data);
+        toast.success('Registration submitted successfully. We will contact you soon!');
+      } else {
+        await axios.post(`${baseURL}/auth/register-facility/`, data);
+        toast.success('Application transmitted successfully. Our coordination team will review your credentials.');
+      }
+      e.target.reset();
+      setLocState(''); setLocLga(''); setLocCity('');
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Error submitting form. Please try again.');
+    } finally {
       setLoading(false);
-      alert(`Application transmitted successfully. Our coordination team will review your credentials.`);
-    }, 1500);
+    }
   };
 
   const renderForm = () => {
@@ -35,23 +60,33 @@ const Join = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Facility Name</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="e.g. St. Nicholas Hospital" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Work Email</label>
-                <input required type="email" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="procurement@facility.ng" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Contact Person</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="Dr. Adebayo Smith" />
+                <input required name="facility_name" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="e.g. St. Nicholas Hospital" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Department</label>
-                <select className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all">
-                  <option className="bg-card-bg text-text-primary">Clinical Procurement</option>
-                  <option className="bg-card-bg text-text-primary">Administration</option>
-                  <option className="bg-card-bg text-text-primary">Emergency Services</option>
+                <select name="hospital_type" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all">
+                  <option value="Clinical Procurement" className="bg-card-bg text-text-primary">Clinical Procurement</option>
+                  <option value="Administration" className="bg-card-bg text-text-primary">Administration</option>
+                  <option value="Emergency Services" className="bg-card-bg text-text-primary">Emergency Services</option>
                 </select>
+              </div>
+              <div className="space-y-2 md:col-span-2 border-b border-glass-border pb-4 mt-4">
+                <h4 className="text-sm font-bold text-text-primary uppercase tracking-widest">Admin Contact Details</h4>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Admin Name</label>
+                <input required name="admin_name" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="Dr. Adebayo Smith" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Admin / Work Email</label>
+                <input required name="admin_email" type="email" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="procurement@facility.ng" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Admin Phone</label>
+                <input required name="admin_phone" type="tel" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="+234 ..." />
+              </div>
+              <div className="space-y-2 md:col-span-2 border-b border-glass-border pb-4 mt-4">
+                <h4 className="text-sm font-bold text-text-primary uppercase tracking-widest">Facility Location</h4>
               </div>
               <LocationSelector 
                 country={locCountry} setCountry={setLocCountry}
@@ -63,7 +98,7 @@ const Join = () => {
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Operational Address</label>
-              <textarea rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
+              <textarea name="operational_address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
               {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
@@ -76,11 +111,29 @@ const Join = () => {
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Partner Facility Name</label>
-                 <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="e.g. Lagos Central Lab" />
+                 <input required name="facility_name" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="e.g. Lagos Central Lab" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">License Number</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="L-00XXX" />
+                <input required name="license_number" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="L-00XXX" />
+              </div>
+              <div className="space-y-2 md:col-span-2 border-b border-glass-border pb-4 mt-4">
+                <h4 className="text-sm font-bold text-text-primary uppercase tracking-widest">Admin Contact Details</h4>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Admin Name</label>
+                <input required name="admin_name" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="Dr. Adebayo Smith" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Admin / Work Email</label>
+                <input required name="admin_email" type="email" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="admin@bloodbank.ng" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Admin Phone</label>
+                <input required name="admin_phone" type="tel" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="+234 ..." />
+              </div>
+              <div className="space-y-2 md:col-span-2 border-b border-glass-border pb-4 mt-4">
+                <h4 className="text-sm font-bold text-text-primary uppercase tracking-widest">Facility Location</h4>
               </div>
               <LocationSelector 
                 country={locCountry} setCountry={setLocCountry}
@@ -92,7 +145,11 @@ const Join = () => {
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Cold Chain Logistics Status</label>
-              <textarea rows="3" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Describe your current storage and delivery capabilities" />
+              <textarea name="logistics_status" rows="3" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Describe your current storage and delivery capabilities" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Operational Address</label>
+              <textarea name="operational_address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
               {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
@@ -105,22 +162,40 @@ const Join = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Full Name</label>
-                <input required className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="Adebayo Oluasegun" />
+                <input required name="full_name" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="Adebayo Oluasegun" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Email</label>
+                <input required name="email" type="email" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="adebayo@example.com" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Blood Group</label>
-                <select className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all">
-                  <option className="bg-card-bg text-text-primary">O Positive (+)</option>
-                  <option className="bg-card-bg text-text-primary">O Negative (-)</option>
-                  <option className="bg-card-bg text-text-primary">A Positive (+)</option>
-                  <option className="bg-card-bg text-text-primary">B Positive (+)</option>
-                  <option className="bg-card-bg text-text-primary">AB Positive (+)</option>
+                <select name="blood_group" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all">
+                  <option value="O+" className="bg-card-bg text-text-primary">O Positive (+)</option>
+                  <option value="O-" className="bg-card-bg text-text-primary">O Negative (-)</option>
+                  <option value="A+" className="bg-card-bg text-text-primary">A Positive (+)</option>
+                  <option value="B+" className="bg-card-bg text-text-primary">B Positive (+)</option>
+                  <option value="AB+" className="bg-card-bg text-text-primary">AB Positive (+)</option>
                 </select>
               </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Mobile Contact (WhatsApp Enabled)</label>
+                <input required name="phone" type="tel" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="+234 ..." />
+              </div>
+              <div className="space-y-2 md:col-span-2 border-b border-glass-border pb-4 mt-4">
+                <h4 className="text-sm font-bold text-text-primary uppercase tracking-widest">Location Details</h4>
+              </div>
+              <LocationSelector 
+                country={locCountry} setCountry={setLocCountry}
+                state={locState} setState={setLocState}
+                lga={locLga} setLga={setLocLga}
+                city={locCity} setCity={setLocCity}
+                inputClassName="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all"
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Mobile Contact (WhatsApp Enabled)</label>
-              <input required type="tel" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all placeholder:text-text-muted" placeholder="+234 ..." />
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Residential Address</label>
+              <textarea name="address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
               {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
