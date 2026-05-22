@@ -6,7 +6,7 @@
   Tailwind v4 Theme Configuration 
   We define all design tokens as CSS variables first to ensure runtime theme switching works perfectly.
 */
-:root {
+:root, [data-theme='light'] {
   /* Core Colors - Original Teal & Rose Palette */
   --color-primary: #0d9488;        /* Teal 600 */
   --color-primary-dark: #0f766e;   /* Teal 700 */
@@ -14,6 +14,31 @@
   --color-accent: #e11d48;         /* Rose 600 */
   --color-accent-hover: #be123c;   /* Rose 700 */
   
+  /* Background Colors - Light Mode (Green & Red) */
+  --color-bg-dark: #f0fdf4;        /* Very Light Greenish White */
+  --color-bg-darker: #dcfce7;      /* Light Greenish Gray */
+  
+  /* Text Colors Optimized for Light Mode */
+  --color-text-primary: #064e3b;    /* Deep Forest Green */
+  --color-text-secondary: #065f46;  /* Deep Emerald */
+  --color-text-muted: #374151;      /* Deep Gray */
+  
+  --color-glass: rgba(16, 185, 129, 0.05);
+  --color-glass-border: rgba(16, 185, 129, 0.15);
+  --color-nav-bg: rgba(240, 253, 244, 0.9);
+  --color-card-bg: #ffffff;
+  
+  /* Semantic Tokens - Light Mode */
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-info: #2563eb;
+  
+  /* Constants */
+  --font-main: 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+}
+
+[data-theme='dark'] {
   /* Background Colors - Restored Slate (Previous) */
   --color-bg-dark: #020617;        /* Slate 950 */
   --color-bg-darker: #010413;      /* Deeper Slate */
@@ -32,31 +57,6 @@
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-info: #3b82f6;
-  
-  /* Constants */
-  --font-main: 'Plus Jakarta Sans', sans-serif;
-  --font-heading: 'Plus Jakarta Sans', sans-serif;
-}
-
-[data-theme='light'] {
-  /* Core Colors - Light Mode (Green & Red) */
-  --color-bg-dark: #f0fdf4;        /* Very Light Greenish White */
-  --color-bg-darker: #dcfce7;      /* Light Greenish Gray */
-  
-  /* Text Colors Optimized for Light Mode */
-  --color-text-primary: #064e3b;    /* Deep Forest Green */
-  --color-text-secondary: #065f46;  /* Deep Emerald */
-  --color-text-muted: #374151;      /* Deep Gray */
-  
-  --color-glass: rgba(16, 185, 129, 0.05);
-  --color-glass-border: rgba(16, 185, 129, 0.15);
-  --color-nav-bg: rgba(240, 253, 244, 0.9);
-  --color-card-bg: #ffffff;
-  
-  /* Adjust semantic colors for light mode contrast */
-  --color-success: #059669;
-  --color-warning: #d97706;
-  --color-info: #2563eb;
 }
 
 @theme {
