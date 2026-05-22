@@ -323,9 +323,12 @@ const BloodBankManagement = () => {
               <div className="p-4 rounded-2xl bg-primary/10 text-primary border border-primary/20">
                 <Building2 size={32} />
               </div>
-              <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${bank.is_verified ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-accent/10 text-accent border border-accent/20'}`}>
-                {bank.is_verified ? 'Authorized' : 'Pending Review'}
-              </div>
+              <button 
+                onClick={(e) => { e.stopPropagation(); adminApi.toggleBloodBankVerified(bank.id).then(fetchData); }}
+                className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest cursor-pointer hover:opacity-80 transition-opacity ${bank.is_verified ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-accent/10 text-accent border border-accent/20'}`}
+              >
+                {bank.is_verified ? 'Verified (Revoke)' : 'Verify Facility'}
+              </button>
             </div>
             
             <h3 
@@ -544,7 +547,7 @@ const BloodBankManagement = () => {
                           <p className="text-[9px] text-text-muted uppercase font-black opacity-60">Control blood bank marketplace access</p>
                         </div>
                         <button onClick={() => adminApi.toggleBloodBankVerified(portalData.id).then(fetchData)} className={`px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all ${portalData.is_verified ? 'bg-emerald-500 text-bg-dark' : 'bg-accent text-white'}`}>
-                          {portalData.is_verified ? 'Authorized' : 'Grant Review'}
+                          {portalData.is_verified ? 'Verified (Revoke)' : 'Verify Facility'}
                         </button>
                       </div>
                       <div className="flex justify-between items-center">
