@@ -26,6 +26,7 @@ const BloodBankInventory = () => {
   const [bulkItems, setBulkItems] = useState([
     { blood_group: 'O+', quantity: 1, notes: '' }
   ]);
+  const [priceEdits, setPriceEdits] = useState({});
   const [newDonation, setNewDonation] = useState({
     donor_name: '',
     donor_phone: '',
@@ -98,6 +99,20 @@ const BloodBankInventory = () => {
       toast.success('Bulk Inventory Added');
     } catch (err) {
       toast.error('Failed to add bulk inventory');
+    }
+  };
+
+  const handleUpdatePrice = async (typeId, invItem, newPrice) => {
+    try {
+      if (invItem) {
+        await inventoryApi.updateStock(invItem.id, { price: newPrice });
+      } else {
+        await inventoryApi.createInventory({ blood_type: typeId, quantity: 0, price: newPrice });
+      }
+      toast.success('Price Updated');
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to update price');
     }
   };
 
@@ -253,7 +268,7 @@ const BloodBankInventory = () => {
                     <tbody className="divide-y divide-glass-border/20">
                       {bloodTypeRegistry.map(type => {
                         const invItem = inventory.find(i => i.blood_type === type.id || i.blood_group === type.group);
-                        const currentPrice = invItem ? invItem.price : type.base_price;
+                        const currentPrice = priceEdits[type.id] !== undefined ? priceEdits[type.id] : (invItem ? invItem.price : type.base_price);
                         return (
                           <tr key={type.id} className="hover:bg-primary/5 transition-all">
                             <td className="px-8 py-5 font-black text-text-primary uppercase">{type.group}</td>
@@ -263,12 +278,17 @@ const BloodBankInventory = () => {
                             <td className="px-8 py-5">
                                <div className="inline-flex items-center bg-glass border border-glass-border rounded-xl px-3 py-1.5">
                                   <span className="text-xs font-black text-text-muted mr-2">₦</span>
-                                  <input type="number" className="bg-transparent border-none outline-none w-20 text-right font-black text-sm" value={currentPrice} onChange={() => {}} />
+                                  <input type="number" className="bg-transparent border-none outline-none w-20 text-right font-black text-sm" value={currentPrice} onChange={(e) => setPriceEdits({ ...priceEdits, [type.id]: e.target.value })} />
                                </div>
                             </td>
                             <td className="px-8 py-5 text-[10px] font-black text-primary uppercase">₦{parseFloat(type.base_price).toLocaleString()}</td>
                             <td className="px-8 py-5 text-right">
-                              <button className="px-4 py-2 bg-primary text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg shadow-primary/20">Sync</button>
+                              <button 
+                                onClick={() => handleUpdatePrice(type.id, invItem, currentPrice)}
+                                className="px-4 py-2 bg-primary text-white rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+                              >
+                                Update
+                              </button>
                             </td>
                           </tr>
                         );
