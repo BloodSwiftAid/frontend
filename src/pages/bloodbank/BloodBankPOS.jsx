@@ -63,7 +63,7 @@ const POSItem = ({ item, addToCart, removeFromCart, cart, isVerified }) => {
         <div className="flex items-center gap-2 mt-2">
            <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${isOutOfStock ? 'bg-accent' : 'bg-emerald-500 animate-pulse'}`} />
            <span className={`text-[9px] font-black uppercase tracking-widest leading-none ${isOutOfStock ? 'text-accent' : 'text-slate-400'}`}>
-             {isOutOfStock ? 'Sold Out' : `${item.quantity} ${item.quantity === 1 ? 'Unit' : 'Units'} Left`}
+             {item.quantity} {item.quantity === 1 ? 'Unit' : 'Units'} Available
            </span>
         </div>
       </div>
@@ -78,7 +78,7 @@ const POSItem = ({ item, addToCart, removeFromCart, cart, isVerified }) => {
               ${isOutOfStock ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 
                 'bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/10 active:scale-95'}`}
           >
-            {isOutOfStock ? 'Empty' : 'Add to Order'}
+            {isOutOfStock ? 'Out of Stock' : 'Add to Order'}
           </button>
         ) : (
           <div className="flex items-center justify-between bg-slate-50/80 border border-slate-100 p-1 rounded-xl w-full">
