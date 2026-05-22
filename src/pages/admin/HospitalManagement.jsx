@@ -292,12 +292,10 @@ const HospitalManagement = () => {
               <div className="p-4 rounded-2xl bg-primary/10 text-primary border border-primary/20">
                 <HospitalIcon size={32} />
               </div>
-              <button 
-                onClick={(e) => { e.stopPropagation(); adminApi.toggleHospitalVerified(hosp.id).then(fetchData); }}
-                className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest cursor-pointer hover:opacity-80 transition-opacity ${hosp.is_verified ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-accent/10 text-accent border border-accent/20'}`}
-              >
-                {hosp.is_verified ? 'Verified (Revoke)' : 'Verify Facility'}
-              </button>
+              <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 ${hosp.is_verified ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}`}>
+                {hosp.is_verified ? <ShieldCheck size={12}/> : <Activity size={12}/>}
+                {hosp.is_verified ? 'Verified' : 'Pending Review'}
+              </div>
             </div>
             
             <h3 
@@ -319,11 +317,14 @@ const HospitalManagement = () => {
               </div>
             </div>
 
-            <div className="pt-8 border-t border-glass-border flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <Stethoscope className="w-6 h-6 text-primary/60" />
-                <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">Clinical Node</span>
-              </div>
+            <div className="pt-6 border-t border-glass-border flex justify-between items-center">
+              <button 
+                onClick={(e) => { e.stopPropagation(); adminApi.toggleHospitalVerified(hosp.id).then(fetchData); }}
+                className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all cursor-pointer ${hosp.is_verified ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500' : 'bg-glass border border-glass-border hover:border-emerald-500/50 text-text-muted hover:text-emerald-500'}`}
+              >
+                <ShieldCheck size={16} />
+                <span className="text-[9px] font-black uppercase tracking-widest">{hosp.is_verified ? 'Authorized Node' : 'Verify Facility'}</span>
+              </button>
               <ChevronRight className="text-primary group-hover:translate-x-2 transition-transform" />
             </div>
           </div>
@@ -485,8 +486,9 @@ const HospitalManagement = () => {
                           <p className="text-[10px] font-black text-text-primary uppercase tracking-widest mb-1">Authority Override</p>
                           <p className="text-[9px] text-text-muted uppercase font-black opacity-60">Grant clinical authorization</p>
                         </div>
-                        <button onClick={() => adminApi.toggleHospitalVerified(portalData.id).then(fetchData)} className={`px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all ${portalData.is_verified ? 'bg-emerald-500 text-bg-dark' : 'bg-accent text-white'}`}>
-                          {portalData.is_verified ? 'Verified (Revoke)' : 'Verify Facility'}
+                        <button onClick={() => adminApi.toggleHospitalVerified(portalData.id).then(fetchData)} className={`px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 ${portalData.is_verified ? 'bg-emerald-500 text-bg-dark shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-glass border border-glass-border text-text-muted hover:text-emerald-500 hover:border-emerald-500/50'}`}>
+                          <ShieldCheck size={16} />
+                          {portalData.is_verified ? 'Authorized Node' : 'Grant Verification'}
                         </button>
                       </div>
                       <div className="flex justify-between items-center">
