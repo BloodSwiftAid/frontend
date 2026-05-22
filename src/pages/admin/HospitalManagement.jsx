@@ -429,6 +429,22 @@ const HospitalManagement = () => {
                           </div>
                         </div>
                       </div>
+
+                      <div className="md:col-span-2 pt-6">
+                        <div className="h-px bg-gradient-to-r from-glass-border to-transparent mb-10" />
+                        <label className="label-text">Primary Contacts</label>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div>
+                            <input className="portal-input" placeholder="Contact Person Name" value={portalData.contact_name || ''} onChange={e => setPortalData({...portalData, contact_name: e.target.value})} />
+                          </div>
+                          <div>
+                            <input className="portal-input" placeholder="Official Email Address" value={portalData.contact_email || ''} onChange={e => setPortalData({...portalData, contact_email: e.target.value})} />
+                          </div>
+                          <div>
+                            <input className="portal-input" placeholder="Emergency Phone Line" value={portalData.contact_phone || ''} onChange={e => setPortalData({...portalData, contact_phone: e.target.value})} />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div className="pt-10 flex justify-end">
                       <button onClick={handlePortalUpdate} className="btn btn-primary px-16 py-6 rounded-[28px] font-black uppercase tracking-[0.2em] text-xs shadow-2xl hover:scale-[1.02] transition-transform">
