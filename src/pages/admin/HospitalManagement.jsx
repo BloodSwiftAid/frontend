@@ -182,8 +182,12 @@ const HospitalManagement = () => {
 
   const handleOnboard = async (e) => {
     if (e) e.preventDefault();
-    if (!newOrg.name || !newAdmin.email) {
-      toast.error('Hospital name and Admin email are required.');
+    if (!newOrg.name || !newOrg.state || !newOrg.area || !newOrg.country || !newOrg.address) {
+      toast.error('All hospital fields (Name, State, LGA, Country, Address) are required.');
+      return;
+    }
+    if (!newAdmin.email || !newAdmin.first_name || !newAdmin.last_name || !newAdmin.password) {
+      toast.error('All admin fields (Email, First Name, Last Name, Password) are required.');
       return;
     }
     setLoading(true);

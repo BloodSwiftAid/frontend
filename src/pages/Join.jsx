@@ -33,6 +33,14 @@ const Join = () => {
     data.city = locCity;
     data.facility_type = activeTab;
 
+    if (activeTab === 'hospital' || activeTab === 'bloodbank') {
+      if (!locState || !locLga || !locCountry) {
+        toast.error('State, LGA, and Country are required for facility registration.');
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
       if (activeTab === 'donor') {
@@ -98,7 +106,7 @@ const Join = () => {
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Operational Address</label>
-              <textarea name="operational_address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
+              <textarea required name="operational_address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
               {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
@@ -149,7 +157,7 @@ const Join = () => {
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary ml-1">Operational Address</label>
-              <textarea name="operational_address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
+              <textarea required name="operational_address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
               {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
