@@ -27,6 +27,11 @@ const InternalBloodTypes = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newData, setNewData] = useState({ group: '', base_price: 0, is_active: true });
 
+  const [inventoryStats, setInventoryStats] = useState({});
+  const [showBreakdownModal, setShowBreakdownModal] = useState(false);
+  const [breakdownData, setBreakdownData] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState('');
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -34,14 +39,29 @@ const InternalBloodTypes = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [btRes, configRes] = await Promise.all([
+      const [btRes, configRes, statsRes] = await Promise.all([
         adminApi.listBloodTypes(),
-        adminApi.getGlobalConfig()
+        adminApi.getGlobalConfig(),
+        adminApi.getInventoryStats()
       ]);
       setBloodTypes(btRes.data.results || btRes.data);
       setGlobalConfig(configRes.data);
+      setInventoryStats(statsRes.data);
     } catch (err) {
       console.error('Database sync failed:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchBreakdown = async (group) => {
+    try {
+      setLoading(true);
+      setSelectedGroup(group);
+      setShowBreakdownModal(true);
+      const res = await adminApi.getBloodTypeBreakdown(group);
+      setBreakdownData(res.data);
+    } catch (err) {
+      console.error('Failed to fetch breakdown:', err);
     } finally {
       setLoading(false);
     }
@@ -135,6 +155,7 @@ const InternalBloodTypes = () => {
                 <thead>
                   <tr className="bg-glass/30 border-b border-glass-border">
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted">Group</th>
+                    <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-center">Available Units</th>
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-right">Base Price</th>
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-center">Status</th>
                     <th className="px-10 py-8 text-[10px] font-black uppercase tracking-widest text-text-muted text-right">Ops</th>
@@ -150,6 +171,14 @@ const InternalBloodTypes = () => {
                           </div>
                           <p className="text-2xl font-black text-text-primary tracking-tighter">{bt.group}</p>
                         </div>
+                      </td>
+                      <td className="px-10 py-8 text-center">
+                        <button 
+                          onClick={() => fetchBreakdown(bt.group)} 
+                          className="text-2xl font-black text-primary tracking-tight underline decoration-primary/30 underline-offset-4 hover:decoration-primary transition-all"
+                        >
+                          {inventoryStats[bt.group] || 0}
+                        </button>
                       </td>
                       <td className="px-10 py-8 text-right">
                         {editingId === bt.id ? (
@@ -213,6 +242,16 @@ const InternalBloodTypes = () => {
                            ) : (
                               <button onClick={() => handleEdit(bt)} className="p-3 bg-glass border border-glass-border rounded-xl text-primary"><Edit2 size={16} /></button>
                            )}
+                        </div>
+                     </div>
+
+                     <div className="flex items-center gap-4 bg-primary/5 rounded-2xl p-4 border border-primary/10">
+                        <Database size={20} className="text-primary" />
+                        <div>
+                           <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-1">Total Available</p>
+                           <button onClick={() => fetchBreakdown(bt.group)} className="text-xl font-black text-text-primary underline decoration-primary/30 hover:decoration-primary">
+                             {inventoryStats[bt.group] || 0} Units
+                           </button>
                         </div>
                      </div>
                      
@@ -339,6 +378,62 @@ const InternalBloodTypes = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Breakdown Modal */}
+      {showBreakdownModal && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 md:p-6 bg-bg-dark/80 backdrop-blur-xl animate-fade-in overflow-hidden">
+          <div className="relative w-full max-w-4xl bg-card-bg border border-glass-border rounded-3xl md:rounded-[64px] shadow-2xl flex flex-col overflow-hidden animate-scale-up">
+            <div className="p-8 md:p-12 border-b border-glass-border flex justify-between items-start bg-glass/20">
+              <div className="space-y-2">
+                <div className="inline-block px-3 py-1 bg-primary/10 border border-primary/20 rounded-lg">
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest">Network Distribution</span>
+                </div>
+                <h2 className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter uppercase">
+                  {selectedGroup} <span className="text-gradient">Availability</span>
+                </h2>
+              </div>
+              <button onClick={() => { setShowBreakdownModal(false); setBreakdownData(null); }} className="p-4 bg-glass border border-glass-border rounded-xl text-text-muted hover:text-accent transition-all">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-8 md:p-12 overflow-y-auto custom-scrollbar max-h-[70vh]">
+              {!breakdownData ? (
+                <div className="flex justify-center py-20">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                </div>
+              ) : breakdownData.length === 0 ? (
+                <div className="text-center py-20 space-y-4">
+                  <Database size={48} className="mx-auto text-text-muted opacity-50" />
+                  <p className="text-lg font-bold text-text-secondary">No blood banks currently have {selectedGroup} available.</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {breakdownData.map((item, idx) => (
+                    <div key={idx} className="bg-glass/40 border border-glass-border rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:border-primary/40 transition-all">
+                      <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 rounded-2xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary">
+                          <Activity size={24} />
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-black text-text-primary tracking-tighter uppercase">{item.blood_bank_name}</h4>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-text-secondary mt-1">
+                            {item.city}, {item.lga}, {item.state} — {item.country}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-start md:items-end bg-card-bg border border-glass-border p-4 rounded-2xl w-full md:w-auto">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-1">Available Payload</span>
+                        <span className="text-3xl font-black text-primary tracking-tighter tabular-nums">{item.quantity}L</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

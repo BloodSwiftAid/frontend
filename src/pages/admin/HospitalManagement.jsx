@@ -588,7 +588,7 @@ const HospitalManagement = () => {
                      <button onClick={() => setIsModalOpen(false)} className="px-8 py-4 text-text-muted font-black uppercase text-[10px]">Cancel</button>
                      <div className="flex gap-4">
                         {currentStep === 2 && <button onClick={() => setCurrentStep(1)} className="px-8 py-4 border border-glass-border rounded-2xl text-text-primary font-black uppercase text-[10px]">Back</button>}
-                        <button onClick={currentStep === 1 ? () => setCurrentStep(2) : handleOnboard} className="btn btn-primary px-12 py-5 rounded-2xl shadow-xl font-black uppercase tracking-widest text-[10px]">
+                        <button onClick={currentStep === 1 ? () => { if(!newOrg.name || !newOrg.state || !newOrg.area || !newOrg.country || !newOrg.address) { toast.error('All hospital fields (Name, State, LGA, Country, Address) are required.'); } else { setCurrentStep(2); } } : handleOnboard} className="btn btn-primary px-12 py-5 rounded-2xl shadow-xl font-black uppercase tracking-widest text-[10px]">
                            {currentStep === 1 ? 'Next Step' : 'Confirm Registration'}
                         </button>
                      </div>

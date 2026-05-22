@@ -55,6 +55,28 @@ const BloodBankManagement = () => {
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Inventory State
+  const [bankInventory, setBankInventory] = useState(null);
+  const [inventoryLoading, setInventoryLoading] = useState(false);
+
+  useEffect(() => {
+    if (isPortalOpen && portalTab === 'inventory' && portalData) {
+      fetchBankInventory(portalData.id);
+    }
+  }, [isPortalOpen, portalTab, portalData]);
+
+  const fetchBankInventory = async (id) => {
+    setInventoryLoading(true);
+    try {
+      const res = await adminApi.getBloodBankInventory(id);
+      setBankInventory(res.data.results || res.data);
+    } catch (err) {
+      console.error('Failed to fetch inventory:', err);
+    } finally {
+      setInventoryLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -351,6 +373,7 @@ const BloodBankManagement = () => {
                 {[
                   { id: 'overview', label: 'Overview', icon: LayoutGrid },
                   { id: 'personnel', label: 'Staff', icon: User },
+                  { id: 'inventory', label: 'Inventory', icon: Droplet },
                   { id: 'security', label: 'Directives', icon: ShieldCheck }
                 ].map(tab => (
                   <button
@@ -470,6 +493,48 @@ const BloodBankManagement = () => {
                   </div>
                 )}
 
+                {portalTab === 'inventory' && (
+                  <div className="space-y-10 animate-fade-in">
+                    <div className="flex justify-between items-center border-b border-glass-border pb-6">
+                      <h4 className="text-2xl font-black text-text-primary uppercase tracking-tighter flex items-center gap-4">
+                        <Database size={24} className="text-primary" />
+                        Blood Inventory
+                      </h4>
+                    </div>
+                    {inventoryLoading || !bankInventory ? (
+                      <div className="flex justify-center py-20">
+                         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                      </div>
+                    ) : bankInventory.length === 0 ? (
+                      <div className="bg-glass/5 border border-glass-border p-12 rounded-[40px] text-center space-y-4">
+                        <Droplet size={48} className="mx-auto text-text-muted opacity-50" />
+                        <h5 className="text-xl font-black text-text-primary uppercase">No Inventory Found</h5>
+                        <p className="text-text-secondary font-bold uppercase tracking-widest text-[10px]">This facility hasn't recorded any blood bags yet.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {bankInventory.map((item, idx) => (
+                          <div key={idx} className="bg-glass/5 border border-glass-border p-8 rounded-[40px] flex items-center justify-between group hover:border-primary/30 transition-all">
+                            <div className="flex items-center gap-6">
+                              <div className="w-16 h-16 rounded-[24px] bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary font-black text-2xl uppercase shadow-inner">
+                                {item.blood_group}
+                              </div>
+                              <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Stock Level</p>
+                                <div className="text-3xl font-black text-text-primary tracking-tighter tabular-nums">{item.quantity}<span className="text-sm text-text-muted ml-1">Units</span></div>
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-end">
+                               <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-1">Base Price</p>
+                               <span className="text-xl font-black text-emerald-500 tabular-nums tracking-tighter">₦{item.price}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {portalTab === 'security' && (
                   <div className="space-y-12 animate-fade-in">
                     <div className="p-12 bg-glass border border-glass-border rounded-[56px] space-y-12">
@@ -574,7 +639,7 @@ const BloodBankManagement = () => {
                      <button onClick={() => setIsModalOpen(false)} className="px-8 py-4 text-text-muted font-black uppercase text-[10px]">Cancel</button>
                      <div className="flex gap-4">
                         {currentStep === 2 && <button onClick={() => setCurrentStep(1)} className="px-8 py-4 border border-glass-border rounded-2xl text-text-primary font-black uppercase text-[10px]">Back</button>}
-                         <button onClick={currentStep === 1 ? () => { if(newOrg.name && newOrg.license_number) setCurrentStep(2); } : handleOnboard} className="btn btn-primary px-12 py-5 rounded-2xl shadow-xl font-black uppercase tracking-widest text-[10px]">
+                         <button onClick={currentStep === 1 ? () => { if(!newOrg.name || !newOrg.license_number || !newOrg.state || !newOrg.area || !newOrg.country || !newOrg.address) { toast.error('All facility fields (Name, License, State, LGA, Country, Address) are required.'); } else { setCurrentStep(2); } } : handleOnboard} className="btn btn-primary px-12 py-5 rounded-2xl shadow-xl font-black uppercase tracking-widest text-[10px]">
                            {currentStep === 1 ? 'Next Step' : 'Confirm Registration'}
                         </button>
                      </div>

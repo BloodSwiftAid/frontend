@@ -43,6 +43,9 @@ export const adminApi = {
 
   // Stats
   getSystemStats: () => api.get('/user/system-stats/'),
+  getInventoryStats: () => api.get('/inventory/stats/'),
+  getBloodTypeBreakdown: (bloodGroup) => api.get('/inventory/blood-type-breakdown/', { params: { blood_group: bloodGroup } }),
+  getBloodBankInventory: (bloodBankId) => api.get('/inventory/inventory/', { params: { blood_bank_id: bloodBankId } }),
   
   // Global Config
   getGlobalConfig: () => api.get('/user/global-config/'),
