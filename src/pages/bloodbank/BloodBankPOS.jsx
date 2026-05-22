@@ -347,38 +347,36 @@ const BloodBankPOS = () => {
         </div>
 
         {/* Digital Ledger / Receipt Panel */}
-        <aside className="hidden lg:flex w-[400px] bg-card-bg/40 backdrop-blur-2xl border-l border-glass-border flex-col relative z-50 shadow-2xl">
-          <div className="p-8 flex flex-col h-full">
-            <div className="flex items-center justify-between mb-8 pb-6 border-b border-glass-border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                  <ShoppingCart size={20} />
-                </div>
-                <div>
-                  <h2 className="text-xl font-black uppercase tracking-tighter text-text-primary">Current Order</h2>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-text-muted">{cart.length} items</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setCart([])}
-                className="w-10 h-10 rounded-xl bg-glass border border-glass-border flex items-center justify-center text-text-muted hover:text-accent hover:border-accent/30 transition-all"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar mb-6">
-              {cart.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-6 opacity-40">
-                  <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center border border-dashed border-primary/20">
-                    <Box size={32} className="text-primary/60" />
+        <AnimatePresence>
+          {cart.length > 0 && (
+            <motion.aside 
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 400, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="hidden lg:flex bg-card-bg/40 backdrop-blur-2xl border-l border-glass-border flex-col relative z-50 shadow-2xl shrink-0 overflow-hidden"
+            >
+              <div className="w-[400px] h-full p-8 flex flex-col shrink-0">
+                <div className="flex items-center justify-between mb-8 pb-6 border-b border-glass-border">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <ShoppingCart size={20} />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-black uppercase tracking-tighter text-text-primary">Current Order</h2>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-text-muted">{cart.length} items</p>
+                    </div>
                   </div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-text-muted max-w-[200px] leading-relaxed">
-                    Cart is empty. Add blood units to begin checkout.
-                  </p>
+                  <button 
+                    onClick={() => setCart([])}
+                    className="w-10 h-10 rounded-xl bg-glass border border-glass-border flex items-center justify-center text-text-muted hover:text-accent hover:border-accent/30 transition-all"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
-              ) : (
-                <div className="space-y-4">
+
+                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar mb-6">
+                  <div className="space-y-4">
                   {cart.map(item => (
                     <motion.div 
                       layout
@@ -450,26 +448,28 @@ const BloodBankPOS = () => {
                 <span className="text-3xl font-black text-text-primary tabular-nums tracking-tighter">₦{totalAmount.toLocaleString()}</span>
               </div>
               
-              <button 
-                  disabled={cart.length === 0 || isProcessing || !isVerified}
-                  onClick={handleCheckout}
-                  className={`w-full mt-6 py-5 rounded-2xl flex items-center justify-center gap-3 font-black uppercase tracking-widest text-[10px] transition-all shadow-xl
-                    ${!isVerified ? 'bg-glass border border-glass-border text-text-muted cursor-not-allowed' : 
-                      cart.length === 0 ? 'bg-glass border border-glass-border text-text-primary opacity-40 cursor-not-allowed' :
-                      'bg-primary text-bg-dark hover:scale-[1.02] active:scale-95'}`}
-                >
-                  {isProcessing ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      {isVerified ? 'Process Order' : 'Facility Unverified'}
-                      {isVerified && <ArrowRight size={16} />}
-                    </>
-                  )}
-              </button>
+                <button 
+                    disabled={cart.length === 0 || isProcessing || !isVerified}
+                    onClick={handleCheckout}
+                    className={`w-full mt-6 py-5 rounded-2xl flex items-center justify-center gap-3 font-black uppercase tracking-widest text-[10px] transition-all shadow-xl
+                      ${!isVerified ? 'bg-glass border border-glass-border text-text-muted cursor-not-allowed' : 
+                        cart.length === 0 ? 'bg-glass border border-glass-border text-text-primary opacity-40 cursor-not-allowed' :
+                        'bg-primary text-bg-dark hover:scale-[1.02] active:scale-95'}`}
+                  >
+                    {isProcessing ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        {isVerified ? 'Process Order' : 'Facility Unverified'}
+                        {isVerified && <ArrowRight size={16} />}
+                      </>
+                    )}
+                </button>
+              </div>
             </div>
-          </div>
-        </aside>
+            </motion.aside>
+          )}
+        </AnimatePresence>
 
         {/* Mobile Command Center */}
         <AnimatePresence>
