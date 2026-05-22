@@ -16,7 +16,7 @@ const LoginPage = () => {
     setLoading(true);
     setError('');
     try {
-      const { data } = await authApi.login({ username: email, password });
+      const { data } = await authApi.login({ email, password });
       localStorage.setItem('token', data.access);
       localStorage.setItem('role', data.role);
       localStorage.setItem('facility_verified', data.facility_verified);

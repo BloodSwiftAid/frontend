@@ -328,7 +328,7 @@ const BloodBankPOS = () => {
               </div>
               <div className="flex gap-4 shrink-0">
                 <button className="px-10 py-6 bg-primary text-bg-dark rounded-[24px] text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">All Blood Groups</button>
-                <button className="px-10 py-6 bg-glass/10 border border-glass-border text-text-muted rounded-[24px] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-glass/20 transition-all">Priority</button>
+
               </div>
             </div>
 
@@ -353,7 +353,7 @@ const BloodBankPOS = () => {
             <div className="flex items-center justify-between mb-10">
               <div className="flex items-center gap-4">
                 <Receipt className="w-6 h-6 text-primary" />
-                <h2 className="text-lg font-black uppercase tracking-tighter text-text-primary">Digital Ledger</h2>
+                <h2 className="text-lg font-black uppercase tracking-tighter text-text-primary">Checkout Box</h2>
               </div>
               <button 
                 onClick={() => setCart([])}
@@ -541,7 +541,7 @@ const BloodBankPOS = () => {
                     <div className="flex justify-between items-end border-t border-glass-border/30 pt-6">
                       <div className="flex flex-col">
                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-1">Total Authorized</span>
-                        <span className="text-xs font-black text-primary uppercase tracking-widest">Digital Ledger</span>
+                        <span className="text-xs font-black text-primary uppercase tracking-widest">Checkout Box</span>
                       </div>
                       <span className="text-4xl font-black text-text-primary tracking-tighter">₦{totalAmount.toLocaleString()}</span>
                     </div>
