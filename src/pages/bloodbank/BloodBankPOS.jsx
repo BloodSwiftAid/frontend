@@ -353,7 +353,7 @@ const BloodBankPOS = () => {
             <div className="flex items-center justify-between mb-10">
               <div className="flex items-center gap-4">
                 <Receipt className="w-6 h-6 text-primary" />
-                <h2 className="text-lg font-black uppercase tracking-tighter text-text-primary">Checkout Box</h2>
+                <h2 className="text-lg font-black uppercase tracking-tighter text-text-primary">Checkout</h2>
               </div>
               <button 
                 onClick={() => setCart([])}
@@ -421,7 +421,7 @@ const BloodBankPOS = () => {
 
             {/* Payment Method Selector */}
             <div className="bg-glass/5 border border-glass-border rounded-3xl p-4 mb-6">
-              <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-3 px-2">Settlement Channel</p>
+              <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-3 px-2">Payment Method</p>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { id: 'transfer', label: 'Transfer', icon: Receipt },
@@ -453,7 +453,7 @@ const BloodBankPOS = () => {
                 </div>
                 <div className="flex justify-between items-end pt-8 mt-2 border-t border-glass-border/10">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted mb-2">Net Settlement</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted mb-2">Final Total</span>
                     <span className="text-[9px] font-black uppercase tracking-widest text-primary px-2 py-0.5 bg-primary/10 rounded border border-primary/20 w-fit">Authorized</span>
                   </div>
                   <span className="text-5xl font-black text-text-primary tracking-tighter tabular-nums">₦{totalAmount.toLocaleString()}</span>
@@ -475,7 +475,7 @@ const BloodBankPOS = () => {
                   ) : (
                     <>
                       <ShieldCheck size={20} className={isVerified ? 'text-bg-dark' : 'text-text-muted'} />
-                      <span className="relative z-10">{isVerified ? 'Execute Transaction' : 'Verify Facility'}</span>
+                      <span className="relative z-10">{isVerified ? 'Complete Order' : 'Verify Facility'}</span>
                     </>
                   )}
                 </button>
@@ -507,7 +507,7 @@ const BloodBankPOS = () => {
                   <div className="flex justify-between items-center mb-8">
                     <h2 className="text-xl font-black uppercase tracking-tighter text-text-primary flex items-center gap-3">
                       <ShoppingCart className="text-primary" />
-                      Active Ledger
+                      Shopping Cart
                     </h2>
                     <button onClick={() => setIsCartOpen(false)} className="w-12 h-12 rounded-full bg-glass/20 flex items-center justify-center border border-glass-border">
                       <X size={24} />
@@ -540,8 +540,8 @@ const BloodBankPOS = () => {
                   <div className="space-y-6 pb-8">
                     <div className="flex justify-between items-end border-t border-glass-border/30 pt-6">
                       <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-1">Total Authorized</span>
-                        <span className="text-xs font-black text-primary uppercase tracking-widest">Checkout Box</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-1">Total Amount</span>
+                        <span className="text-xs font-black text-primary uppercase tracking-widest">Checkout</span>
                       </div>
                       <span className="text-4xl font-black text-text-primary tracking-tighter">₦{totalAmount.toLocaleString()}</span>
                     </div>
@@ -550,7 +550,7 @@ const BloodBankPOS = () => {
                       onClick={handleCheckout}
                       className="w-full py-6 bg-primary text-bg-dark rounded-[28px] font-black uppercase tracking-[0.3em] text-xs shadow-2xl shadow-primary/20"
                     >
-                      Authorize Transaction
+                      Complete Order
                     </button>
                   </div>
                 </div>

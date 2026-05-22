@@ -28,7 +28,7 @@ const LoginPage = () => {
 
       const role = data.role;
       if (role === 'INTERNAL_ADMIN') navigate('/admin');
-      else if (role?.includes('HOSPITAL')) navigate('/hospital');
+      else if (role?.includes('HOSPITAL')) navigate('/hospital/marketplace');
       else if (role?.includes('BLOODBANK')) navigate('/bloodbank');
       else navigate('/marketplace');
     } catch (err) {

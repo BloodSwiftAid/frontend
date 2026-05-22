@@ -72,20 +72,20 @@ const DashboardSidebar = ({ theme, toggleTheme, onClose }) => {
       case 'BLOODBANK_ADMIN':
       case 'BLOODBANK_STAFF':
         return [
-          { icon: LayoutDashboard, label: 'Dashboard', path: '/bloodbank' },
-          { icon: Users, label: 'Staff Management', path: '/bloodbank/staff' },
           { icon: Package, label: 'Inventory', path: '/bloodbank/inventory' },
-          { icon: DollarSign, label: 'Revenue Insights', path: '/bloodbank/revenue' },
-          { icon: CreditCard, label: 'Payouts', path: '/bloodbank/payouts' },
           { icon: ShoppingCart, label: 'Point of Sale', path: '/bloodbank/pos' },
           { icon: ArrowLeftRight, label: 'Order History', path: '/bloodbank/orders' },
+          { icon: LayoutDashboard, label: 'Dashboard', path: '/bloodbank' },
+          { icon: Users, label: 'Staff Management', path: '/bloodbank/staff' },
+          { icon: DollarSign, label: 'Revenue Insights', path: '/bloodbank/revenue' },
+          { icon: CreditCard, label: 'Payouts', path: '/bloodbank/payouts' },
         ];
       case 'HOSPITAL_ADMIN':
       case 'HOSPITAL_STAFF':
         return [
-          { icon: LayoutDashboard, label: 'Dashboard', path: '/hospital' },
           { icon: ShoppingCart, label: 'Marketplace', path: '/hospital/marketplace' },
-          { icon: ArrowLeftRight, label: 'Purchase History', path: '/hospital/transactions' },
+          { icon: LayoutDashboard, label: 'Dashboard', path: '/hospital' },
+          { icon: ArrowLeftRight, label: 'Transaction History', path: '/hospital/transactions' },
           { icon: Users, label: 'Team', path: '/hospital/users' },
         ];
       default:
