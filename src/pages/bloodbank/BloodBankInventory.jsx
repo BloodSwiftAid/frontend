@@ -217,7 +217,7 @@ const BloodBankInventory = () => {
                       <td className="px-8 py-5">
                         <span className="px-3 py-1 rounded-full bg-glass border border-glass-border text-[9px] font-black text-text-secondary">Z-{item.blood_group.charAt(0)}</span>
                       </td>
-                      <td className="px-8 py-5 font-black text-emerald-500">₦{item.price?.toLocaleString()}</td>
+                      <td className="px-8 py-5 font-black text-emerald-500">₦{parseFloat(item.price || 0).toLocaleString()}</td>
                       <td className="px-8 py-5 text-right">
                         <button className="p-2 hover:bg-glass rounded-lg transition-all text-text-muted hover:text-primary"><Edit size={16} /></button>
                       </td>

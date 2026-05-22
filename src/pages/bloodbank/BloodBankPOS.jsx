@@ -256,7 +256,6 @@ const BloodBankPOS = () => {
              <div>
                 <h1 className="text-2xl font-black uppercase tracking-tighter flex items-center gap-2 text-text-primary">
                   Swift<span className="text-primary">CORE</span>
-                  <span className="px-2 py-0.5 bg-primary text-bg-dark text-[10px] rounded font-black tracking-widest">POS v2.0</span>
                 </h1>
              </div>
           </div>
@@ -348,70 +347,68 @@ const BloodBankPOS = () => {
         </div>
 
         {/* Digital Ledger / Receipt Panel */}
-        <aside className="hidden lg:flex w-[450px] bg-card-bg/30 backdrop-blur-3xl border-l border-glass-border/30 flex-col relative z-50">
-          <div className="p-10 flex flex-col h-full">
-            <div className="flex items-center justify-between mb-10">
-              <div className="flex items-center gap-4">
-                <Receipt className="w-6 h-6 text-primary" />
-                <h2 className="text-lg font-black uppercase tracking-tighter text-text-primary">Checkout</h2>
+        <aside className="hidden lg:flex w-[400px] bg-card-bg/40 backdrop-blur-2xl border-l border-glass-border flex-col relative z-50 shadow-2xl">
+          <div className="p-8 flex flex-col h-full">
+            <div className="flex items-center justify-between mb-8 pb-6 border-b border-glass-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <ShoppingCart size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black uppercase tracking-tighter text-text-primary">Current Order</h2>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-text-muted">{cart.length} items</p>
+                </div>
               </div>
               <button 
                 onClick={() => setCart([])}
-                className="text-[10px] font-black text-text-muted hover:text-accent uppercase tracking-widest transition-colors flex items-center gap-2"
+                className="w-10 h-10 rounded-xl bg-glass border border-glass-border flex items-center justify-center text-text-muted hover:text-accent hover:border-accent/30 transition-all"
               >
-                <Trash2 size={14} />
-                Flush
+                <Trash2 size={16} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar mb-10">
+            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar mb-6">
               {cart.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-10 opacity-30">
-                  <div className="relative">
-                    <div className="w-32 h-32 rounded-full bg-primary/5 flex items-center justify-center border-2 border-dashed border-primary/20 animate-pulse">
-                      <Box size={48} className="text-primary/40" />
-                    </div>
-                    <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-bg-dark border border-glass-border rounded-2xl flex items-center justify-center shadow-2xl">
-                      <Zap size={20} className="text-primary" />
-                    </div>
+                <div className="h-full flex flex-col items-center justify-center text-center space-y-6 opacity-40">
+                  <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center border border-dashed border-primary/20">
+                    <Box size={32} className="text-primary/60" />
                   </div>
-                  <p className="text-[11px] font-black uppercase tracking-[0.5em] text-text-muted max-w-[220px] leading-relaxed">
-                    System Standby.<br/>Select blood groups to begin.
+                  <p className="text-[10px] font-black uppercase tracking-widest text-text-muted max-w-[200px] leading-relaxed">
+                    Cart is empty. Add blood units to begin checkout.
                   </p>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {cart.map(item => (
                     <motion.div 
                       layout
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       key={item.id} 
-                      className="p-6 bg-glass/10 border border-glass-border rounded-[32px] group relative overflow-hidden hover:border-primary/30 transition-all"
+                      className="p-4 bg-white/5 border border-glass-border rounded-2xl group relative overflow-hidden"
                     >
-                      <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="flex gap-5 relative z-10">
-                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl text-white shadow-xl ${item.blood_group.includes('-') ? 'bg-accent shadow-accent/20' : 'bg-primary shadow-primary/20'}`}>
-                          {item.blood_group}
+                      <div className="flex justify-between items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center font-black text-white shadow-lg ${item.blood_group.includes('-') ? 'bg-accent shadow-accent/20' : 'bg-primary shadow-primary/20'}`}>
+                          <span className="text-sm">{item.blood_group}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start mb-1">
-                            <p className="text-[10px] font-black text-text-muted uppercase tracking-widest truncate">Blood Unit</p>
-                            <p className="text-sm font-black text-primary tabular-nums">₦{(parseFloat(item.price) * item.cartQuantity).toLocaleString()}</p>
-                          </div>
-                          <p className="text-sm font-black text-text-primary mb-4 tracking-tight">₦{parseFloat(item.price).toLocaleString()} <span className="text-[10px] text-text-muted px-1">/ UNIT</span></p>
-                          
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4 bg-bg-darker/60 border border-glass-border p-1.5 rounded-xl backdrop-blur-md">
-                              <button onClick={() => removeFromCart(item.id)} className="w-8 h-8 flex items-center justify-center hover:bg-accent/20 hover:text-accent rounded-lg transition-all text-text-muted"><Minus size={14} /></button>
-                              <span className="text-xs font-black w-4 text-center tabular-nums text-text-primary">{item.cartQuantity}</span>
-                              <button onClick={() => addToCart(item)} className="w-8 h-8 flex items-center justify-center hover:bg-primary/20 hover:text-primary rounded-lg transition-all text-text-muted"><Plus size={14} /></button>
-                            </div>
-                            <button onClick={() => setCart(cart.filter(c => c.id !== item.id))} className="w-10 h-10 flex items-center justify-center text-text-muted hover:text-accent hover:bg-accent/10 rounded-xl transition-all">
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
+                          <p className="text-xs font-black text-text-primary tracking-tight truncate">Blood Unit</p>
+                          <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">₦{parseFloat(item.price).toLocaleString()} / unit</p>
                         </div>
+                        <div className="text-right">
+                          <p className="text-sm font-black text-primary tabular-nums">₦{(parseFloat(item.price) * item.cartQuantity).toLocaleString()}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 pt-4 border-t border-glass-border/50 flex items-center justify-between">
+                         <div className="flex items-center gap-2 bg-black/20 p-1 rounded-lg border border-white/5">
+                            <button onClick={() => removeFromCart(item.id)} className="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-md transition-all text-text-secondary"><Minus size={14} /></button>
+                            <span className="text-xs font-black w-6 text-center tabular-nums text-text-primary">{item.cartQuantity}</span>
+                            <button onClick={() => addToCart(item)} className="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-md transition-all text-text-secondary"><Plus size={14} /></button>
+                         </div>
+                         <button onClick={() => setCart(cart.filter(c => c.id !== item.id))} className="text-[9px] font-black uppercase tracking-widest text-text-muted hover:text-accent transition-colors">
+                           Remove
+                         </button>
                       </div>
                     </motion.div>
                   ))}
@@ -419,67 +416,57 @@ const BloodBankPOS = () => {
               )}
             </div>
 
-            {/* Payment Method Selector */}
-            <div className="bg-glass/5 border border-glass-border rounded-3xl p-4 mb-6">
-              <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mb-3 px-2">Payment Method</p>
-              <div className="grid grid-cols-3 gap-2">
+            <div className="mb-6 space-y-3 shrink-0">
+              <p className="text-[9px] font-black text-text-muted uppercase tracking-widest">Payment Method</p>
+              <div className="grid grid-cols-3 gap-2 bg-black/20 p-1.5 rounded-2xl border border-glass-border">
                 {[
                   { id: 'transfer', label: 'Transfer', icon: Receipt },
-                  { id: 'pos', label: 'POS Terminal', icon: CreditCard },
-                  { id: 'cash', label: 'Cash Flow', icon: Banknote }
+                  { id: 'pos', label: 'POS', icon: CreditCard },
+                  { id: 'cash', label: 'Cash', icon: Banknote }
                 ].map(method => (
                   <button
                     key={method.id}
                     onClick={() => setPaymentMethod(method.id)}
-                    className={`flex flex-col items-center gap-2 py-3 rounded-2xl border transition-all ${paymentMethod === method.id ? 'bg-primary border-primary shadow-lg shadow-primary/20' : 'bg-glass border-glass-border hover:border-primary/30'}`}
+                    className={`flex items-center justify-center gap-2 py-3 rounded-xl transition-all ${paymentMethod === method.id ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-text-secondary hover:text-text-primary hover:bg-white/5'}`}
                   >
-                    <method.icon size={16} className={paymentMethod === method.id ? 'text-bg-dark' : 'text-primary'} />
-                    <span className={`text-[8px] font-black uppercase tracking-widest ${paymentMethod === method.id ? 'text-bg-dark' : 'text-text-secondary'}`}>{method.label}</span>
+                    <method.icon size={14} />
+                    <span className="text-[9px] font-black uppercase tracking-widest">{method.label}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Total Settlement Matrix */}
-            <div className="mt-auto space-y-8 pt-10 border-t border-glass-border/30">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-text-muted px-2">
-                  <span>Total Units ({totalUnits})</span>
-                  <span className="text-text-primary tabular-nums">₦{totalAmount.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-text-muted px-2">
-                  <span>Network Processing</span>
-                  <span className="text-primary tracking-[0.4em]">COMPLIMENTARY</span>
-                </div>
-                <div className="flex justify-between items-end pt-8 mt-2 border-t border-glass-border/10">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-text-muted mb-2">Final Total</span>
-                    <span className="text-[9px] font-black uppercase tracking-widest text-primary px-2 py-0.5 bg-primary/10 rounded border border-primary/20 w-fit">Authorized</span>
-                  </div>
-                  <span className="text-5xl font-black text-text-primary tracking-tighter tabular-nums">₦{totalAmount.toLocaleString()}</span>
-                </div>
+            <div className="bg-white/5 rounded-3xl border border-glass-border p-6 space-y-4 shrink-0">
+              <div className="flex justify-between items-center text-xs font-black text-text-secondary">
+                <span>Subtotal ({totalUnits} items)</span>
+                <span>₦{totalAmount.toLocaleString()}</span>
               </div>
-
-              <div className="space-y-4">
-                <button 
+              <div className="flex justify-between items-center text-xs font-black text-text-secondary">
+                <span>Platform Fee</span>
+                <span className="text-emerald-500">₦0</span>
+              </div>
+              <div className="pt-4 border-t border-glass-border flex justify-between items-end">
+                <span className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Total Due</span>
+                <span className="text-3xl font-black text-text-primary tabular-nums tracking-tighter">₦{totalAmount.toLocaleString()}</span>
+              </div>
+              
+              <button 
                   disabled={cart.length === 0 || isProcessing || !isVerified}
                   onClick={handleCheckout}
-                  className={`w-full py-7 rounded-[32px] flex items-center justify-center gap-4 font-black uppercase tracking-[0.5em] text-[11px] transition-all shadow-2xl relative overflow-hidden group
+                  className={`w-full mt-6 py-5 rounded-2xl flex items-center justify-center gap-3 font-black uppercase tracking-widest text-[10px] transition-all shadow-xl
                     ${!isVerified ? 'bg-glass border border-glass-border text-text-muted cursor-not-allowed' : 
                       cart.length === 0 ? 'bg-glass border border-glass-border text-text-primary opacity-40 cursor-not-allowed' :
-                      'bg-primary text-bg-dark shadow-primary/20 hover:shadow-primary/40 hover:scale-[1.02]'}`}
+                      'bg-primary text-bg-dark hover:scale-[1.02] active:scale-95'}`}
                 >
-                  <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                   {isProcessing ? (
-                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
                     <>
-                      <ShieldCheck size={20} className={isVerified ? 'text-bg-dark' : 'text-text-muted'} />
-                      <span className="relative z-10">{isVerified ? 'Complete Order' : 'Verify Facility'}</span>
+                      {isVerified ? 'Process Order' : 'Facility Unverified'}
+                      {isVerified && <ArrowRight size={16} />}
                     </>
                   )}
-                </button>
-              </div>
+              </button>
             </div>
           </div>
         </aside>
@@ -514,44 +501,54 @@ const BloodBankPOS = () => {
                     </button>
                   </div>
                   
-                  <div className="flex-1 overflow-y-auto mb-8 pr-2 custom-scrollbar space-y-4">
+                  <div className="flex-1 overflow-y-auto mb-6 pr-2 custom-scrollbar space-y-4">
                     {cart.map(item => (
-                      <div key={item.id} className="flex gap-5 p-6 bg-glass border border-glass-border rounded-[32px]">
-                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl text-white shadow-lg ${item.blood_group.includes('-') ? 'bg-accent' : 'bg-primary'}`}>
-                          {item.blood_group}
+                      <div key={item.id} className="p-4 bg-white/5 border border-glass-border rounded-2xl group relative overflow-hidden">
+                        <div className="flex justify-between items-center gap-4">
+                          <div className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center font-black text-white shadow-lg ${item.blood_group.includes('-') ? 'bg-accent shadow-accent/20' : 'bg-primary shadow-primary/20'}`}>
+                            <span className="text-sm">{item.blood_group}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-black text-text-primary tracking-tight truncate">Blood Unit</p>
+                            <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">₦{parseFloat(item.price).toLocaleString()} / unit</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-black text-primary tabular-nums">₦{(parseFloat(item.price) * item.cartQuantity).toLocaleString()}</p>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <div className="flex justify-between items-start mb-3">
-                            <p className="text-sm font-black text-text-primary">Blood Unit</p>
-                            <p className="text-sm font-black text-primary">₦{(parseFloat(item.price) * item.cartQuantity).toLocaleString()}</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-5 bg-bg-darker border border-glass-border p-2 rounded-xl">
-                              <button onClick={() => removeFromCart(item.id)} className="w-10 h-10 flex items-center justify-center bg-bg-dark rounded-lg"><Minus size={16} /></button>
-                              <span className="text-sm font-black tabular-nums text-text-primary">{item.cartQuantity}</span>
-                              <button onClick={() => addToCart(item)} className="w-10 h-10 flex items-center justify-center bg-bg-dark rounded-lg"><Plus size={16} /></button>
-                            </div>
-                          </div>
+                        <div className="mt-4 pt-4 border-t border-glass-border/50 flex items-center justify-between">
+                           <div className="flex items-center gap-2 bg-black/20 p-1 rounded-lg border border-white/5">
+                              <button onClick={() => removeFromCart(item.id)} className="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-md transition-all text-text-secondary"><Minus size={14} /></button>
+                              <span className="text-xs font-black w-6 text-center tabular-nums text-text-primary">{item.cartQuantity}</span>
+                              <button onClick={() => addToCart(item)} className="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-md transition-all text-text-secondary"><Plus size={14} /></button>
+                           </div>
+                           <button onClick={() => setCart(cart.filter(c => c.id !== item.id))} className="text-[9px] font-black uppercase tracking-widest text-text-muted hover:text-accent transition-colors">
+                             Remove
+                           </button>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <div className="space-y-6 pb-8">
-                    <div className="flex justify-between items-end border-t border-glass-border/30 pt-6">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-text-muted mb-1">Total Amount</span>
-                        <span className="text-xs font-black text-primary uppercase tracking-widest">Checkout</span>
+                  <div className="space-y-4 pb-8 shrink-0">
+                    <div className="bg-white/5 rounded-3xl border border-glass-border p-6 space-y-4">
+                      <div className="flex justify-between items-center text-xs font-black text-text-secondary">
+                        <span>Subtotal ({totalUnits} items)</span>
+                        <span>₦{totalAmount.toLocaleString()}</span>
                       </div>
-                      <span className="text-4xl font-black text-text-primary tracking-tighter">₦{totalAmount.toLocaleString()}</span>
+                      <div className="pt-4 border-t border-glass-border flex justify-between items-end">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-text-muted mb-1">Total Due</span>
+                        <span className="text-3xl font-black text-text-primary tabular-nums tracking-tighter">₦{totalAmount.toLocaleString()}</span>
+                      </div>
+                      
+                      <button 
+                        disabled={cart.length === 0 || isProcessing || !isVerified}
+                        onClick={handleCheckout}
+                        className="w-full mt-4 py-5 bg-primary text-bg-dark rounded-2xl font-black uppercase tracking-[0.2em] text-xs shadow-2xl shadow-primary/20 flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                      >
+                        {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Complete Order'}
+                      </button>
                     </div>
-                    <button 
-                      disabled={cart.length === 0 || isProcessing || !isVerified}
-                      onClick={handleCheckout}
-                      className="w-full py-6 bg-primary text-bg-dark rounded-[28px] font-black uppercase tracking-[0.3em] text-xs shadow-2xl shadow-primary/20"
-                    >
-                      Complete Order
-                    </button>
                   </div>
                 </div>
               </motion.div>
