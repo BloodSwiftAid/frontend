@@ -179,7 +179,7 @@ const CTASection = () => (
         
         <h2 className="text-4xl md:text-6xl font-black text-text-primary tracking-tight mb-8 relative z-10">Ready to Secure Your Supply?</h2>
         <p className="max-w-xl mx-auto text-lg text-text-secondary mb-12 relative z-10">
-          Join the network of hospitals relying on SwiftAid for life-saving coordination.
+          Join the network relying on SwiftAid for life-saving coordination.
         </p>
         
         <Link to="/join" className="btn btn-primary px-12 py-5 rounded-2xl text-lg relative z-10 shadow-2xl shadow-accent/40">
