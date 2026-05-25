@@ -317,13 +317,16 @@ const BloodBankPOS = () => {
             <div className="flex flex-col lg:flex-row gap-8 items-center">
               <div className="relative flex-1 w-full group">
                 <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-text-muted group-focus-within:text-primary transition-all duration-300" />
-                <input 
-                  type="text" 
-                  placeholder="Search blood group..."
-                  className="w-full bg-glass/10 border border-glass-border rounded-[32px] py-6 pl-20 pr-8 text-xl font-black placeholder:text-text-muted/30 outline-none focus:border-primary/40 focus:bg-bg-dark/40 transition-all shadow-2xl shadow-black/10 backdrop-blur-xl"
+                <select 
+                  className="w-full bg-glass/10 border border-glass-border rounded-[32px] py-6 pl-20 pr-8 text-xl font-black placeholder:text-text-muted/30 outline-none focus:border-primary/40 focus:bg-bg-dark/40 transition-all shadow-2xl shadow-black/10 backdrop-blur-xl appearance-none cursor-pointer"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                >
+                  <option value="" className="bg-card-bg text-text-primary">Search blood group...</option>
+                  {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(g => (
+                    <option key={g} value={g} className="bg-card-bg text-text-primary">{g}</option>
+                  ))}
+                </select>
               </div>
               <div className="flex gap-4 shrink-0">
                 <button className="px-10 py-6 bg-primary text-bg-dark rounded-[24px] text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">All Blood Groups</button>

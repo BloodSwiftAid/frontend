@@ -142,13 +142,16 @@ const MarketplacePage = () => {
           <div className="max-w-4xl mx-auto mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-4 gap-4 p-4 md:p-5 bg-glass border border-glass-border rounded-3xl md:rounded-[40px] shadow-2xl">
             <div className="relative md:col-span-2">
               <Search className="absolute left-6 md:left-7 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-              <input 
-                type="text" 
+              <select 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full h-14 md:h-16 bg-transparent border-none pl-14 md:pl-16 pr-6 text-text-primary font-black placeholder:text-text-muted focus:ring-0 text-base md:text-lg"
-                placeholder="Blood Type (e.g. O+)"
-              />
+                className="w-full h-14 md:h-16 bg-transparent border-none pl-14 md:pl-16 pr-6 text-text-primary font-black placeholder:text-text-muted focus:ring-0 text-base md:text-lg appearance-none cursor-pointer"
+              >
+                <option value="" className="bg-card-bg text-text-primary">All Blood Types</option>
+                {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(g => (
+                  <option key={g} value={g} className="bg-card-bg text-text-primary">{g}</option>
+                ))}
+              </select>
             </div>
             <div className="relative">
               <select 

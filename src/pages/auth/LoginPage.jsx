@@ -117,15 +117,7 @@ const LoginPage = () => {
             </button>
           </form>
 
-          <div className="mt-12 pt-8 border-t border-glass-border">
-            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-widest text-text-muted">
-              <span className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-accent" />
-                L3 Security
-              </span>
-              <span>v2.0.4-stable</span>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

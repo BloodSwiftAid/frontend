@@ -342,7 +342,7 @@ const BloodBankInventory = () => {
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-text-muted ml-1">Group</label>
                       <select className="w-full bg-glass border border-glass-border rounded-xl py-3.5 px-6 text-text-primary outline-none focus:border-primary/50 appearance-none font-black" value={newDonation.blood_group} onChange={(e) => setNewDonation({...newDonation, blood_group: e.target.value})}>
-                        {bloodGroups.map(g => <option key={g} value={g}>{g}</option>)}
+                        {bloodGroups.map(g => <option key={g} value={g} className="bg-card-bg text-text-primary">{g}</option>)}
                       </select>
                     </div>
                     <div className="space-y-2">
@@ -401,7 +401,7 @@ const BloodBankInventory = () => {
                               setBulkItems(newItems);
                             }}
                           >
-                            {bloodGroups.map(g => <option key={g} value={g}>{g}</option>)}
+                            {bloodGroups.map(g => <option key={g} value={g} className="bg-card-bg text-text-primary">{g}</option>)}
                           </select>
                         </div>
                         <div className="sm:col-span-3 space-y-2">

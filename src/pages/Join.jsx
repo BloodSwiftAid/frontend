@@ -182,8 +182,11 @@ const Join = () => {
                   <option value="O+" className="bg-card-bg text-text-primary">O Positive (+)</option>
                   <option value="O-" className="bg-card-bg text-text-primary">O Negative (-)</option>
                   <option value="A+" className="bg-card-bg text-text-primary">A Positive (+)</option>
+                  <option value="A-" className="bg-card-bg text-text-primary">A Negative (-)</option>
                   <option value="B+" className="bg-card-bg text-text-primary">B Positive (+)</option>
+                  <option value="B-" className="bg-card-bg text-text-primary">B Negative (-)</option>
                   <option value="AB+" className="bg-card-bg text-text-primary">AB Positive (+)</option>
+                  <option value="AB-" className="bg-card-bg text-text-primary">AB Negative (-)</option>
                 </select>
               </div>
               <div className="space-y-2">
