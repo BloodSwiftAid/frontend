@@ -135,7 +135,7 @@ const AdminDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
         {/* Real-time Activity */}
-        <div className="lg:col-span-2 bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-3xl md:rounded-[56px] overflow-hidden flex flex-col shadow-sm">
+        <div className="lg:col-span-3 bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-3xl md:rounded-[56px] overflow-hidden flex flex-col shadow-sm">
           <div className="p-6 md:p-10 border-b border-glass-border bg-glass/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h2 className="text-xl md:text-2xl font-black flex items-center gap-4 text-text-primary uppercase tracking-tighter">
@@ -204,45 +204,7 @@ const AdminDashboard = () => {
           </button>
         </div>
 
-        {/* Intelligence Module */}
-        <div className="bg-bg-darker border border-glass-border rounded-3xl md:rounded-[56px] p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group shadow-2xl min-h-[400px]">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-50" />
-          
-          <div className="relative z-10 space-y-8">
-            <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 backdrop-blur-xl">
-               <Zap className="w-7 h-7 md:w-8 md:h-8 text-primary fill-primary" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-black text-text-primary uppercase tracking-tighter leading-none">
-              System<br/><span className="text-primary">Insights</span>
-            </h2>
-            
-            <div className="space-y-4 md:space-y-6">
-              <div className="p-5 md:p-6 bg-glass border border-glass-border rounded-2xl md:rounded-3xl backdrop-blur-3xl transition-all">
-                <div className="flex items-center gap-3 mb-2 md:mb-3">
-                   <TrendingUp size={16} className="text-primary" />
-                   <p className="text-[9px] font-black text-primary uppercase tracking-widest">Forecast</p>
-                </div>
-                <p className="text-[12px] md:text-[13px] text-text-secondary font-black uppercase tracking-tight leading-relaxed">
-                   Demands indicates a <span className="text-primary font-black">18% surge</span> within 72 hours.
-                </p>
-              </div>
-              
-              <div className="p-5 md:p-6 bg-glass border border-glass-border rounded-2xl md:rounded-3xl backdrop-blur-3xl transition-all">
-                <div className="flex items-center gap-3 mb-2 md:mb-3">
-                   <ShieldAlert size={16} className="text-accent" />
-                   <p className="text-[9px] font-black text-accent uppercase tracking-widest">System Load</p>
-                </div>
-                <p className="text-[12px] md:text-[13px] text-text-secondary font-black uppercase tracking-tight leading-relaxed">
-                   Blood bank stock utilization at <span className="text-accent font-black">84%</span>. Balancing recommended.
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <button className="relative z-10 mt-8 btn btn-primary w-full py-5 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20">
-            Run Optimization
-          </button>
-        </div>
+
       </div>
     </div>
   );

@@ -61,13 +61,13 @@ const DashboardSidebar = ({ theme, toggleTheme, onClose }) => {
         return [
           { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
           { icon: DollarSign, label: 'Revenue Insights', path: '/admin/revenue' },
-          { icon: CreditCard, label: 'Payouts', path: '/admin/payouts' },
-          { icon: Settings, label: 'System Config', path: '/admin/config' },
-          { icon: Droplet, label: 'Blood Types', path: '/admin/blood-types' },
-          { icon: ArrowLeftRight, label: 'Blood Requests', path: '/admin/requests' },
           { icon: Droplet, label: 'Blood Banks', path: '/admin/blood-banks' },
           { icon: Hospital, label: 'Hospitals', path: '/admin/hospitals' },
+          { icon: Droplet, label: 'Blood Types', path: '/admin/blood-types' },
+          { icon: ArrowLeftRight, label: 'Blood Requests', path: '/admin/requests' },
           { icon: Users, label: 'User Management', path: '/admin/users' },
+          { icon: CreditCard, label: 'Payouts', path: '/admin/payouts' },
+          { icon: Settings, label: 'System Config', path: '/admin/config' },
         ];
       case 'BLOODBANK_ADMIN':
       case 'BLOODBANK_STAFF':

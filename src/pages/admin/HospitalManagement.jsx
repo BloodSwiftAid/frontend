@@ -75,7 +75,7 @@ const HospitalManagement = () => {
   };
 
   const [newOrg, setNewOrg] = useState({
-    name: '', address: '', state: '', area: '', hospital_type: 'General', has_emergency_unit: false, country: '', city: ''
+    name: '', address: '', state: '', area: '', hospital_type: 'General', has_emergency_unit: false, country: '', city: '', contact_name: '', contact_email: '', contact_phone: ''
   });
 
   const [newAdmin, setNewAdmin] = useState({
@@ -217,7 +217,7 @@ const HospitalManagement = () => {
   };
 
   const resetForms = () => {
-    setNewOrg({ name: '', address: '', state: '', area: '', hospital_type: 'General', has_emergency_unit: false });
+    setNewOrg({ name: '', address: '', state: '', area: '', city: '', country: '', hospital_type: 'General', has_emergency_unit: false, contact_name: '', contact_email: '', contact_phone: '' });
     setNewAdmin({ email: '', password: '', first_name: '', last_name: '', role: 'HOSPITAL_ADMIN' });
     setCurrentStep(1);
   };
@@ -583,6 +583,21 @@ const HospitalManagement = () => {
                           lga={newOrg.area} setLga={v => setNewOrg(prev => ({...prev, area: v}))}
                           city={newOrg.city} setCity={v => setNewOrg(prev => ({...prev, city: v}))}
                        />
+                       <div className="space-y-2 col-span-2 pt-4">
+                          <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-2 border-t border-glass-border pt-6">Primary Contact Details</h4>
+                       </div>
+                       <div className="space-y-2 col-span-2 md:col-span-1">
+                          <label className="label-text">Contact Name</label>
+                          <input className="portal-input" value={newOrg.contact_name} onChange={e => setNewOrg({...newOrg, contact_name: e.target.value})} placeholder="e.g. Dr. John Doe" />
+                       </div>
+                       <div className="space-y-2 col-span-2 md:col-span-1">
+                          <label className="label-text">Emergency Line</label>
+                          <input className="portal-input" value={newOrg.contact_phone} onChange={e => setNewOrg({...newOrg, contact_phone: e.target.value})} placeholder="+234..." />
+                       </div>
+                       <div className="space-y-2 col-span-2">
+                          <label className="label-text">Official Email</label>
+                          <input className="portal-input" type="email" value={newOrg.contact_email} onChange={e => setNewOrg({...newOrg, contact_email: e.target.value})} placeholder="hospital@example.com" />
+                       </div>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-8 animate-fade-in">

@@ -137,7 +137,7 @@ const InternalBloodTypes = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10">
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-12">
           <div className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-3xl md:rounded-[56px] overflow-hidden shadow-2xl relative">
             <div className="p-6 md:p-10 border-b border-glass-border bg-glass/20 flex items-center justify-between">
               <div>
@@ -288,7 +288,7 @@ const InternalBloodTypes = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-4 space-y-6 md:space-y-10">
+        <div className="lg:col-span-12 space-y-6 md:space-y-10">
           <div className="bg-card-bg/40 backdrop-blur-3xl border border-glass-border rounded-3xl md:rounded-[56px] p-8 md:p-12 space-y-6 md:space-y-10">
             <h3 className="text-lg md:text-xl font-black text-text-primary uppercase tracking-tighter flex items-center gap-3">
               <AlertCircle size={24} className="text-primary" />

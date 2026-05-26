@@ -76,6 +76,17 @@ const MarketplacePage = () => {
   });
 
   useEffect(() => {
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.country_name) {
+          setFilters(prev => ({ ...prev, country: data.country_name }));
+        }
+      })
+      .catch(err => console.error('Failed to fetch location:', err));
+  }, []);
+
+  useEffect(() => {
     fetchMarketplace();
   }, [filters]);
 
@@ -139,7 +150,7 @@ const MarketplacePage = () => {
             Real-time verification of blood inventory across the healthcare infrastructure.
           </p>
           
-          <div className="max-w-4xl mx-auto mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-4 gap-4 p-4 md:p-5 bg-glass border border-glass-border rounded-3xl md:rounded-[40px] shadow-2xl">
+          <div className="max-w-5xl mx-auto mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-5 gap-4 p-4 md:p-5 bg-glass border border-glass-border rounded-3xl md:rounded-[40px] shadow-2xl">
             <div className="relative md:col-span-2">
               <Search className="absolute left-6 md:left-7 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
               <select 
@@ -152,6 +163,23 @@ const MarketplacePage = () => {
                   <option key={g} value={g} className="bg-card-bg text-text-primary">{g}</option>
                 ))}
               </select>
+            </div>
+            <div className="relative">
+              <select 
+                className="w-full h-14 md:h-16 bg-glass-border/30 border border-glass-border rounded-xl md:rounded-2xl px-6 text-text-primary font-black focus:border-primary/50 outline-none appearance-none cursor-pointer text-sm"
+                value={filters.country}
+                onChange={(e) => setFilters({...filters, country: e.target.value})}
+              >
+                <option value="">All Countries</option>
+                <option value="Nigeria">Nigeria</option>
+                <option value="Ghana">Ghana</option>
+                <option value="Kenya">Kenya</option>
+                <option value="South Africa">South Africa</option>
+                <option value="United States">United States</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Canada">Canada</option>
+              </select>
+              <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted rotate-90" />
             </div>
             <div className="relative">
               <select 
