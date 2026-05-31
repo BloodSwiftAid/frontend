@@ -36,6 +36,8 @@ import HospitalUserManagement from './pages/hospital/HospitalUserManagement';
 import HospitalTransactions from './pages/hospital/HospitalTransactions';
 import Marketplace from './pages/user/Marketplace';
 import SetupPasswordPage from './pages/auth/SetupPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import VerifyAccountPage from './pages/auth/VerifyAccountPage';
 import BloodBankInventory from './pages/bloodbank/BloodBankInventory';
 import BloodBankStaff from './pages/bloodbank/BloodBankStaff';
 import BloodBankPOS from './pages/bloodbank/BloodBankPOS';
@@ -220,6 +222,8 @@ function App() {
         } />
         <Route path="/login" element={<LoginPage theme={theme} />} />
         <Route path="/setup-password" element={<SetupPasswordPage theme={theme} />} />
+        <Route path="/reset-password" element={<ResetPasswordPage theme={theme} />} />
+        <Route path="/verify" element={<VerifyAccountPage theme={theme} />} />
         <Route path="/admin/*" element={
           <DashboardLayout theme={theme} toggleTheme={toggleTheme}>
             <Routes>

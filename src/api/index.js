@@ -5,6 +5,7 @@ export const authApi = {
   logout: () => api.post('/auth/logout/'),
   requestOTP: (data) => api.post('/auth/otp/request/', data),
   verifyOTP: (data) => api.post('/auth/otp/verify/', data),
+  verifyAccount: (data) => api.post('/auth/verify-account/', data),
   changePassword: (data) => api.post('/auth/password/change/', data),
 };
 
