@@ -52,6 +52,7 @@ import ProfileSettings from './pages/shared/ProfileSettings';
 
 const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -59,6 +60,11 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const navLinks = isPublic ? [
     { name: 'Home', path: '/' },
@@ -80,6 +86,7 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
             </div>
           </Link>
 
+          {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-10">
             {navLinks.map(link => (
               <Link 
@@ -118,7 +125,65 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
               </button>
             )}
           </div>
+
+          {/* Mobile Nav Toggle */}
+          <div className="md:hidden flex items-center gap-4">
+            <button 
+              onClick={toggleTheme} 
+              className="p-2 text-accent hover:bg-glass rounded-xl transition-all shadow-lg shadow-accent/5"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-text-primary hover:bg-glass rounded-xl transition-all"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="absolute top-full left-0 w-full bg-nav-bg backdrop-blur-xl border-b border-glass-border shadow-2xl py-6 px-6 md:hidden flex flex-col gap-6"
+            >
+              {navLinks.map(link => (
+                <Link 
+                  key={link.path}
+                  to={link.path} 
+                  className={`text-base font-bold uppercase tracking-widest transition-all ${location.pathname === link.path ? 'text-accent' : 'text-text-secondary'}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              <div className="h-[1px] w-full bg-glass-border my-2" />
+              {isPublic ? (
+                <Link 
+                  to="/login" 
+                  className="btn btn-primary px-8 py-4 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="text-sm font-black uppercase tracking-widest">Login</span>
+                  <ChevronRight className="w-5 h-5" />
+                </Link>
+              ) : (
+                <button 
+                  onClick={() => { localStorage.clear(); window.location.href='/login'; }}
+                  className="btn btn-outline px-6 py-4 text-sm rounded-xl w-full"
+                >
+                  Logout
+                </button>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       <main className="flex-1">
