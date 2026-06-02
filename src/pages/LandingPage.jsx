@@ -53,7 +53,7 @@ const Hero = () => (
         
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link to="/join" className="btn btn-primary px-10 py-5 rounded-2xl text-lg group flex items-center justify-center">
-            Get Started Now
+            Make Enquiry
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link to="/about" className="btn btn-outline bg-glass border-glass-border px-10 py-5 rounded-2xl text-lg hover:bg-white/5 transition-all">
@@ -183,7 +183,7 @@ const CTASection = () => (
         </p>
         
         <Link to="/join" className="btn btn-primary px-12 py-5 rounded-2xl text-lg relative z-10 shadow-2xl shadow-accent/40">
-          Join
+          Make Enquiry
         </Link>
       </div>
     </div>

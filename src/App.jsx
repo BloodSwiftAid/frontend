@@ -207,8 +207,8 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
             <div>
               <h4 className="text-text-primary font-black uppercase tracking-widest text-xs mb-6">Network</h4>
               <ul className="space-y-4 text-sm text-text-secondary">
-                <li><Link to="/join" className="hover:text-accent transition-colors">Join as Hospital</Link></li>
-                <li><Link to="/join" className="hover:text-accent transition-colors">Become blood bank</Link></li>
+                <li><Link to="/join" className="hover:text-accent transition-colors">Enquiry for Hospital</Link></li>
+                <li><Link to="/join" className="hover:text-accent transition-colors">Enquiry for Blood Bank</Link></li>
               </ul>
             </div>
             <div>
