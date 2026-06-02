@@ -31,30 +31,39 @@ const Join = () => {
     data.state = locState;
     data.lga = locLga;
     data.city = locCity;
-    data.facility_type = activeTab;
+
+    let name = '';
+    let email = '';
+    let phone = '';
 
     if (activeTab === 'hospital' || activeTab === 'bloodbank') {
-      if (!locState || !locLga || !locCountry) {
-        toast.error('State, LGA, and Country are required for facility registration.');
-        setLoading(false);
-        return;
-      }
+      name = data.facility_name || data.admin_name || 'Unknown';
+      email = data.admin_email || '';
+      phone = data.admin_phone || '';
+    } else {
+      name = data.full_name || 'Unknown';
+      email = data.email || '';
+      phone = data.phone || '';
     }
+
+    const payload = {
+      enquiry_type: activeTab,
+      name,
+      email,
+      phone,
+      payload: data
+    };
 
     try {
       const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
-      if (activeTab === 'donor') {
-        await axios.post(`${baseURL}/auth/register-donor/`, data);
-        toast.success('Registration submitted successfully. We will contact you soon!');
-      } else {
-        await axios.post(`${baseURL}/auth/register-facility/`, data);
-        toast.success('Application transmitted successfully. Our coordination team will review your credentials.');
-      }
+      await axios.post(`${baseURL}/auth/enquiry/`, payload);
+      toast.success('Enquiry submitted successfully. Our team will contact you soon!');
+      
       e.target.reset();
       setLocState(''); setLocLga(''); setLocCity('');
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || 'Error submitting form. Please try again.');
+      toast.error(err.response?.data?.message || 'Error submitting enquiry. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -109,7 +118,7 @@ const Join = () => {
               <textarea required name="operational_address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
-              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
+              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Submit Enquiry</span> <ChevronRight className="w-5 h-5" /></>}
             </button>
           </div>
         );
@@ -160,7 +169,7 @@ const Join = () => {
               <textarea required name="operational_address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full physical address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
-              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
+              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Submit Enquiry</span> <ChevronRight className="w-5 h-5" /></>}
             </button>
           </div>
         );
@@ -209,7 +218,7 @@ const Join = () => {
               <textarea name="address" rows="2" className="w-full bg-glass border border-glass-border rounded-2xl px-6 py-4 text-text-primary outline-none focus:border-accent/50 transition-all resize-none placeholder:text-text-muted" placeholder="Enter full address" />
             </div>
             <button type="submit" disabled={loading} className="w-full btn btn-primary py-5 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-3">
-              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Signup</span> <ChevronRight className="w-5 h-5" /></>}
+              {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><span className="text-lg font-bold">Submit Enquiry</span> <ChevronRight className="w-5 h-5" /></>}
             </button>
           </div>
         );
