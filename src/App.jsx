@@ -49,6 +49,7 @@ import AdminPayouts from './pages/admin/AdminPayouts';
 import AdminBankDetails from './pages/admin/AdminBankDetails';
 import GlobalConfig from './pages/admin/GlobalConfig';
 import ProfileSettings from './pages/shared/ProfileSettings';
+import EnquiryManagement from './pages/admin/EnquiryManagement';
 
 const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -296,6 +297,7 @@ function App() {
               <Route path="requests" element={<AdminRequests />} />
               <Route path="blood-banks" element={<BloodBankManagement />} />
               <Route path="hospitals" element={<HospitalManagement />} />
+              <Route path="enquiries" element={<EnquiryManagement />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="blood-types" element={<InternalBloodTypes />} />
               <Route path="config" element={<GlobalConfig />} />

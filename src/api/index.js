@@ -51,6 +51,11 @@ export const adminApi = {
   // Global Config
   getGlobalConfig: () => api.get('/user/global-config/'),
   updateGlobalConfig: (data) => api.post('/user/global-config/', data),
+
+  // Enquiries
+  listEnquiries: (params) => api.get('/user/enquiries/', { params }),
+  updateEnquiry: (id, data) => api.patch(`/user/enquiries/${id}/`, data),
+  deleteEnquiry: (id) => api.delete(`/user/enquiries/${id}/`),
 };
 
 export const usersApi = {
