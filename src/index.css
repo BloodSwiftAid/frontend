@@ -37,8 +37,8 @@
 
 [data-theme='dark'] {
   /* Background Colors */
-  --color-bg-dark: #020617;        /* Slate 950 */
-  --color-bg-darker: #010413;      /* Deeper Slate */
+  --color-bg-dark: #020617;
+  --color-bg-darker: #010413;
   
   /* Text Colors */
   --color-text-primary: #f8fafc;    /* Slate 50 */
