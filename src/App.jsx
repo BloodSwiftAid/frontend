@@ -6,10 +6,6 @@ import {
   X, 
   Sun, 
   Moon,
-  LayoutDashboard,
-  LogOut,
-  Package,
-  ShoppingCart,
   ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -62,7 +58,6 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
@@ -73,27 +68,24 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
     { name: 'Contact', path: '/contact' },
   ] : [
     { name: 'Marketplace', path: '/marketplace' },
-    { name: 'Admin', path: '/admin' },
-    { name: 'Inventory', path: '/bloodbank' },
   ];
 
   return (
     <div className="min-h-screen flex flex-col relative">
-      <nav className={`fixed top-0 w-full z-[1000] transition-all duration-500 ${scrolled ? 'bg-nav-bg backdrop-blur-xl border-b border-glass-border py-4 shadow-2xl' : 'bg-transparent py-8'}`}>
-        <div className="container max-w-7xl mx-auto flex justify-between items-center px-6">
+      <nav className={`fixed top-0 w-full z-[1000] transition-all duration-300 ${scrolled ? 'bg-nav-bg backdrop-blur-xl border-b border-glass-border py-4 shadow-sm' : 'bg-transparent py-5'}`}>
+        <div className="container mx-auto flex justify-between items-center px-6">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="bg-glass p-2 rounded-xl border border-glass-border shadow-xl group-hover:scale-105 transition-all duration-500">
+            <div className="bg-primary/10 p-2 rounded-lg border border-primary/10 group-hover:bg-primary/15 transition-all">
               <img src={logo} alt="SwiftAid" className="h-8 w-auto" />
             </div>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-8">
             {navLinks.map(link => (
               <Link 
                 key={link.path}
                 to={link.path} 
-                className={`text-sm font-bold uppercase tracking-widest transition-all ${location.pathname === link.path ? 'text-accent' : 'text-text-secondary hover:text-text-primary'}`}
+                className={`text-sm font-medium transition-colors ${location.pathname === link.path ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}
               >
                 {link.name}
               </Link>
@@ -103,7 +95,7 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
             
             <button 
               onClick={toggleTheme} 
-              className="p-2 text-accent hover:bg-glass rounded-xl transition-all shadow-lg shadow-accent/5"
+              className="p-2 text-text-secondary hover:text-text-primary hover:bg-glass rounded-lg transition-all"
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -112,76 +104,75 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
             {isPublic ? (
               <Link 
                 to="/login" 
-                className="btn btn-primary px-8 py-3 rounded-2xl shadow-xl shadow-accent/20 flex items-center gap-2 group"
+                className="btn btn-primary px-5 py-2.5"
               >
-                <span className="text-xs font-black uppercase tracking-widest">Login</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                Login
+                <ChevronRight className="w-4 h-4" />
               </Link>
             ) : (
               <button 
                 onClick={() => { localStorage.clear(); window.location.href='/login'; }}
-                className="btn btn-outline px-6 py-2 text-xs rounded-xl"
+                className="btn btn-outline px-5 py-2.5"
               >
                 Logout
               </button>
             )}
           </div>
 
-          {/* Mobile Nav Toggle */}
           <div className="md:hidden flex items-center gap-4">
             <button 
               onClick={toggleTheme} 
-              className="p-2 text-accent hover:bg-glass rounded-xl transition-all shadow-lg shadow-accent/5"
+              className="p-2 text-text-secondary hover:text-text-primary hover:bg-glass rounded-lg transition-all"
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-text-primary hover:bg-glass rounded-xl transition-all"
+              className="p-2 text-text-primary hover:bg-glass rounded-lg transition-all"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu Overlay */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="absolute top-full left-0 w-full bg-nav-bg backdrop-blur-xl border-b border-glass-border shadow-2xl py-6 px-6 md:hidden flex flex-col gap-6"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden bg-nav-bg border-b border-glass-border overflow-hidden"
             >
-              {navLinks.map(link => (
-                <Link 
-                  key={link.path}
-                  to={link.path} 
-                  className={`text-base font-bold uppercase tracking-widest transition-all ${location.pathname === link.path ? 'text-accent' : 'text-text-secondary'}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              ))}
-              <div className="h-[1px] w-full bg-glass-border my-2" />
-              {isPublic ? (
-                <Link 
-                  to="/login" 
-                  className="btn btn-primary px-8 py-4 rounded-2xl shadow-xl shadow-accent/20 flex items-center justify-center gap-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <span className="text-sm font-black uppercase tracking-widest">Login</span>
-                  <ChevronRight className="w-5 h-5" />
-                </Link>
-              ) : (
-                <button 
-                  onClick={() => { localStorage.clear(); window.location.href='/login'; }}
-                  className="btn btn-outline px-6 py-4 text-sm rounded-xl w-full"
-                >
-                  Logout
-                </button>
-              )}
+              <div className="container mx-auto px-6 py-6 flex flex-col gap-4">
+                {navLinks.map(link => (
+                  <Link 
+                    key={link.path}
+                    to={link.path} 
+                    className={`text-base font-medium transition-colors ${location.pathname === link.path ? 'text-primary' : 'text-text-secondary'}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+                <div className="h-[1px] w-full bg-glass-border my-2" />
+                {isPublic ? (
+                  <Link 
+                    to="/login" 
+                    className="btn btn-primary w-full py-3"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                ) : (
+                  <button 
+                    onClick={() => { localStorage.clear(); window.location.href='/login'; }}
+                    className="btn btn-outline w-full py-3"
+                  >
+                    Logout
+                  </button>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -191,37 +182,36 @@ const AppLayout = ({ children, theme, toggleTheme, isPublic = false }) => {
         {children}
       </main>
 
-      {/* Footer */}
       {isPublic && (
-        <footer className="bg-bg-darker border-t border-glass-border py-20">
-          <div className="container max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div className="col-span-2">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-glass p-2 rounded-xl border border-glass-border shadow-xl">
-                  <img src={logo} alt="SwiftAid" className="h-6 w-auto" />
+        <footer className="bg-bg-darker border-t border-glass-border py-12">
+          <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-primary/10 p-2 rounded-lg border border-primary/10">
+                  <img src={logo} alt="SwiftAid" className="h-7 w-auto" />
                 </div>
               </div>
-              <p className="text-text-secondary max-w-sm leading-relaxed">
+              <p className="text-text-secondary text-sm max-w-sm leading-relaxed">
                 Empowering the Nigerian healthcare system through rapid, verified, and intelligent blood coordination. Every second counts, every life matters.
               </p>
             </div>
             <div>
-              <h4 className="text-text-primary font-black uppercase tracking-widest text-xs mb-6">Network</h4>
-              <ul className="space-y-4 text-sm text-text-secondary">
-                <li><Link to="/join" className="hover:text-accent transition-colors">Enquiry for Hospital</Link></li>
-                <li><Link to="/join" className="hover:text-accent transition-colors">Enquiry for Blood Bank</Link></li>
+              <h4 className="text-text-primary font-semibold text-sm mb-4">Network</h4>
+              <ul className="space-y-3 text-sm text-text-secondary">
+                <li><Link to="/join" className="hover:text-primary transition-colors">Enquiry for Hospital</Link></li>
+                <li><Link to="/join" className="hover:text-primary transition-colors">Enquiry for Blood Bank</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-text-primary font-black uppercase tracking-widest text-xs mb-6">Legal</h4>
-              <ul className="space-y-4 text-sm text-text-secondary">
-                <li><Link to="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-accent transition-colors">Terms of Service</Link></li>
+              <h4 className="text-text-primary font-semibold text-sm mb-4">Legal</h4>
+              <ul className="space-y-3 text-sm text-text-secondary">
+                <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
-          <div className="container max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-glass-border/30 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[10px] uppercase font-black tracking-[0.3em] text-text-muted">© 2026 SwiftAid Infrastructure. All rights reserved.</p>
+          <div className="container mx-auto px-6 mt-10 pt-6 border-t border-glass-border/30">
+            <p className="text-xs text-text-muted">© 2026 SwiftAid Infrastructure. All rights reserved.</p>
           </div>
         </footer>
       )}
@@ -248,26 +238,24 @@ function App() {
         position="top-right"
         toastOptions={{
           style: {
-            background: 'var(--color-bg-darker)',
+            background: 'var(--color-card-bg)',
             color: 'var(--color-text-primary)',
             border: '1px solid var(--color-glass-border)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: '24px',
-            padding: '16px 24px',
-            fontSize: '12px',
-            fontWeight: '900',
-            textTransform: 'uppercase',
-            letterSpacing: '0.2em',
+            borderRadius: 'var(--radius-xl)',
+            padding: '12px 16px',
+            fontSize: '14px',
+            fontWeight: '500',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
           },
           success: {
             iconTheme: {
-              primary: '#10b981',
+              primary: 'var(--color-success)',
               secondary: '#fff',
             },
           },
           error: {
             iconTheme: {
-              primary: '#ef4444',
+              primary: 'var(--color-error)',
               secondary: '#fff',
             },
           },
@@ -330,11 +318,11 @@ function App() {
         <Route path="/hospital/*" element={
           <DashboardLayout theme={theme} toggleTheme={toggleTheme}>
              <Routes>
-                <Route path="/" element={<HospitalDashboard />} />
-                <Route path="marketplace" element={<HospitalMarketplace />} />
-                <Route path="users" element={<HospitalUserManagement />} />
-                <Route path="transactions" element={<HospitalTransactions />} />
-                <Route path="settings" element={<ProfileSettings />} />
+              <Route path="/" element={<HospitalDashboard />} />
+              <Route path="marketplace" element={<HospitalMarketplace />} />
+              <Route path="users" element={<HospitalUserManagement />} />
+              <Route path="transactions" element={<HospitalTransactions />} />
+              <Route path="settings" element={<ProfileSettings />} />
              </Routes>
           </DashboardLayout>
         } />
