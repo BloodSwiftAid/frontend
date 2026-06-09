@@ -36,19 +36,15 @@ const DashboardLayout = ({ children, theme, toggleTheme }) => {
   if (!authorized) {
     return (
       <div className="min-h-screen bg-bg-darker flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-bg-darker relative overflow-hidden">
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
-      
+    <div className="flex min-h-screen bg-bg-darker">
       {/* Sidebar - Responsive handling */}
-      <div className={`fixed inset-y-0 left-0 z-[1000] lg:relative lg:block transition-all duration-500 ${isSidebarOpen ? 'translate-x-0 w-80' : '-translate-x-full lg:translate-x-0 w-80'}`}>
+      <div className={`fixed inset-y-0 left-0 z-[1000] lg:relative lg:block transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <DashboardSidebar 
           theme={theme} 
           toggleTheme={toggleTheme} 
@@ -64,38 +60,36 @@ const DashboardLayout = ({ children, theme, toggleTheme }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsSidebarOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[900] lg:hidden"
+            className="fixed inset-0 bg-black/50 z-[900] lg:hidden"
           />
         )}
       </AnimatePresence>
       
       <main className="flex-1 relative overflow-y-auto h-screen custom-scrollbar">
         {/* Mobile Top Header */}
-        <div className="lg:hidden h-16 bg-card-bg/40 backdrop-blur-xl border-b border-glass-border px-6 flex items-center justify-between sticky top-0 z-[800]">
+        <div className="lg:hidden h-14 bg-card-bg border-b border-glass-border px-4 flex items-center justify-between sticky top-0 z-[800]">
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="p-2 bg-glass border border-glass-border rounded-xl text-primary"
+            className="p-2 text-text-primary hover:bg-glass rounded-lg"
           >
             <Menu size={20} />
           </button>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">SwiftAid</span>
-          </div>
-          <div className="w-10 h-10 bg-primary/10 rounded-lg border border-primary/20 flex items-center justify-center">
-            <ShieldAlert size={18} className={isVerified ? 'text-primary' : 'text-accent'} />
+          <span className="font-bold text-text-primary">SwiftAid</span>
+          <div className="w-9 h-9 bg-primary/10 rounded-lg border border-primary/20 flex items-center justify-center">
+            <ShieldAlert size={18} className={isVerified ? 'text-primary' : 'text-warning'} />
           </div>
         </div>
 
         {!isVerified && (
-          <div className="bg-accent/10 border-b border-accent/20 px-8 py-3 flex items-center justify-center gap-3 relative z-[100] backdrop-blur-md">
-            <ShieldAlert className="w-5 h-5 text-accent animate-pulse" />
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent text-center">
+          <div className="bg-warning/10 border-b border-warning/20 px-6 py-3 flex items-center justify-center gap-2">
+            <ShieldAlert className="w-4 h-4 text-warning" />
+            <p className="text-xs font-medium text-warning text-center">
               Facility verification pending. <span className="hidden sm:inline">You are currently in <span className="underline">View-Only</span> mode.</span>
             </p>
           </div>
         )}
         
-        <div className="max-w-[1400px] mx-auto min-h-full p-4 md:p-8 lg:p-12">
+        <div className="max-w-7xl mx-auto min-h-full p-4 md:p-6 lg:p-8">
           {children}
         </div>
       </main>
@@ -104,4 +98,3 @@ const DashboardLayout = ({ children, theme, toggleTheme }) => {
 };
 
 export default DashboardLayout;
-
